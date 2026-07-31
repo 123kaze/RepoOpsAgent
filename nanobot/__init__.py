@@ -1,6 +1,4 @@
-"""
-nanobot - A lightweight AI agent framework
-"""
+"""RepoOps Agent, built on the nanobot runtime."""
 
 import tomllib
 from importlib.metadata import PackageNotFoundError
@@ -52,7 +50,7 @@ def _resolve_version() -> str:
 
 
 __version__ = _resolve_version()
-__logo__ = "🐈"
+__logo__ = "🛠️"
 
 _LAZY_EXPORTS = {
     "Nanobot": ".nanobot",

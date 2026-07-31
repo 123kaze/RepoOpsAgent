@@ -1,0 +1,82 @@
+# Nanobot 源码学习与 RepoOps 设计对照
+
+## 1. 核心循环保持通用
+
+nanobot 的 `AgentLoop` 负责会话、上下文和运行时协调，`AgentRunner` 负责模型与
+工具循环。RepoOps 没有把 GitHub 分支写进两者，而是通过自动发现的工具扩展。
+这样升级模型 Provider 或会话逻辑时，领域代码不需要跟着改。
+
+## 2. 工具 schema 跟随工具对象
+
+nanobot 的每个 `Tool` 自带参数 schema，`ToolRegistry` 只负责注册、校验和执行。
+RepoOps 延续该模式，实现 15 个原子动作，没有增加一个把所有决策藏起来的
+`solve_repository_problem()`。
+
+## 3. 配置在明确边界解析
+
+nanobot 将工具配置类放在对应工具模块，再由 `ToolsConfig` 显式引用。RepoOps
+使用 `RepoOpsToolConfig`，而不是在工具执行时读取任意环境变量。环境变量替换由
+统一配置 loader 完成，工具只收到解析后的 token。
+
+## 4. 错误是结构化工具结果
+
+nanobot 用 `ToolResult.error` 区分失败与包含“Error”字样的正常文本。RepoOps 将
+GitHub API、授权、持久化和审批错误转换为该类型，使 Runner 能执行既有的错误
+恢复策略。
+
+## 5. 外部内容进入上下文前必须标记
+
+nanobot 的 Web 工具已有 external-content banner。RepoOps 对 Issue、PR、评论、
+Diff、代码和 CI 日志统一添加不可信标记，并在 always-on Skill 中声明这些内容
+不能成为指令或审批。
+
+## 6. 请求上下文比对话文本更适合审批
+
+nanobot 通过 `RequestContext` 提供原始用户文本、session key 和 turn ID。RepoOps
+审批只读取这些字段，不扫描模型拼接后的上下文，因此 Issue 中的批准文字无法
+伪装成用户确认。
+
+## 7. 状态持久化应继承原子写原则
+
+nanobot 会话与记忆使用临时文件、`fsync` 和原子替换保证崩溃一致性。RepoOps
+任务状态和草稿复用相同原则，而不是直接覆盖 JSON。
+
+## 8. “只读”需要区分 GitHub 副作用与内部轨迹
+
+RepoOps 读取工具对 GitHub 是只读的，因此可以并发；它们仍会记录本地工具轨迹。
+当前同步记录段没有 `await`，并用进程共享锁保护文件写入。真正的 GitHub 写工具
+保持非只读，Runner 不会并发调度。
+
+## 9. 高风险操作需要状态机，不只是一句 Prompt
+
+Prompt 中写“先问用户”无法抵御误判。RepoOps 用
+`pending -> executing -> executed` 持久状态机，并要求同会话、后续轮次、精确
+口令。`executing` 抢占在网络调用前原子完成，防止并发重复执行。
+
+## 10. SSRF 是网络工具的所有权边界
+
+nanobot 的安全约束要求所有外部 HTTP 经过共享 URL guard。RepoOps 固定相对 API
+路径、限制配置 API origin、校验每次请求，并只允许 GitHub Actions 文档规定的
+签名日志域名跳转。
+
+## 11. Skill 适合表达“怎么做”
+
+Issue 分析、PR 审查、CI 诊断是工作流知识，不应硬编码进 Runner。RepoOps 用一个
+always-on 总策略加三个按需 Skill，工具保持原子，模型仍负责根据证据决定下一步。
+
+## 12. 自动化复用 Cron，而不是再建调度器
+
+nanobot 已有 Cron、Heartbeat 和投递路径。RepoOps 只实现纯读取的日报工具，
+让现有 Cron 负责何时运行、向哪个会话投递，避免第二套长期运行服务。
+
+## 13. 代码检索不等同于文档向量检索
+
+路线文档强调符号搜索优先。RepoOps 的本地检索以 Python 函数/类为细粒度块，
+同时保留行窗口覆盖模块级代码，再组合 BM25、trigram 相似度和 exact-symbol
+boost。它没有默认把私有源码上传到 embedding 服务。
+
+## 14. 评测必须能脱离模型和网络复现
+
+在线 GitHub 内容和 LLM 输出会变化。RepoOps 先提供 20 条离线验收任务与纯函数
+指标，确保指标计算、审批安全和检索行为可在 CI 稳定复现；真实仓库/模型评测应
+作为带版本、模型和数据快照的下一层。

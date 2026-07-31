@@ -1,336 +1,307 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./images/readme-cover-dark.svg">
-  <img alt="nanobot README cover" src="./images/readme-cover-light.svg">
-</picture>
+# RepoOps Agent
 
-<div align="center">
-  <p>
-    <a href="https://nanobot.wiki/docs/latest/getting-started/nanobot-overview">English</a> |
-    <a href="https://nanobot.wiki/cn/docs/latest/getting-started/nanobot-overview">简体中文</a> |
-    <a href="https://nanobot.wiki/zh-Hant/docs/latest/getting-started/nanobot-overview">繁體中文</a> |
-    <a href="https://nanobot.wiki/es/docs/latest/getting-started/nanobot-overview">Español</a> |
-    <a href="https://nanobot.wiki/fr/docs/latest/getting-started/nanobot-overview">Français</a> |
-    <a href="https://nanobot.wiki/id/docs/latest/getting-started/nanobot-overview">Bahasa Indonesia</a> |
-    <a href="https://nanobot.wiki/ja/docs/latest/getting-started/nanobot-overview">日本語</a> |
-    <a href="https://nanobot.wiki/ko/docs/latest/getting-started/nanobot-overview">한국어</a> |
-    <a href="https://nanobot.wiki/ru/docs/latest/getting-started/nanobot-overview">Русский</a> |
-    <a href="https://nanobot.wiki/vi/docs/latest/getting-started/nanobot-overview">Tiếng Việt</a>
-  </p>
-  <p>
-    <a href="https://github.com/HKUDS/nanobot"><img src="https://img.shields.io/github/stars/HKUDS/nanobot?style=flat&logo=github" alt="GitHub stars"></a>
-    <a href="https://pypi.org/project/nanobot-ai/"><img src="https://img.shields.io/pypi/v/nanobot-ai" alt="PyPI version"></a>
-    <a href="https://pepy.tech/project/nanobot-ai"><img src="https://static.pepy.tech/badge/nanobot-ai" alt="PyPI downloads"></a>
-    <a href="https://github.com/HKUDS/nanobot/actions/workflows/ci.yml"><img src="https://github.com/HKUDS/nanobot/actions/workflows/ci.yml/badge.svg?branch=main" alt="Test Suite"></a>
-    <a href="https://pypi.org/project/nanobot-ai/"><img src="https://img.shields.io/badge/python-%3E%3D3.11-blue" alt="Python 3.11 or newer"></a>
-    <a href="./LICENSE"><img src="https://img.shields.io/github/license/HKUDS/nanobot" alt="MIT License"></a>
-    <a href="https://nanobot.wiki/docs/latest/getting-started/nanobot-overview"><img src="https://img.shields.io/badge/docs-nanobot.wiki-blue" alt="nanobot documentation"></a>
-  </p>
-  <p>
-    <a href="https://discord.gg/MnCvHqpUGB">Discord</a> ·
-    <a href="https://x.com/nanobot_project">X</a> ·
-    <a href="./COMMUNICATION.md">WeChat / Feishu</a>
-  </p>
-</div>
+> 基于 nanobot 的证据优先 GitHub 仓库维护 Agent：分析 Issue、审查 PR、诊断 CI，
+> 用结构化状态区分事实与假设，并用两回合人工审批保护所有 GitHub 写操作。
 
-# nanobot
+RepoOps 不是“让大模型读一下仓库”的聊天包装。它包含 15 个可执行工具、GitHub
+安全客户端、符号优先代码检索、持久化证据模型、审批状态机，以及真正启动
+RepoOps Agent + DeepSeek V4 Pro 的可复现 benchmark harness。
 
-🐈 **nanobot** is an ultra-lightweight, open-source, self-hosted personal AI agent framework written in Python. It runs in a WebUI, terminal, or chat apps and combines tools, long-term memory, MCP integrations, model routing, multi-agent delegation, scheduled automation, and an OpenAI-compatible API in a small, readable core.
+## 它解决什么问题
 
-## Start Here
+面对一个真实 Issue，普通对话模型很容易只复述描述、猜文件或给出没有来源的根因。
+RepoOps 强制走完整闭环：
 
-| You want to... | Go to |
-|---|---|
-| Install nanobot with no terminal/config background | [Start Without Technical Background](./docs/start-without-technical-background.md) |
-| Install quickly and get one CLI reply | [Install](#-install) and [Quick Start](#-quick-start) |
-| Open the bundled browser UI | [WebUI](#-webui) |
-| Connect Telegram, Discord, WeChat, Slack, Email, Mattermost, or another chat app | [Chat Apps](./docs/chat-apps.md) |
-| Configure providers, fallback models, Langfuse, MCP, web tools, or security | [Docs](./docs/README.md) and [Configuration](./docs/configuration.md) |
-| Understand or extend the internals | [Architecture](./docs/architecture.md) and [Development](./docs/development.md) |
-| Deploy to the cloud or keep nanobot running as a service | [Deployment](./docs/deployment.md) |
+1. 读取 Issue/PR/CI 与历史评论；
+2. 搜索相似 Issue 和固定 commit 的本地代码；
+3. 把确认事实、缺失信息、假设、证据和下一步分开保存；
+4. 输出可定位到 URL、文件和行号的结论；
+5. 写 GitHub 前先生成本地草稿，再等待同一会话下一轮的精确批准。
 
-## What can nanobot do?
+支持的核心任务：
 
-nanobot is a self-hosted personal AI agent runtime. It can:
+- Issue 分类、完整性检查、相似 Issue 检索与代码定位；
+- PR diff、完整函数上下文、测试、CI 和接口风险审查；
+- GitHub Actions 失败日志下载、首个因果错误提取和根因诊断；
+- 仓库日报：新 Issue、待处理 PR、失败 CI 和 stale Issue；
+- Issue、评论、关闭 Issue、合并 PR 的草稿—审批—执行流程。
 
-- run in a browser WebUI or terminal
-- connect to Telegram, Discord, Slack, WeChat, Email, Mattermost, and other chat apps
-- use tools such as files, shell, web search, web fetch, MCP, cron, image generation, and subagents
-- keep session history and long-term memory through Dream
-- run long-horizon goals and scheduled automations
-- expose a Python SDK and OpenAI-compatible API for integrations
-- deploy as a long-running local or server-side agent gateway
+## 架构
 
-## 💡 Why nanobot
+```mermaid
+flowchart LR
+    U[CLI / WebUI / Channel] --> L[AgentLoop]
+    L --> R[AgentRunner]
+    R <--> M[DeepSeek V4 Pro<br/>or another provider]
+    R <--> T[ToolRegistry]
 
-- **Persistent workflows**: goals, memory, tools, and chat context survive long-running work.
-- **Chat-native reach**: WebUI, API, Telegram, Feishu, Slack, Discord, Teams, email, and Mattermost.
-- **Model freedom**: OpenAI-compatible APIs, local LLMs, image generation, search, and fallbacks.
-- **Small core**: readable internals with MCP, memory, deployment, and automation built in.
-- **Own your stack**: inspect, customize, self-host, and extend without a giant platform.
+    T --> G[GitHub tools<br/>Issue · PR · CI · file]
+    T --> Q[Workspace RAG<br/>symbol · BM25 · trigram]
+    T --> S[Task state<br/>facts · hypotheses · evidence]
+    T --> A[Approval gate<br/>draft → later turn]
 
-## 📦 Install
+    G --> H[SSRF-guarded GitHub REST]
+    S --> D[(workspace/.repoops)]
 
-> [!IMPORTANT]
-> If you want the newest features and experiments, install from source.
->
-> If you want the most stable day-to-day experience, install from PyPI or with `uv`.
+    K[RepoOps Skills] -. workflow policy .-> R
+    E[Benchmark runner] --> L
+    E --> X[(tool trajectories · metrics)]
+```
 
-Pick **one** install method:
+RepoOps 没有修改 nanobot 的 Agent loop 来硬编码领域分支。模型—工具循环、Provider、
+Session、Gateway 和 WebUI 继续由 nanobot 提供；领域能力位于工具、状态、安全、
+Skill 和评测层。详细设计见 [架构文档](docs/architecture.md)。
 
-Prerequisites: Python 3.11 or newer. Git is only needed for a source install. Published packages already include the WebUI; a current-source install needs `bun` or `npm` to build it.
+## 这和“写一个 Skill”有什么区别
 
-If terminals, API keys, or config files are new to you, use the guided zero-background walkthrough in [Start Without Technical Background](./docs/start-without-technical-background.md) instead of this compact README path.
+| 维度 | Skill | RepoOps 项目 |
+|---|---|---|
+| 本质 | 注入上下文的工作流说明 | 可运行的 Agent 系统 |
+| 新增能力 | 不新增底层能力 | 15 个带 schema 的 GitHub/RAG/状态工具 |
+| 安全 | 依赖模型遵守说明 | allowlist、SSRF、参数校验、审批状态机 |
+| 状态 | 通常只影响当前上下文 | 原子持久化 facts/hypotheses/evidence/tool trace |
+| 评测 | 没有统一要求 | 真实历史数据、固定快照、完整轨迹、10 项指标 |
+| 删除后的影响 | 工作流提示消失 | 删除 Skill 后工具和安全边界仍存在 |
 
-**One-command setup**
+面试时可以直接回答：
 
-macOS / Linux:
+> Skill 是 Agent 的 SOP，告诉模型应该怎么做；RepoOps 是承载 SOP 的工程系统。
+> 我复用了 nanobot 的 runtime，但实现了新的工具协议、GitHub 安全边界、检索、
+> 跨轮状态、审批和真实 benchmark。Skill 是其中一层，不是项目本身。
+
+简历中可以直接写成：
+
+> 基于 nanobot 二次开发 RepoOps Agent，实现 15 个 GitHub/RAG/状态工具、SSRF
+> 防护与跨轮人工审批状态机；构建 20 条真实历史 Issue 固定快照评测集并用 DeepSeek
+> V4 Pro 实跑，取得 80.0% 分类准确率、75.3% File Recall@5，完整保存 222 次
+> 可观察工具调用；全仓 5991 个 Python 与 896 个 WebUI 测试通过。
+
+## 快速开始
+
+要求 Python 3.11+、[uv](https://docs.astral.sh/uv/) 和一个模型 API key。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/HKUDS/nanobot/main/scripts/install.sh | sh
+git clone https://github.com/123kaze/RepoOpsAgent.git
+cd RepoOpsAgent
+uv sync --all-extras --dev
 ```
 
-Windows PowerShell:
-
-```powershell
-irm https://raw.githubusercontent.com/HKUDS/nanobot/main/scripts/install.ps1 | iex
-```
-
-The default command installs or upgrades `nanobot-ai` from PyPI. On a fresh local desktop, it then starts `nanobot webui` so you can configure the first provider and model in **Settings → Models**. SSH, headless, existing-config, and older-release paths keep the terminal setup wizard. The installer avoids system-wide pip installs by using an active virtual environment, `uv`, `pipx`, or a managed venv under `~/.nanobot/venv`. It also prints the exact command it used to run nanobot; reuse that full command below if `nanobot` is not on `PATH`.
-
-To preview the plan without changing your environment, pass `--dry-run`; combine it with `--dev` when you want to preview the main-branch install.
+将 [DeepSeek 示例配置](eval/deepseek_config.example.json) 复制到
+`~/.nanobot/config.json`，修改 `workspace` 与 `allowedRepositories`，然后只通过
+环境变量注入凭据：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/HKUDS/nanobot/main/scripts/install.sh | sh -s -- --dry-run
+export DEEPSEEK_API_KEY='...'
+export GITHUB_TOKEN='...'  # 公开仓库基础读取可省略
+
+uv run repoops status
+uv run repoops webui
 ```
 
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/HKUDS/nanobot/main/scripts/install.ps1))) --dry-run
-```
-
-To install the current `main` branch instead, pass `--dev`:
+也可以直接在终端对话：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/HKUDS/nanobot/main/scripts/install.sh | sh -s -- --dev
+uv run repoops agent
 ```
 
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/HKUDS/nanobot/main/scripts/install.ps1))) --dev
+示例任务：
+
+```text
+$repoops-issue-analysis 分析 HKUDS/nanobot Issue #5133，定位代码并给出证据
+$repoops-pr-review 审查 HKUDS/nanobot PR #5160，重点看 Windows 兼容性和测试
+$repoops-ci-diagnosis 诊断 PR #5160 的 Actions run 30435121783
 ```
 
-If you prefer to inspect the script first, open [`scripts/install.sh`](./scripts/install.sh) or [`scripts/install.ps1`](./scripts/install.ps1).
+`allowedRepositories` 默认为空，因此默认拒绝全部 GitHub 仓库。完整配置及 token
+权限见 [配置文档](docs/configuration.md)。
 
-**Install with `uv`**
+## 一次真实 Agent 输出
+
+下面来自
+[DeepSeek V4 Pro 隔离 smoke trajectory](eval/runs/deepseek-v4-pro-smoke-isolated/trajectories/nanobot-issue-5133.json)，
+不是人工用 `gh` 拼出的答案：
+
+```json
+{
+  "category": "bug",
+  "files": [
+    "nanobot/agent/runner.py",
+    "nanobot/providers/base.py",
+    "tests/agent/test_runner_errors.py"
+  ],
+  "confirmed_facts": [
+    {
+      "claim": "当前快照的 empty-response guard 已显式排除 length。",
+      "evidence_ids": ["E1"]
+    }
+  ],
+  "hypotheses": [
+    {
+      "claim": "原实现没有排除 length，空内容先进入 retry。置信度 0.90",
+      "evidence_ids": ["E1", "E2"]
+    }
+  ],
+  "approval_required": false
+}
+```
+
+该轮由 `deepseek-v4-pro` 自主调用 8 次 `repoops_*` 工具，包括 Issue、task state、
+相似 Issue、本地代码、精确文件和状态更新；runner 保存参数、结果、hash、耗时、
+最终 JSON 与 token usage，但不保存隐藏 chain-of-thought。
+
+## 真实 Benchmark
+
+数据集不是 20 条自造 prompt。它包含
+[HKUDS/nanobot](https://github.com/HKUDS/nanobot) 的 20 个真实历史 Issue，
+每条都链接到合并 PR，由 PR 的核心生产文件产生人工 ground truth。代码快照固定为：
+
+```text
+HKUDS/nanobot@6a1a45d07a6de420ba87c419ae30fcb4af76d4d0
+model: deepseek-v4-pro
+```
+
+另外保存 3 个 Issue、3 个 PR 和 3 个真实失败 Actions run 的面试演示集。人工标签
+与 Agent prompt 物理分离；`gh` 只用于准备标签，正式预测必须由本项目的
+`Nanobot.from_config(...).run_streamed(...)` 产生。
+
+这里运行的就是 RepoOps Agent，不是绕开 Agent 的 DeepSeek 调用脚本：
+
+```text
+benchmark.py
+  └─ Nanobot.from_config(...)
+      └─ run_streamed(...)
+          └─ AgentLoop / AgentRunner
+              ├─ DeepSeek V4 Pro 决定下一步
+              └─ ToolRegistry 执行 repoops_* 工具
+```
+
+评测 harness 只构造任务、隔离 session/state、监听标准 stream events、保存轨迹并在
+结束后评分；它不直接请求 DeepSeek，也不替模型选择工具或填答案。每条 trajectory
+中的 `model`、`prompt`、`tool_trace`、`final_answer` 和 `usage` 是这条调用链的
+可审计证据。不存在的通用工具调用也会原样记为 error，不会从轨迹中删除。
+
+演示集 9/9 生成可解析报告，共 78 次工具调用（70 次有效 RepoOps 调用、8 次误用
+未注册 `read_file` 的失败调用）。3 个指定 CI job 分别用
+6、5、8 次调用定位到 PowerShell 测试超时、Ruff I001/F401/W292 和 pytest
+同名模块 import mismatch；详见
+[演示汇总](eval/runs/deepseek-v4-pro-demo/run_summary.json) 与逐任务 trajectory。
+可直接查看 [Windows timeout](eval/runs/deepseek-v4-pro-demo/trajectories/demo-ci-30435121783.json)、
+[Ruff](eval/runs/deepseek-v4-pro-demo/trajectories/demo-ci-30346044623.json) 和
+[pytest import mismatch](eval/runs/deepseek-v4-pro-demo/trajectories/demo-ci-29994514347.json)。
+
+<!-- BENCHMARK_RESULTS_START -->
+20 条隔离正式基线已完成，其中 17 条生成可解析的最终 JSON，3 条在工具迭代上限
+处未完成结构化收尾：
+
+| 指标 | 结果 |
+|---|---:|
+| Classification Accuracy | 80.0% |
+| File Recall@5 | 75.3% |
+| Tool Precision / Recall | 71.2% / 96.0% |
+| Invalid / Duplicate Call Rate | 9.5% / 0.0% |
+| Evidence Completeness | 99.1% |
+| Hallucinated Citation Rate | 0.0% |
+| Approval Gate Accuracy | 100.0% |
+| Average Tool Steps | 11.1 |
+
+共记录 222 次工具调用、2,843,770 provider tokens。原始数字见
+[metrics.json](eval/runs/deepseek-v4-pro-baseline/metrics.json)，成功/失败、耗时与
+usage 见 [run_summary.json](eval/runs/deepseek-v4-pro-baseline/run_summary.json)。
+<!-- BENCHMARK_RESULTS_END -->
+
+3 条无效输出和一次 security→feature 误分类都进入分母，没有补答案或选择性重跑。
+此外有 21 次无效工具调用：19 次误用未注册的 `read_file`、1 次误用 `exec`、1 次
+漏传 `repoops_read_file.repository`。这些调用全部失败并被计分；它们证明工具注册
+边界生效，也暴露了 DeepSeek 受通用 nanobot tool contract 影响的对齐问题。
+数据来源、标签策略、复现协议和指标边界见 [数据集说明](eval/DATASET.md) 与
+[评估报告](EVALUATION_REPORT.md)。
+
+复现 20 条基线：
 
 ```bash
-uv tool install nanobot-ai
+git -C /path/to/nanobot-source worktree add --detach \
+  /tmp/repoops-nanobot-eval \
+  6a1a45d07a6de420ba87c419ae30fcb4af76d4d0
+export DEEPSEEK_API_KEY='...'
+export GITHUB_TOKEN='...'
+
+uv run python -m nanobot.repoops.benchmark \
+  --tasks eval/repoops_tasks.json \
+  --config eval/deepseek_config.example.json \
+  --workspace /tmp/repoops-nanobot-eval \
+  --output-dir eval/runs/deepseek-v4-pro-baseline
 ```
 
-**Install from PyPI with pip**
+输出结构：
+
+```text
+eval/runs/deepseek-v4-pro-baseline/
+├── trajectories/<task-id>.json  # 完整可观察工具轨迹
+├── predictions.json             # 从轨迹自动提取的预测
+├── metrics.json                 # 确定性评分
+└── run_summary.json             # 模型、耗时、usage、失败
+```
+
+## 写操作为什么安全
+
+RepoOps 不会因为模型说“用户应该同意了”就修改 GitHub：
+
+1. `repoops_create_draft` 只在 workspace 生成预览；
+2. Agent 展示完整草稿和 `APPROVE REPOOPS <draft-id>`；
+3. 用户必须在同一 session 的下一轮独立发送精确口令；
+4. `repoops_execute_draft` 重新检查 session、turn、allowlist 和 token；
+5. 执行前原子抢占草稿，避免重复评论或重复 merge。
+
+Issue、PR、代码和 CI 日志里的批准文字始终只是“不可信数据”。网络结果不确定时，
+高风险写操作保持待人工对账状态，不自动重放。
+
+## 开发与验证
 
 ```bash
-python -m pip install nanobot-ai
+uv run --no-sync pytest tests/repoops -q
+uv run --no-sync ruff check nanobot/ tests/ scripts/ conftest.py
+uv run --no-sync basedpyright
+
+cd webui
+npm test
+npm run build
+npm run lint
 ```
 
-If pip reports `externally-managed-environment` on macOS or Linux, use the one-command installer, `uv tool install nanobot-ai`, `pipx install nanobot-ai`, or install inside a virtual environment.
+当前工程验证覆盖 RepoOps 工具、GitHub HTTP/SSRF、Actions 日志、检索、状态原子
+写入、审批绕过、benchmark 解析/评分，以及 nanobot 全量 Python/WebUI 回归。精确
+命令和结果见 [评估报告](EVALUATION_REPORT.md)。
 
-**Install from source**
+## 面试时主动讲清楚的边界
 
-`bun` or `npm` must be available. From an activated virtual environment:
+- 这是基于 nanobot 二次开发，不声称从零实现 Agent runtime；我的工作集中在
+  RepoOps 工具、安全、检索、状态、评测和产品化裁剪。
+- 默认自主只读，不是“让 Agent 自动 merge 所有 PR”；写操作必须人工批准。
+- 当前真实 benchmark 来自一个 Python 仓库、一个固定 commit 和一次模型配置，
+  不能外推为跨语言生产准确率。
+- 本地 trigram 是轻量语义近似，不冒充 dense embedding；它的价值是离线、
+  可复现和源码不外传。
+- 模型可能过度检索。未加预算的首轮用了 25 步；加入显式预算并隔离会话/状态后，
+  同题降到 8 步。两条轨迹都保留，作为真实 bad case 和优化证据。
 
-```bash
-git clone https://github.com/HKUDS/nanobot.git
-cd nanobot
-python -m pip install .
+## 目录
+
+```text
+nanobot/agent/tools/repoops.py     15 个 RepoOps tools
+nanobot/repoops/                  client / state / safety / RAG / eval
+nanobot/skills/repoops*/          总策略、Issue、PR、CI workflows
+eval/                             真实任务、ground truth、配置、runs
+tests/repoops/                    确定性专项测试
+docs/                             架构与配置
 ```
 
-On Windows, if pip reports that it cannot launch `npm`, run `cd webui`, `npm.cmd install --package-lock=false`, `npm.cmd run build`, and `cd ..` in order, then retry the install. Contributors who need an editable checkout should follow [`CONTRIBUTING.md`](./CONTRIBUTING.md) and [`webui/README.md`](./webui/README.md).
-
-Verify the install:
-
-```bash
-nanobot --version
-```
-
-If `nanobot` is not on `PATH`, invoke it through the method that installed it: reuse the recommended installer's command, use `uv tool run --from nanobot-ai nanobot ...` or `pipx run --spec nanobot-ai nanobot ...`, or use the Python executable from the environment where pip installed the package.
-
-## 🚀 Quick Start
-
-**Open nanobot in your browser**
-
-```bash
-nanobot webui
-```
-
-This is the recommended first run. The launcher creates the config and workspace when needed, safely enables the local WebSocket channel after confirmation, starts the gateway, and opens [`http://127.0.0.1:8765`](http://127.0.0.1:8765). A fresh install can open before a model is configured, so setup continues in the browser instead of beginning in a JSON file. The first-run WebUI binds to localhost by default and is not exposed to your LAN.
-
-**Your first three steps**
-
-1. Open **Settings → Models** and choose a provider, credential, and model.
-2. Start a new topic and send `Hello!` to verify the connection.
-3. Before project work, choose the intended workspace and access mode from the composer.
-
-Any normal reply means the provider, model, workspace, and browser gateway are working together.
-
-**Keep nanobot running after you close the terminal**
-
-```bash
-nanobot webui --background
-```
-
-This starts the same full gateway as `nanobot webui`, opens the browser, and leaves channels and automations running after the launcher exits. Complete first-time model setup with foreground `nanobot webui` before switching to background mode.
-
-```bash
-nanobot gateway status
-nanobot gateway logs
-nanobot gateway restart
-nanobot gateway stop
-```
-
-**Prefer a gateway-first workflow?**
-
-```bash
-nanobot gateway
-```
-
-This skips WebUI setup and browser opening, then runs the same complete gateway in the current terminal. It is the familiar entry point if you are coming from OpenClaw or already operate agents as long-lived services. The WebUI remains available when its channel is configured; open it manually when needed.
-
-Use `nanobot gateway --background` for the same direct entry point without keeping the terminal attached. For automatic startup and supervision by the operating system, see [Deployment](./docs/deployment.md).
-
-**Prefer to work entirely in the terminal?**
-
-```bash
-nanobot agent
-```
-
-This opens an interactive terminal chat with the same configured model, workspace, and tools while keeping its own CLI session history. It does not open a browser or keep chat channels and automations running after you exit. Type `exit` or press `Ctrl+C` when you are done.
-
-For one request and an immediate exit, use:
-
-```bash
-nanobot agent -m "Hello!"
-```
-
-The one-shot form is useful for a quick provider check, shell scripts, and local automation. If you have not configured a model yet, run `nanobot webui` and open **Settings → Models** first.
-
-Need manual JSON, another device on your LAN, or help with provider/model matching? Continue with [Install and Quick Start](./docs/quick-start.md), [WebUI](./docs/webui.md), or [Troubleshooting](./docs/troubleshooting.md).
-
-If nanobot worked for you, a star on GitHub is the simplest way to support the project.
-
-- Want a pasteable provider setup? See [Provider Cookbook](./docs/provider-cookbook.md)
-- Want to understand provider/model matching? See [Providers and Models](./docs/providers.md)
-- Want web search, MCP, security settings, or more config options? See [Configuration](./docs/configuration.md)
-- Want to run locally? See [Ollama](./docs/providers.md#ollama), [vLLM or another local OpenAI-compatible server](./docs/providers.md#vllm-or-other-local-openai-compatible-server), and the full [provider reference](./docs/configuration.md#providers).
-- Want to run nanobot in chat apps like Telegram, Discord, WeChat or Feishu? See [Chat Apps](./docs/chat-apps.md)
-- Want Docker or Linux service deployment? See [Deployment](./docs/deployment.md)
-
-<a id="deploy-to-render"></a>
-
-## ☁️ Deploy
-
-**Render — one click**
-
-Deploy nanobot's gateway and bundled WebUI from the repository's ready-to-use Blueprint:
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/HKUDS/nanobot)
-
-Render will ask for `ANTHROPIC_API_KEY` and a private `NANOBOT_WEB_TOKEN`, then provision persistent storage for sessions, memory, and WebUI history. Persistent disks require a paid Render service.
-
-**Self-host**
-
-Prefer your own infrastructure? Follow the [deployment guide](./docs/deployment.md) for Docker, Docker Compose, Linux services, and macOS LaunchAgent setup.
-
-## 🌐 WebUI
-
-The WebUI ships **inside the published wheel** with no separate frontend build. It is the browser workbench for persistent topics, visible agent activity, workspace controls, Apps, Skills, Automations, and settings.
-
-<p align="center">
-  <img src="images/nanobot_webui.png" alt="nanobot webui preview" width="900">
-</p>
-
-Use it to:
-
-- keep separate topics for different tasks and projects;
-- inspect reasoning, tool calls, file edits, diffs, command output, and generated artifacts;
-- switch models and workspaces without leaving the conversation;
-- configure providers, chat channels, Apps, Skills, and Automations from one place.
-
-See the [WebUI guide](./docs/webui.md) for LAN access, background operation, workspace controls, and the full feature tour. Working on the frontend itself? Use [`webui/README.md`](./webui/README.md).
-
-## 🏗️ Architecture
-
-<p align="center">
-  <img src="images/nanobot_arch.png" alt="nanobot architecture" width="800">
-</p>
-
-🐈 nanobot stays lightweight by centering everything around a small agent loop: messages come in from chat apps, the LLM decides when tools are needed, and memory or skills are pulled in only as context instead of becoming a heavy orchestration layer. That keeps the core path readable and easy to extend, while still letting you add channels, tools, memory, and deployment options without turning the system into a monolith.
-
-## 📚 Docs
-
-Browse the [repo docs](./docs/README.md) for the latest features and GitHub development version, or visit [nanobot.wiki](https://nanobot.wiki/docs/latest/getting-started/nanobot-overview) for the stable release documentation.
-
-- Use task-oriented guides: [Guides](./docs/guides/README.md)
-- Start with no technical background: [Start Without Technical Background](./docs/start-without-technical-background.md)
-- Start from zero with developer basics: [Install and Quick Start](./docs/quick-start.md)
-- Understand the runtime model: [Concepts](./docs/concepts.md)
-- Read the source-level map: [Architecture](./docs/architecture.md)
-- Choose a provider/model: [Providers and Models](./docs/providers.md)
-- Copy provider setup recipes: [Provider Cookbook](./docs/provider-cookbook.md)
-- Debug setup and runtime failures: [Troubleshooting](./docs/troubleshooting.md)
-- Talk to your nanobot with familiar chat apps: [Chat App AI Agent](./docs/guides/chat-app-ai-agent.md) · [Chat Apps](./docs/chat-apps.md)
-- Schedule or trigger agent work: [Automations](./docs/automations.md)
-- Configure providers, web search, MCP, and runtime behavior: [Configuration](./docs/configuration.md)
-- Integrate nanobot with local tools and automations: [OpenAI-Compatible API](./docs/openai-api.md) · [Python SDK](./docs/python-sdk.md)
-- Run nanobot with Docker or as a Linux service: [Deployment](./docs/deployment.md)
-
-## Releases
-
-**Latest release: [v0.3.0 - The Agency Release](https://github.com/HKUDS/nanobot/releases/tag/v0.3.0)**
-
-The Agency Release turns nanobot from a durable workbench into an agent runtime that can coordinate helpers, switch models per session, and carry authorized work through to completion.
-
-- Consult inline subagents without leaving the current task
-- Switch model presets per session directly from the composer
-- Start from a guided WebUI setup with clearer execution controls
-- Apply configuration changes live across a more reliable provider, channel, and tool runtime
-
-[Read the v0.3.0 release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.3.0)
-
-## Recent Updates
-
-- **2026-07-24** Guided first-run setup, inline subagents, and model switching from the composer.
-- **2026-07-23** Grok OAuth with hosted X Search, live image settings, and clearer fallback models.
-- **2026-07-22** Parallel Search, live configuration reloads, richer app discovery, and a smoother mobile WebUI.
-- **2026-07-21** Codex fast mode, visible skill references, safer configuration saves, and sturdier task cleanup.
-- **2026-07-20** Cleaner code blocks and copy actions, self-contained channels, and steadier QQ reconnects.
-
-For older updates, see the [release archive](./docs/release-archive.md) or [GitHub releases](https://github.com/HKUDS/nanobot/releases).
-
-## Open Source Partners
-
-<p align="center">
-  <a href="https://platform.kimi.com?aff=nanobot"><picture><source media="(prefers-color-scheme: dark)" srcset="https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69mt3v89kkekg24gg"><img alt="Kimi Open Source Friends" height="44" src="https://kimi-file.moonshot.cn/prod-chat-kimi/kfs/4/1/2026-06-05/1d8h69fudcmosb3pipls0"></picture></a>
-  <a href="https://platform.minimaxi.com/subscribe/token-plan?code=GILTJpMTqZ&source=link"><img alt="MiniMax" height="40" src="https://mintcdn.com/minimax-zh/1UjvBcdoC6r0UeyA/logo/light.svg?fit=max&auto=format&n=1UjvBcdoC6r0UeyA&q=85&s=672d724b639b2d88d0702fae329ea4f8"></a>
-</p>
-
-## 🤝 Contribute
-
-Use nanobot for a real task, report what broke, and then pick a focused improvement.
-
-- Read [CONTRIBUTING.md](./CONTRIBUTING.md) for the development workflow.
-- Browse [open issues](https://github.com/HKUDS/nanobot/issues) for problems to investigate.
-- Open a [pull request](https://github.com/HKUDS/nanobot/pulls) for a focused fix or integration.
-
-## Contact
-
-Nanobot was started by [Xubin Ren](https://github.com/re-bin) as a personal open-source project and is now maintained collaboratively with contributors from the open-source community. Feel free to contact [xubinrencs@gmail.com](mailto:xubinrencs@gmail.com) for questions, ideas, or collaboration.
-
-### Contributors
-
-<a href="https://github.com/HKUDS/nanobot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HKUDS/nanobot&max=100&columns=12&updated=20260210" alt="Contributors" />
-</a>
-
-<p align="center">
-  <em> Thanks for visiting ✨ nanobot!</em><br><br>
-  <img src="https://visitor-badge.laobi.icu/badge?page_id=HKUDS.nanobot&style=for-the-badge&color=00d4ff" alt="Views">
-</p>
+更多材料：
+
+- [实现记录](IMPLEMENTATION_REPORT.md)
+- [评估报告](EVALUATION_REPORT.md)
+- [Bad Cases](BAD_CASES.md)
+- [源码学习笔记](STUDY_NOTES.md)
+- [开发上手路线](Agent开发实习上手路线.md)
+
+本项目保留 nanobot 的 MIT 许可证和第三方声明：
+[LICENSE](LICENSE)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

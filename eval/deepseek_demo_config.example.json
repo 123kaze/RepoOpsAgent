@@ -1,0 +1,44 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/absolute/path/to/nanobot-snapshot",
+      "model": "deepseek-v4-pro",
+      "provider": "deepseek",
+      "maxTokens": 8192,
+      "maxToolIterations": 12,
+      "maxToolResultChars": 18000,
+      "temperature": 0.1,
+      "failOnToolError": false
+    }
+  },
+  "providers": {
+    "deepseek": {
+      "apiKey": "${DEEPSEEK_API_KEY}",
+      "apiBase": "https://api.deepseek.com"
+    }
+  },
+  "tools": {
+    "restrictToWorkspace": true,
+    "web": {
+      "enable": false
+    },
+    "exec": {
+      "enable": false
+    },
+    "file": {
+      "enable": false
+    },
+    "cliApps": {
+      "enable": false
+    },
+    "my": {
+      "enable": false
+    },
+    "repoops": {
+      "enable": true,
+      "allowedRepositories": ["HKUDS/nanobot"],
+      "token": "${GITHUB_TOKEN}",
+      "maxOutputChars": 16000
+    }
+  }
+}

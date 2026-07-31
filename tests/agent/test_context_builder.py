@@ -413,9 +413,12 @@ class TestBuildMessages:
         )
 
     def test_unknown_skill_reference_does_not_change_active_skills(self, tmp_path):
-        messages = _builder(tmp_path).build_messages([], "Keep the shell literal $HOME.")
+        builder = _builder(tmp_path)
+        baseline = builder.build_messages([], "Keep this shell command literal.")
+        messages = builder.build_messages([], "Keep the shell literal $HOME.")
 
-        assert "# Active Skills" not in messages[0]["content"]
+        assert messages[0]["content"] == baseline[0]["content"]
+        assert "### Skill: repoops" in messages[0]["content"]
 
     def test_runtime_context_is_not_injected_by_default(self, tmp_path):
         builder = _builder(tmp_path)

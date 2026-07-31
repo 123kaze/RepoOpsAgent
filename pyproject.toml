@@ -1,7 +1,7 @@
 [project]
 name = "nanobot-ai"
 version = "0.3.0"
-description = "A lightweight personal AI assistant framework"
+description = "Evidence-first GitHub repository maintenance agent built on nanobot"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -9,7 +9,7 @@ authors = [
     {name = "Xubin Ren"},
     {name = "the nanobot contributors"}
 ]
-keywords = ["ai", "agent", "chatbot"]
+keywords = ["ai", "agent", "github", "repository-maintenance", "code-review"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -106,6 +106,7 @@ dev = [
 
 [project.scripts]
 nanobot = "nanobot.cli.commands:app"
+repoops = "nanobot.cli.commands:app"
 
 # Third-party tool plugins register here.  Built-in tools are discovered
 # automatically via pkgutil scanning in ToolLoader.discover().
