@@ -27,12 +27,14 @@ function createTestStorage(): Storage {
   };
 }
 
-if (typeof window !== "undefined" && typeof localStorage.setItem !== "function") {
+if (typeof window !== "undefined") {
   const storage = createTestStorage();
   Object.defineProperty(window, "localStorage", {
     value: storage,
     configurable: true,
   });
+  // Node 26 exposes an unavailable global localStorage unless launched with
+  // --localstorage-file. Keep both access paths on one deterministic test store.
   Object.defineProperty(globalThis, "localStorage", {
     value: storage,
     configurable: true,

@@ -2,14 +2,103 @@
 
 from __future__ import annotations
 
+import ipaddress
 import os
+import socket
 import ssl
 import sys
+import urllib.request
 from collections.abc import Iterator
 
 import certifi
+import httpx._utils
 import pytest
 from loguru import logger
+
+
+def _fake_proxy_dns_active() -> bool:
+    """Detect macOS proxy clients that expose public hosts through fake IP ranges."""
+    try:
+        addresses = {
+            ipaddress.ip_address(info[4][0])
+            for info in socket.getaddrinfo(
+                "example.com",
+                None,
+                socket.AF_UNSPEC,
+                socket.SOCK_STREAM,
+            )
+        }
+    except (OSError, ValueError):
+        return False
+    return any(
+        address in ipaddress.ip_network("198.18.0.0/15")
+        or address in ipaddress.ip_network("fd00::/8")
+        for address in addresses
+    )
+
+
+_FAKE_PROXY_DNS_ACTIVE = _fake_proxy_dns_active()
+
+
+@pytest.fixture(autouse=True)
+def _isolate_host_proxy_configuration(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep macOS/Windows system proxy settings out of deterministic tests.
+
+    HTTPX and urllib otherwise fall back to host-level proxy configuration even
+    after a test clears proxy environment variables. Some proxy clients also
+    return synthetic 198.18/15 or ULA addresses for public documentation hosts,
+    causing SSRF tests to fail before their mocked transports are exercised.
+    """
+    monkeypatch.setattr(
+        httpx._utils,
+        "getproxies",
+        urllib.request.getproxies_environment,
+    )
+    monkeypatch.setattr(
+        "nanobot.security.network.getproxies",
+        urllib.request.getproxies_environment,
+    )
+    monkeypatch.setattr(
+        "nanobot.security.network.proxy_bypass",
+        urllib.request.proxy_bypass_environment,
+    )
+
+    if not _FAKE_PROXY_DNS_ACTIVE:
+        return
+
+    original_getaddrinfo = socket.getaddrinfo
+
+    def getaddrinfo(
+        host: str | bytes | None,
+        port: str | int | None,
+        family: int = 0,
+        type: int = 0,
+        proto: int = 0,
+        flags: int = 0,
+    ):
+        results = original_getaddrinfo(host, port, family, type, proto, flags)
+        hostname = host.decode() if isinstance(host, bytes) else (host or "")
+        normalized = hostname.rstrip(".").lower()
+        if not (
+            normalized in {"example.com", "example.org", "www.google.com"}
+            or normalized.endswith((".example.com", ".example.org"))
+        ):
+            return results
+
+        normalized_results = []
+        for result in results:
+            address = ipaddress.ip_address(result[4][0])
+            if address in ipaddress.ip_network("198.18.0.0/15"):
+                sockaddr = ("93.184.216.34", *result[4][1:])
+                normalized_results.append((*result[:4], sockaddr))
+            elif address in ipaddress.ip_network("fd00::/8"):
+                sockaddr = ("2606:2800:220:1:248:1893:25c8:1946", *result[4][1:])
+                normalized_results.append((*result[:4], sockaddr))
+            else:
+                normalized_results.append(result)
+        return normalized_results
+
+    monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo)
 
 
 @pytest.fixture(autouse=True)

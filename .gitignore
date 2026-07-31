@@ -6,6 +6,8 @@
 .env
 .web
 .orion
+.waylog/
+.repoops/
 
 # Claude / AI assistant artifacts
 docs/superpowers/

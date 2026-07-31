@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "repository": "HKUDS/nanobot",
+  "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+  "labeling_policy": "Issue labels and causal files are derived from public Issue text and the linked merged PR. CI causes are transcribed from the named failed job log. This file is never included in Agent prompts.",
+  "cases": [
+    {
+      "case_id": "demo-issue-5133",
+      "expected_category": "bug",
+      "relevant_files": ["nanobot/agent/runner.py"],
+      "reference_url": "https://github.com/HKUDS/nanobot/pull/5136"
+    },
+    {
+      "case_id": "demo-issue-5159",
+      "expected_category": "bug",
+      "relevant_files": ["nanobot/agent/tools/shell.py"],
+      "reference_url": "https://github.com/HKUDS/nanobot/pull/5160"
+    },
+    {
+      "case_id": "demo-issue-5118",
+      "expected_category": "bug",
+      "relevant_files": ["nanobot/agent/memory.py", "nanobot/session/manager.py", "nanobot/utils/helpers.py"],
+      "reference_url": "https://github.com/HKUDS/nanobot/pull/5157"
+    },
+    {
+      "case_id": "demo-pr-5136",
+      "changed_files": ["nanobot/agent/runner.py", "tests/agent/test_runner_errors.py"],
+      "reference_url": "https://github.com/HKUDS/nanobot/issues/5133"
+    },
+    {
+      "case_id": "demo-pr-5160",
+      "changed_files": ["nanobot/agent/tools/shell.py", "tests/tools/test_exec_platform.py"],
+      "reference_url": "https://github.com/HKUDS/nanobot/issues/5159"
+    },
+    {
+      "case_id": "demo-pr-5157",
+      "changed_files": ["nanobot/agent/memory.py", "nanobot/session/manager.py", "nanobot/utils/helpers.py", "tests/agent/test_consolidator.py", "tests/utils/test_helpers.py"],
+      "reference_url": "https://github.com/HKUDS/nanobot/issues/5118"
+    },
+    {
+      "case_id": "demo-ci-30435121783",
+      "job_id": 90520996796,
+      "job_name": "Python (Windows, 3.14)",
+      "first_causal_error": "test_windows_powershell_native_pipeline_input_is_utf8 expected e4bc9a0d0a but the command timed out after 10 seconds",
+      "relevant_files": ["tests/tools/test_exec_platform.py", "nanobot/agent/tools/shell.py"]
+    },
+    {
+      "case_id": "demo-ci-30346044623",
+      "job_id": 90232784365,
+      "job_name": "Python (latest, 3.14 + coverage)",
+      "first_causal_error": "Ruff reported three errors: import ordering, an unused image_placeholder_text import, and a missing newline at end of file",
+      "relevant_files": ["nanobot/session/manager.py", "tests/test_media_consolidation.py"]
+    },
+    {
+      "case_id": "demo-ci-29994514347",
+      "job_id": 89164884335,
+      "job_name": "Python",
+      "first_causal_error": "pytest collection imported tests/gateway/test_runtime.py as test_runtime and then rejected tests/utils/test_runtime.py with the same module name",
+      "relevant_files": ["tests/gateway/test_runtime.py", "tests/utils/test_runtime.py"]
+    }
+  ]
+}

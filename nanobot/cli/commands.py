@@ -81,9 +81,9 @@ SafeFileHistory = cli_terminal.SafeFileHistory
 
 
 app = typer.Typer(
-    name="nanobot",
+    name="repoops",
     context_settings={"help_option_names": ["-h", "--help"]},
-    help=f"{__logo__} nanobot - Personal AI Assistant",
+    help=f"{__logo__} RepoOps - GitHub Repository Maintenance Agent",
     no_args_is_help=True,
 )
 
@@ -91,7 +91,7 @@ console = Console()
 
 def version_callback(value: bool):
     if value:
-        console.print(f"{__logo__} nanobot v{__version__}")
+        console.print(f"{__logo__} RepoOps v{__version__}")
         raise typer.Exit()
 
 
@@ -101,7 +101,7 @@ def main(
         None, "--version", "-v", callback=version_callback, is_eager=True
     ),
 ):
-    """nanobot - Personal AI Assistant."""
+    """RepoOps - GitHub Repository Maintenance Agent."""
     pass
 
 

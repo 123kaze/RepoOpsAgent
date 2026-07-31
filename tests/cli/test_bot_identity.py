@@ -6,12 +6,12 @@ from nanobot.cli.stream import StreamRenderer, ThinkingSpinner
 from nanobot.config.schema import AgentDefaults, Config
 
 
-def test_bot_name_and_icon_defaults_preserve_current_branding() -> None:
-    """Default values keep the existing 'nanobot' name and cat icon."""
+def test_bot_name_and_icon_defaults_use_repoops_branding() -> None:
+    """Default values expose the RepoOps name and tool icon."""
     defaults = AgentDefaults()
 
-    assert defaults.bot_name == "nanobot"
-    assert defaults.bot_icon == "🐈"
+    assert defaults.bot_name == "RepoOps"
+    assert defaults.bot_icon == "🛠️"
 
 
 def test_bot_name_and_icon_can_be_overridden_via_config() -> None:

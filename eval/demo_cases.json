@@ -1,0 +1,107 @@
+[
+  {
+    "case_id": "demo-issue-5133",
+    "task_type": "issue_analysis",
+    "repository": "HKUDS/nanobot",
+    "number": 5133,
+    "title": "Issue 5133: length recovery routing",
+    "prompt": "分析历史 Issue #5133，完成分类、代码定位、证据链和可证伪的根因假设。",
+    "source_url": "https://github.com/HKUDS/nanobot/issues/5133",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "reference_url": "https://github.com/HKUDS/nanobot/pull/5136"
+  },
+  {
+    "case_id": "demo-issue-5159",
+    "task_type": "issue_analysis",
+    "repository": "HKUDS/nanobot",
+    "number": 5159,
+    "title": "Issue 5159: Windows UTF-8 pipeline input",
+    "prompt": "分析历史 Issue #5159，完成分类、代码定位、证据链和可复现验证建议。",
+    "source_url": "https://github.com/HKUDS/nanobot/issues/5159",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "reference_url": "https://github.com/HKUDS/nanobot/pull/5160"
+  },
+  {
+    "case_id": "demo-issue-5118",
+    "task_type": "issue_analysis",
+    "repository": "HKUDS/nanobot",
+    "number": 5118,
+    "title": "Issue 5118: media paths lost by consolidation",
+    "prompt": "分析历史 Issue #5118，定位 media 路径在会话压缩链路中丢失的位置，并区分确认事实与假设。",
+    "source_url": "https://github.com/HKUDS/nanobot/issues/5118",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "reference_url": "https://github.com/HKUDS/nanobot/pull/5157"
+  },
+  {
+    "case_id": "demo-pr-5136",
+    "task_type": "pr_review",
+    "repository": "HKUDS/nanobot",
+    "number": 5136,
+    "title": "PR 5136: length-recovery fix",
+    "prompt": "审查历史 PR #5136：读取元数据、完整 diff、相关实现、测试与 CI，报告确认缺陷、待验证风险和验证建议。",
+    "source_url": "https://github.com/HKUDS/nanobot/pull/5136",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "reference_url": "https://github.com/HKUDS/nanobot/issues/5133"
+  },
+  {
+    "case_id": "demo-pr-5160",
+    "task_type": "pr_review",
+    "repository": "HKUDS/nanobot",
+    "number": 5160,
+    "title": "PR 5160: PowerShell UTF-8 fix",
+    "prompt": "审查历史 PR #5160：读取元数据、完整 diff、相关实现、测试与 CI，报告确认缺陷、兼容性风险和验证建议。",
+    "source_url": "https://github.com/HKUDS/nanobot/pull/5160",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "reference_url": "https://github.com/HKUDS/nanobot/issues/5159"
+  },
+  {
+    "case_id": "demo-pr-5157",
+    "task_type": "pr_review",
+    "repository": "HKUDS/nanobot",
+    "number": 5157,
+    "title": "PR 5157: preserve media during consolidation",
+    "prompt": "审查历史 PR #5157：读取元数据、完整 diff、相关实现、测试与 CI，重点检查数据完整性和回归覆盖。",
+    "source_url": "https://github.com/HKUDS/nanobot/pull/5157",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "reference_url": "https://github.com/HKUDS/nanobot/issues/5118"
+  },
+  {
+    "case_id": "demo-ci-30435121783",
+    "task_type": "ci_diagnosis",
+    "repository": "HKUDS/nanobot",
+    "number": 5160,
+    "title": "CI run 30435121783: Windows Python 3.14",
+    "prompt": "诊断 PR #5160 的历史失败 Actions run 30435121783，目标 job 90520996796（Python (Windows, 3.14)）。必须从该 job 的日志提取首个因果错误、环境、相关文件和最短验证步骤；忽略同一 run 的其他 job。",
+    "source_url": "https://github.com/HKUDS/nanobot/actions/runs/30435121783",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "run_id": 30435121783,
+    "job_id": 90520996796,
+    "reference_url": "https://github.com/HKUDS/nanobot/actions/runs/30435121783/job/90520996796"
+  },
+  {
+    "case_id": "demo-ci-30346044623",
+    "task_type": "ci_diagnosis",
+    "repository": "HKUDS/nanobot",
+    "number": 5157,
+    "title": "CI run 30346044623: Python latest lint failure",
+    "prompt": "诊断 PR #5157 的历史失败 Actions run 30346044623，目标 job 90232784365（Python (latest, 3.14 + coverage)）。必须从该 job 的日志提取首个因果错误、环境、相关文件和最短验证步骤；忽略同一 run 的其他 job。该任务是 lint-only：日志已给出精确文件、行号与 Ruff rule，初始三个工具后只允许更新一次 state，禁止调用 diff、search 或 read。",
+    "source_url": "https://github.com/HKUDS/nanobot/actions/runs/30346044623",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "run_id": 30346044623,
+    "job_id": 90232784365,
+    "reference_url": "https://github.com/HKUDS/nanobot/actions/runs/30346044623/job/90232784365"
+  },
+  {
+    "case_id": "demo-ci-29994514347",
+    "task_type": "ci_diagnosis",
+    "repository": "HKUDS/nanobot",
+    "number": 5056,
+    "title": "CI run 29994514347: duplicate pytest module",
+    "prompt": "诊断 PR #5056 的历史失败 Actions run 29994514347，目标 job 89164884335（Python (latest, 3.14 + coverage)）。必须从该 job 的日志提取首个因果错误、环境、相关文件和最短验证步骤；忽略同一 run 的其他 job。",
+    "source_url": "https://github.com/HKUDS/nanobot/actions/runs/29994514347",
+    "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "run_id": 29994514347,
+    "job_id": 89164884335,
+    "reference_url": "https://github.com/HKUDS/nanobot/actions/runs/29994514347/job/89164884335"
+  }
+]
