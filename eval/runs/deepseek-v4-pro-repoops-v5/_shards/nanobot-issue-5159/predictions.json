@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "nanobot-issue-5159",
+    "category": "insufficient-information",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f1282456550ce67c"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "2dd9a1480d86be79"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "77630b01b3dae74e"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "0f2c509bd4eea7d1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "eaa2a1a70d4abd6c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bc4368933a4b2802"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "82ad1b7633fe0a97"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "87471d540617866f"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "1e49330ac482c3ff"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 3,
+    "cited_claims": 3,
+    "citations": 3,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

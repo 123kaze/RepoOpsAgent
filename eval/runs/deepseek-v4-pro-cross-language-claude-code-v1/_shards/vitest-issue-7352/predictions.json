@@ -1,0 +1,120 @@
+[
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/cli/cli-config.ts",
+      "packages/vitest/src/node/types/config.ts",
+      "packages/vitest/src/runtime/runner/types.ts",
+      "packages/vitest/src/runtime/runner/run.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "d1ce390bddddf237"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ea8d9022e77a868b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "aaa2de3f7be78172"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5b769907a9c6afda"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ed58c0832ba8950f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "81faf09937cff5a8"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f0879049d0ce704c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "937e903f3c4bf5c0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "eb9a8112ff657583"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4cd320b429aa420f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "237079d5fe84e6c4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e5b8ed3d7f851875"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1011fee7b5f7295e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8013b77d9e72e61d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "607a81f6aa38561e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e9fdb0396c8b5d58"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "043fc33c1ff242ef"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2ff36e007081e53d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c39a16d965fbb79b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7ad7b6d27e053789"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d5e3f0a931dfb9ce"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b266e4717aab7328"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6a482ee8fb9acd9c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "48abe690f2311b8f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c010e58c1c5ecb44"
+      }
+    ],
+    "invalid_tool_calls": 3,
+    "evidence_claims": 12,
+    "cited_claims": 12,
+    "citations": 18,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

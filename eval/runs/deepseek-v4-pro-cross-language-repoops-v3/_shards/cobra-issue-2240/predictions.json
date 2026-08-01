@@ -1,0 +1,57 @@
+[
+  {
+    "task_id": "cobra-issue-2240",
+    "category": "bug",
+    "files": [
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "7024fbcadf20b6d8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a4e8076a63defab0"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "16fa38a5cbd5a512"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4f8a8a764dba1086"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0611e9fec15ecb45"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "96bec11b233a157b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "97310d21d5ac37b0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c74aa9fb71798778"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5f7f6ce55643b285"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "881f1755c7d9b54a"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

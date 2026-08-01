@@ -413,9 +413,142 @@ async def test_runner_returns_max_iterations_fallback():
     )
     assert result.messages[-1]["role"] == "assistant"
     assert result.messages[-1]["content"] == result.final_content
-    assert provider.chat_with_retry.await_count == 3
+    assert provider.chat_with_retry.await_count == 4
     assert provider.chat_with_retry.await_args_list[-1].kwargs["tools"] is None
+    assert any(
+        "bounded tool evidence" in message.get("content", "")
+        for message in provider.chat_with_retry.await_args_list[-1].kwargs["messages"]
+    )
     assert tools.execute.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_runner_finalizes_exhausted_budget_with_compact_evidence():
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    calls: list[dict] = []
+
+    async def chat_with_retry(*, messages, tools=None, **kwargs):
+        calls.append({"messages": messages, "tools": tools})
+        if len(calls) == 1:
+            return LLMResponse(
+                content="",
+                tool_calls=[
+                    ToolCallRequest(
+                        id="read_1",
+                        name="repoops_read_file",
+                        arguments={"repository": "owner/repo", "path": "src/main.py"},
+                    )
+                ],
+            )
+        return LLMResponse(content='{"category":"bug","files":["src/main.py"]}')
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+    tools.execute = AsyncMock(return_value="src/main.py:10\nconfirmed implementation evidence")
+
+    result = await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "analyze; JSON only"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+    ))
+
+    assert result.final_content == '{"category":"bug","files":["src/main.py"]}'
+    assert len(calls) == 2
+    assert calls[-1]["tools"] is None
+    compact_prompt = calls[-1]["messages"][-1]["content"]
+    assert "bounded tool evidence" in compact_prompt
+    assert "confirmed implementation evidence" in compact_prompt
+
+
+@pytest.mark.asyncio
+async def test_runner_retries_compact_finalization_once_after_provider_error():
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    calls: list[dict] = []
+
+    async def chat_with_retry(*, messages, tools=None, **kwargs):
+        calls.append({"messages": messages, "tools": tools})
+        if len(calls) == 1:
+            return LLMResponse(
+                content="",
+                tool_calls=[
+                    ToolCallRequest(id="read_1", name="read_file", arguments={"path": "x.py"})
+                ],
+            )
+        if len(calls) == 2:
+            return LLMResponse(content="connection error", finish_reason="error")
+        return LLMResponse(content='{"status":"recovered"}')
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+    tools.execute = AsyncMock(return_value="x.py:1 evidence")
+
+    result = await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "JSON only"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+    ))
+
+    assert result.final_content == '{"status":"recovered"}'
+    assert len(calls) == 3
+    assert all(call["tools"] is None for call in calls[1:])
+
+
+@pytest.mark.asyncio
+async def test_runner_recovers_stream_parse_error_after_collecting_tool_evidence():
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    calls: list[dict] = []
+
+    async def chat_with_retry(*, messages, tools=None, **kwargs):
+        calls.append({"messages": messages, "tools": tools})
+        if len(calls) == 1:
+            return LLMResponse(
+                content="",
+                tool_calls=[
+                    ToolCallRequest(id="read_1", name="read_file", arguments={"path": "x.py"})
+                ],
+            )
+        if len(calls) == 2:
+            return LLMResponse(
+                content="Error calling LLM: expected `:` at line 2 column 16",
+                finish_reason="error",
+                error_kind="response_parse",
+                error_should_retry=True,
+            )
+        return LLMResponse(content='{"category":"bug","files":["x.py"]}')
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+    tools.execute = AsyncMock(return_value="x.py:1 confirmed evidence")
+
+    result = await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "analyze; JSON only"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=3,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+    ))
+
+    assert result.stop_reason == "error_recovered"
+    assert result.error is None
+    assert result.final_content == '{"category":"bug","files":["x.py"]}'
+    assert len(calls) == 3
+    assert calls[-1]["tools"] is None
 
 
 @pytest.mark.asyncio
@@ -466,8 +599,55 @@ async def test_runner_uses_no_tools_finalization_after_max_iterations():
     }
     assert len(calls) == 3
     assert calls[-1]["tools"] is None
-    assert "tool-call budget" in calls[-1]["messages"][-1]["content"]
+    assert "bounded tool evidence" in calls[-1]["messages"][-1]["content"]
     assert tools.execute.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_runner_rewrites_serialized_tool_markup_after_max_iterations():
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    calls: list[dict] = []
+
+    async def chat_with_retry(*, messages, tools=None, **kwargs):
+        calls.append({"messages": messages, "tools": tools})
+        if len(calls) == 1:
+            return LLMResponse(
+                content="working",
+                tool_calls=[
+                    ToolCallRequest(id="call_1", name="list_dir", arguments={"path": "."})
+                ],
+            )
+        if len(calls) == 2:
+            return LLMResponse(
+                content=(
+                    '<｜｜DSML｜｜tool_calls><｜｜DSML｜｜invoke name="list_dir">'
+                    '<｜｜DSML｜｜parameter name="path">.</｜｜DSML｜｜parameter>'
+                )
+            )
+        return LLMResponse(content='{"status":"complete"}')
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+    tools.execute = AsyncMock(return_value="tool result")
+
+    result = await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "inspect the repo; JSON only"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+    ))
+
+    assert result.stop_reason == "max_iterations"
+    assert result.final_content == '{"status":"complete"}'
+    assert len(calls) == 3
+    assert calls[1]["tools"] is None
+    assert calls[2]["tools"] is None
+    assert "serialized tool-call markup" in calls[2]["messages"][-1]["content"]
 
 
 @pytest.mark.asyncio

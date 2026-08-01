@@ -1,0 +1,129 @@
+[
+  {
+    "task_id": "cobra-issue-2240",
+    "category": "bug",
+    "files": [
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "030d4d1a08f150a0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bcf7f9f731dc9481"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "49400dfef56b831b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bbb19f608c2f6b36"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2e3ada79e8dd60c9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8ebad0a69cc55b14"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9bb73313662fb4dc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "58a6e4a7b72048ab"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "231634b92a2b5623"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7f8689cdcc6202cf"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fce69f01e7e57451"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b6c0c17880dd00ce"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8dac4f69ff8ab444"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1c81df2058cd18ff"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "150b4f5c6bf4f4a3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "20751d5451eb3a5d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ff0b4a5d8dbf69f5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e24928d88daf966c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1998ef297f977629"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f7cab4f6602d3e5f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f26130d2c760225d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "dca046477969f3ef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c3325cc785caf7af"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e7688c8803628728"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "13358e924ca23f7a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "690e4f572051b005"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "31938740a2826a5d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "29f22907c7c97641"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

@@ -249,6 +249,11 @@ def _answer_contract() -> str:
     return f"""
 只调用当前已注册的 `repoops_*` 工具。读取文件必须调用 `repoops_read_file`；
 `read_file`、`exec`、`grep` 和 `find_files` 在此 profile 中不可用。
+分类边界：`bug` 表示已有预期行为失效；`feature` 表示请求新增当前快照尚不存在的
+能力、配置项或 API；`configuration` 只表示已有配置的使用、迁移或调优问题，不能把
+“新增一个配置开关”的需求误分为 configuration。分类应依据 Issue 明确表达的意图；
+外部请求失败或根因尚未确认时，把缺口写入 `missing_information`，不要把标题已经明确的
+bug/feature 降级为 `insufficient-information`。
 完成工具调查并更新任务状态后，只输出一个 JSON 对象，不要使用 Markdown 代码块：
 {{
   "category": "{categories}",
@@ -271,6 +276,9 @@ def _answer_contract() -> str:
   "recommended_actions": ["下一步"],
   "approval_required": false
 }}
+`files` 和 `evidence.source` 只保留工具结果中实际出现且与根因链直接相关的路径；不要
+为了凑满 5 个文件加入泛化配置、迁移或测试路径。`evidence.excerpt` 必须逐字复制一个
+连续的短片段，不要用省略号拼接多段内容。
 不得查看或推断评测标准答案；不得调用 shell、通用文件或 web 工具绕过 repoops_*。
 这是只读评测，不要创建草稿或执行任何 GitHub 写操作。
 """.strip()
@@ -305,11 +313,17 @@ def _build_prompt(case: BenchmarkCase) -> str:
     }.get(case.task_type, "$repoops")
     budgets = {
         "issue_analysis": """
-效率约束（也是评测内容）：总计最多 8 次工具调用、最多 5 个工具批次。
+效率约束（也是评测内容）：总计最多 10 次工具调用、最多 6 个工具批次。
 批次 1 并行读取 Issue 和 task state；批次 2 并行做一次相似 Issue 搜索和一次
-workspace 搜索（top_k <= 10）；随后最多读取 2 个精确文件范围；再更新一次 state；
-最后立即输出 JSON。已有本地快照，不调用 repoops_search_code，不重复或平移同一文件的
-行号窗口。信息不足时写入 missing_information，不要为追求完美继续搜索。
+workspace 搜索（top_k <= 12）。若 Issue 同时涉及配置、类型/声明、序列化或运行时消费，
+再做一次针对调用链缺口的 workspace 搜索；随后最多读取 3 个精确文件范围；再更新一次
+state，最后立即输出 JSON。已有本地快照，不调用 repoops_search_code，不重复或平移同一
+文件的行号窗口。最终 files 应覆盖证据支持的不同实现阶段，优先生产代码；不要让测试文件
+挤掉已经确认相关的生产文件。若 feature 的目标名称在 pre-fix 快照不存在，不要反复搜索
+这个缺失名称；选择一个类型和作用域相近的现有选项，沿“声明/CLI → 序列化 → 配置解析 →
+运行时消费”追踪结构类比。用于结构类比的搜索应同时包含现有选项名与 `serialize config
+runtime type` 等链路词，而不是只搜索目标名称。信息不足时写入 missing_information，不要为
+追求完美继续搜索。
 """,
         "pr_review": """
 效率约束（也是评测内容）：总计最多 10 次工具调用、最多 5 个工具批次。先并行读取
@@ -327,12 +341,25 @@ state 后立即输出 JSON。state 最多保存 5 条事实、3 条证据和 3 �
     }.get(case.task_type, "")
     return (
         f"使用 {workflow} 工作流。{case.prompt}\n"
+        f"Issue 标题：{case.title}\n"
         f"仓库：{case.repository}\n"
         f"对象编号：#{case.number}\n"
-        f"本地代码快照：{case.snapshot_sha}\n\n"
+        f"本地代码快照：{case.snapshot_sha}\n"
+        "本轮 repoops_read_file 已由 runner 硬性固定到上述 commit；即使省略或传入其他 "
+        "ref，工具也只会读取该快照。\n\n"
         f"{budgets.strip()}\n\n"
         f"{_answer_contract()}"
     )
+
+
+def _benchmark_snapshot(cases: list[BenchmarkCase]) -> str:
+    snapshots = {case.snapshot_sha for case in cases if case.snapshot_sha}
+    if len(snapshots) > 1:
+        raise ValueError(
+            "One benchmark invocation cannot use multiple snapshots; run one case per "
+            "workspace with nanobot.repoops.cross_language_benchmark"
+        )
+    return next(iter(snapshots), "")
 
 
 def _update_trace(
@@ -559,6 +586,7 @@ async def _run(args: argparse.Namespace) -> int:
         cases = cases[: args.limit]
     if not cases:
         raise ValueError("No benchmark cases selected")
+    benchmark_snapshot = _benchmark_snapshot(cases)
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     run_namespace = uuid4().hex[:12]
@@ -567,11 +595,26 @@ async def _run(args: argparse.Namespace) -> int:
         if not tool_name.startswith("repoops_"):
             bot._loop.tools.unregister(tool_name)  # pyright: ignore[reportPrivateUsage]
             continue
+        if tasks is not None and tool_name == "repoops_search_code":
+            # GitHub code search targets the repository's current index and can
+            # leak post-fix code into a historical snapshot benchmark.
+            bot._loop.tools.unregister(tool_name)  # pyright: ignore[reportPrivateUsage]
+            continue
         tool = bot._loop.tools.get(tool_name)  # pyright: ignore[reportPrivateUsage]
         runtime = getattr(tool, "runtime", None)
         tool_config = getattr(runtime, "config", None)
         if tool_config is not None:
-            tool_config.state_dir = f".repoops/benchmark/{run_namespace}"
+            state_dir = f".repoops/benchmark/{run_namespace}"
+            rebind_state_dir = getattr(runtime, "rebind_state_dir", None)
+            if callable(rebind_state_dir):
+                rebind_state_dir(state_dir)
+            else:
+                tool_config.state_dir = state_dir
+            tool_config.pinned_read_ref = benchmark_snapshot
+            # cross_language_benchmark has already materialized and verified a
+            # worktree at this exact commit. Reading that worktree avoids
+            # network-only failures and cannot leak post-fix GitHub contents.
+            tool_config.read_pinned_ref_from_workspace = bool(benchmark_snapshot)
 
     trajectories: list[Trajectory] = []
     try:

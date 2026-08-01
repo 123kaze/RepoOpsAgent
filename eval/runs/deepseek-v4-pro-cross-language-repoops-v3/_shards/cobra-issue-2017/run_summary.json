@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T03:26:01.262019+00:00",
+  "agent": "RepoOps Agent",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 0,
+  "total_tool_calls": 9,
+  "total_usage": {
+    "cache_read_input_tokens": 82176,
+    "cached_tokens": 82176,
+    "completion_tokens": 1434,
+    "prompt_tokens": 108526,
+    "provider_tokens": 109960,
+    "total_tokens": 109960
+  },
+  "cases": [
+    {
+      "case_id": "cobra-issue-2017",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 47735,
+      "run_error": "Error calling LLM: key must be a string at line 1 column 1181",
+      "parse_error": "final answer did not contain a valid JSON object"
+    }
+  ],
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 0.0,
+    "file_recall_at_5": 0.0,
+    "tool_precision": 0.8,
+    "tool_recall": 0.8,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 0.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 9.0
+  }
+}

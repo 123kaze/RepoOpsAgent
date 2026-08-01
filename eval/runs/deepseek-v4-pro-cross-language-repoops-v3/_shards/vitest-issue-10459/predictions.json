@@ -1,0 +1,47 @@
+[
+  {
+    "task_id": "vitest-issue-10459",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "test/coverage-test/test/threshold-auto-update.unit.test.ts",
+      "docs/config/coverage.md"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6d12818645e3991f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "447392d126597175"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "e498bfa3f423468c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ef007a6a62626c0c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "44e326bc0491b047"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5060055a78410ea9"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "797d0f8e8f5dbf0d"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

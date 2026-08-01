@@ -1,0 +1,50 @@
+[
+  {
+    "task_id": "nanobot-issue-5040",
+    "category": "insufficient-information",
+    "files": [
+      "nanobot/agent/tools/mcp.py",
+      "tests/tools/test_mcp_tool.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "26f92d6a7387c302"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "e5e0adf0adcfde69"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "9d00dc0aef460298"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5a2d424e3a50d5f9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0b542ab48c4b506b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a5ef1036764a7cec"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "84ab1e68381d366a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7d0ade94d1e26f64"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 3,
+    "cited_claims": 3,
+    "citations": 5,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

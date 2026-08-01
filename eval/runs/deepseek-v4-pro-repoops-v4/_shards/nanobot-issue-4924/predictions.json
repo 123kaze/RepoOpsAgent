@@ -1,0 +1,87 @@
+[
+  {
+    "task_id": "nanobot-issue-4924",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "2cfa581053f40dcd"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "6bdf5ff05dcf36fb"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f7b10acefbb3400c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ac3d3fc631b32861"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b93cfbe4d430abca"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "eb96c2ac3e516edb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ee0a79b806f26712"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a76d1bbb59618111"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bf8c3e993cf1f15a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6e72b607573564a6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0475e5dd6156348c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "081c1ac652db833f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "994d17bbe0fe972b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f6d077b929437438"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "efca508898afd3f1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cc43c27f0dd27edb"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3e4349e8e6ec7e89"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "960167562811ea56"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

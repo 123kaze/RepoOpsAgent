@@ -1,0 +1,81 @@
+[
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/cli/cli-config.ts",
+      "packages/vitest/src/node/cli/cac.ts",
+      "packages/vitest/src/node/cli/cli-api.ts",
+      "packages/vitest/src/node/types/config.ts",
+      "docs/guide/cli-generated.md"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1f9cec127827f1da"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a17b8d14702efbdd"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "8936417ab2657696"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2cef8689dd345ae7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0f03c5a29e71e7e2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0945e8bd4cd4dbb4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "01014ab58b645851"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9ee861d46a21fcdf"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "beaaa159d6ee41f5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "114aec66ab6d8979"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6ae9dec737e7c767"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4934a092a62a6d7e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a28b7825bc599c62"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "703ceefc05870b3d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b1e658a847776b9f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

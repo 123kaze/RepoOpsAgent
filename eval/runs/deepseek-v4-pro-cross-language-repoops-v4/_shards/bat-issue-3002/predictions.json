@@ -1,0 +1,63 @@
+[
+  {
+    "task_id": "bat-issue-3002",
+    "category": "bug",
+    "files": [
+      "src/input.rs",
+      "src/controller.rs",
+      "src/printer.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "611332ae936f72b8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "33a944b8f6e27299"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "6fe07b3604e55547"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4aaa317df1bef5c3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "39fa5704f05386a5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "653e3f717732f690"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0ac1775a8da8a73d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "eb0f018a0509a7af"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "26fff7edf9a80ccd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ea4d2d68ee8a2cf4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fe961e107d910ecf"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

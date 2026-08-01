@@ -1,0 +1,87 @@
+[
+  {
+    "task_id": "cobra-issue-2209",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "c4a83a19d266fe67"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c0ff183485aaec43"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ceeb7d5e750b43d9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8795b4df4b48d0fb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "30815e35426c06f7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "293ad1985e44c9c4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "29ebecd0735c02cc"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8d58c519acf0508d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ab3337b0e31f370b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "09756e33e649f9cd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a1700e45fb986de3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7b6dba1be24f8dea"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "be6ddc288bb15b86"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "19e3546e750bfe71"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5fdfff47170c2f16"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f8acb9f831fff316"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9e94628b5336a5c2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ac018066149614d5"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

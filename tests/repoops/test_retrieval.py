@@ -59,3 +59,51 @@ def test_runtime_state_directories_are_not_indexed(tmp_path) -> None:
     chunks = WorkspaceIndexer(tmp_path).index()
 
     assert {chunk.path for chunk in chunks} == {"source.py"}
+
+
+def test_search_diversifies_files_before_repeating_chunks(tmp_path) -> None:
+    (tmp_path / "large.py").write_text(
+        "\n".join(f"target_symbol = {index}" for index in range(220)),
+        encoding="utf-8",
+    )
+    (tmp_path / "consumer.py").write_text(
+        "def consume_target_symbol():\n    return target_symbol\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "config.py").write_text(
+        "TARGET_SYMBOL_SETTING = 'target_symbol'\n",
+        encoding="utf-8",
+    )
+
+    chunks = WorkspaceIndexer(tmp_path, chunk_lines=40, overlap_lines=5).index()
+    hits = HybridRetriever(chunks).search("target_symbol", top_k=3)
+
+    assert len(hits) == 3
+    assert len({hit.chunk.path for hit in hits}) == 3
+
+
+def test_search_reserves_results_for_rare_query_facets(tmp_path) -> None:
+    (tmp_path / "cli.ts").write_text(
+        " ".join(["retry cli argument parse config"] * 100),
+        encoding="utf-8",
+    )
+    (tmp_path / "serialize.ts").write_text(
+        "export function serializeConfig() { return retry }\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "runtime.ts").write_text(
+        "export interface RuntimeConfig { retry: Retry }\n",
+        encoding="utf-8",
+    )
+
+    chunks = WorkspaceIndexer(tmp_path).index()
+    hits = HybridRetriever(chunks).search(
+        "retry cli argument parse serialize config runtime type",
+        top_k=3,
+    )
+
+    assert {hit.chunk.path for hit in hits} == {
+        "cli.ts",
+        "serialize.ts",
+        "runtime.ts",
+    }

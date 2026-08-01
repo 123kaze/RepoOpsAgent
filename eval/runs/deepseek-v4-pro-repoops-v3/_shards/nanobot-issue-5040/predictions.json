@@ -1,0 +1,71 @@
+[
+  {
+    "task_id": "nanobot-issue-5040",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/tools/mcp.py",
+      "tests/tools/test_mcp_tool.py",
+      "nanobot/providers/registry.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "26f92d6a7387c302"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "e5e0adf0adcfde69"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "11954069d07eb472"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e7e2e18001e07ce6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1b2384a03668f8e1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "995e95676ace9a7f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b0489d30a2e799af"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9da8486d786a464d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dab1493d011d3136"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8b0334449ab6bad8"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "261b32bc4cb26b40"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9a14a905a16f4cb2"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "dbe804b6d78cc167"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

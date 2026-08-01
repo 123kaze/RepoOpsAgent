@@ -1,0 +1,77 @@
+[
+  {
+    "task_id": "nanobot-issue-4204",
+    "category": "feature",
+    "files": [
+      "nanobot/config/schema.py",
+      "nanobot/providers/factory.py",
+      "nanobot/providers/openai_compat_provider.py",
+      "nanobot/webui/settings_api.py",
+      "webui/src/components/settings/SettingsView.tsx"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "9f612b5531cd4dbe"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a858baeb058cb890"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a4adaf2a43fa9682"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5d13856f4ca5ed9e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c060a734a50ed80f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d2e7b743338bc2e5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4e09ac2a5686f7ad"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ae15c254d12e4037"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4cd9127e092cd4b0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4f9e7cdc98e975d5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fc5d0965aa3ea145"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2b489813f954ddbc"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "e3f0e1324ecac9e2"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "020318e9a7d7304a"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 19,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

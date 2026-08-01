@@ -1,0 +1,59 @@
+[
+  {
+    "task_id": "nanobot-issue-4055",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/memory.py",
+      "nanobot/cli/gateway_runtime.py",
+      "tests/agent/test_memory_store.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "cd1ee27840ed34e4"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "5b76b0f0e300fa46"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "b5ce9ee078dde976"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e1f27da8f5918d6f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f011b7135f81acc2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2bc21939b797caa2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0abd086d67016472"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c32770c9844b4a34"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "415f007fd343ab87"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2706d3048b1cee2b"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

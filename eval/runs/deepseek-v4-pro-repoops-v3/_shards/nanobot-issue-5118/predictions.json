@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "nanobot-issue-5118",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "27a79b62523d27be"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "f684b499c466f0a9"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "005645cf09e82f6d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c08ea349668d78f1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9929048c66b43bba"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d28181d9592222a7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "56c8b601b9572eec"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "331861e4c8c9bfed"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "cf28b6bc06145266"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

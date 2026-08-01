@@ -1,0 +1,57 @@
+[
+  {
+    "task_id": "bat-issue-3663",
+    "category": "bug",
+    "files": [
+      "src/input.rs",
+      "src/printer.rs",
+      "src/nonprintable_notation.rs",
+      "src/bin/bat/clap_app.rs",
+      "src/config.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "bdc839517cc17434"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "2b2f73c62aab1c58"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "f984ed8b54021ce4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "042ede750f831651"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "550da265cc7b65ef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3209bcc0b04de8a6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b798174425cd0ad2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "620d76ea85d7b832"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0322646a0f509b4d"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

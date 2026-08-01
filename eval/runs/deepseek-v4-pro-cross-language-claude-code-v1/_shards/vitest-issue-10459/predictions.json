@@ -1,0 +1,71 @@
+[
+  {
+    "task_id": "vitest-issue-10459",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/vitest/src/node/types/coverage.ts",
+      "test/coverage-test/test/threshold-auto-update.unit.test.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "c6e683b4bf824863"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5f36eed0a4818187"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8f67bd8a9a6ca0d6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fa8e8d8130cbb904"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8e01c1faa25af1f5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d1930de25f11bf7f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "acc70a3f794ccc8b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cc4f0cced22773c7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "11c8511e5f01eec0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f29fc40c13200e16"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "42d52c28c1b8deb1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8ba36eb34e5782b3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6443ecf46d19724a"
+      }
+    ],
+    "invalid_tool_calls": 4,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

@@ -1,0 +1,97 @@
+[
+  {
+    "task_id": "cobra-issue-2017",
+    "category": "feature",
+    "files": [
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "c6561daa9738b1f4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5efa545af61984b4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e4c830e66a97a73a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b034e8a8af12bdba"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "de6b25858d25d729"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2e98ea8fc33e2ee7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3d6280a5b1635dce"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cb8765b77824b5c6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dfd52f31199f70fc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "914547f317e99abf"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d2d7424d466b81d6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "798dc3c22ec203e5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a7c383c33ca4f507"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b70d65e5bed6a7b4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d00932dbee12a839"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8b89783c4292d176"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ac2b268214f0d99f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4ccc655f9f809a75"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8cc51ef9e4e0d42e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "028b220f152a11ac"
+      }
+    ],
+    "invalid_tool_calls": 2,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 13,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

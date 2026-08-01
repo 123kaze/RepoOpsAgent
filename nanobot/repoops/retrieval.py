@@ -212,6 +212,7 @@ class HybridRetriever:
         query_grams = _character_trigrams(query)
         identifier_query = query.strip() if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", query.strip()) else ""
         candidates: list[SearchHit] = []
+        candidate_documents: dict[tuple[str, int, int, str], set[str]] = {}
         for chunk, document in zip(self.chunks, self._documents, strict=True):
             lexical = self._bm25(query_tokens, document)
             chunk_grams = _character_trigrams(f"{chunk.path} {chunk.symbol} {chunk.text[:2_000]}")
@@ -233,19 +234,136 @@ class HybridRetriever:
                 if exact_symbol
                 else "BM25 + trigram similarity"
             )
-            candidates.append(
-                SearchHit(
-                    chunk=chunk,
-                    score=score,
-                    lexical_score=lexical,
-                    semantic_score=semantic,
-                    reason=reason,
-                )
+            hit = SearchHit(
+                chunk=chunk,
+                score=score,
+                lexical_score=lexical,
+                semantic_score=semantic,
+                reason=reason,
             )
+            candidates.append(hit)
+            candidate_documents[self._chunk_key(chunk)] = set(document)
         candidates.sort(
             key=lambda hit: (-hit.score, hit.chunk.path, hit.chunk.start_line)
         )
-        return candidates[:top_k]
+        return self._diversify_paths(
+            candidates,
+            top_k,
+            query_tokens=query_tokens,
+            candidate_documents=candidate_documents,
+            document_frequencies=self._document_frequencies,
+        )
+
+    @staticmethod
+    def _chunk_key(chunk: CodeChunk) -> tuple[str, int, int, str]:
+        return (chunk.path, chunk.start_line, chunk.end_line, chunk.symbol)
+
+    @staticmethod
+    def _diversify_paths(
+        candidates: list[SearchHit],
+        top_k: int,
+        *,
+        query_tokens: list[str],
+        candidate_documents: dict[tuple[str, int, int, str], set[str]],
+        document_frequencies: Counter[str],
+    ) -> list[SearchHit]:
+        """Expose the best chunk from more files before repeating one file.
+
+        Repository questions commonly span configuration, declarations, serialization, and
+        runtime consumers. Returning ten adjacent chunks from one large test or implementation
+        file hides that call chain from the agent even when other files scored well. The second
+        pass still fills spare slots with additional chunks when the result set has few files.
+        """
+        if not candidates or top_k <= 0:
+            return []
+
+        selected: list[SearchHit] = [candidates[0]]
+        deferred: list[SearchHit] = []
+        seen_paths = {candidates[0].chunk.path}
+        selected_keys = {HybridRetriever._chunk_key(candidates[0].chunk)}
+        covered_tokens = set(
+            candidate_documents.get(HybridRetriever._chunk_key(candidates[0].chunk), set())
+        )
+
+        # Multi-concept queries such as "retry serialize config runtime" should not be
+        # monopolized by a file that repeats only the common words. Reserve a small portion of
+        # the result set for the best path covering each rare, not-yet-covered query facet.
+        facet_budget = min(max(0, top_k - 1), 3)
+        query_token_set = set(query_tokens)
+        unique_tokens = sorted(
+            set(query_tokens),
+            key=lambda token: (document_frequencies.get(token, 0), token),
+        )
+        for token in unique_tokens:
+            if facet_budget <= 0:
+                break
+            if token in covered_tokens or not document_frequencies.get(token, 0):
+                continue
+            facet_matches = [
+                hit
+                for hit in candidates
+                if hit.chunk.path not in seen_paths
+                and token in candidate_documents.get(
+                    HybridRetriever._chunk_key(hit.chunk), set()
+                )
+            ]
+            facet_matches.sort(
+                key=lambda hit: (
+                    HybridRetriever._is_supporting_path(hit.chunk.path),
+                    token not in set(tokenize(f"{hit.chunk.path} {hit.chunk.symbol}")),
+                    -len(
+                        set(tokenize(f"{hit.chunk.path} {hit.chunk.symbol}"))
+                        & query_token_set
+                    ),
+                    -hit.score,
+                    hit.chunk.path,
+                    hit.chunk.start_line,
+                )
+            )
+            facet_hit = facet_matches[0] if facet_matches else None
+            if facet_hit is None:
+                continue
+            selected.append(facet_hit)
+            seen_paths.add(facet_hit.chunk.path)
+            selected_keys.add(HybridRetriever._chunk_key(facet_hit.chunk))
+            # A facet-selected file may mention other query words only in an import or comment.
+            # Mark the selected facet itself, leaving the remaining rare concepts eligible for
+            # their own representative path.
+            covered_tokens.add(token)
+            facet_budget -= 1
+            if len(selected) == top_k:
+                return selected
+
+        for hit in candidates:
+            hit_key = HybridRetriever._chunk_key(hit.chunk)
+            if hit_key in selected_keys:
+                continue
+            if hit.chunk.path in seen_paths:
+                deferred.append(hit)
+                continue
+            selected.append(hit)
+            seen_paths.add(hit.chunk.path)
+            selected_keys.add(hit_key)
+            if len(selected) == top_k:
+                return selected
+        if len(selected) < top_k:
+            selected.extend(deferred[: top_k - len(selected)])
+        return selected
+
+    @staticmethod
+    def _is_supporting_path(path: str) -> bool:
+        parts = {part.lower() for part in Path(path).parts}
+        supporting = {
+            "doc",
+            "docs",
+            "example",
+            "examples",
+            "fixture",
+            "fixtures",
+            "test",
+            "tests",
+        }
+        return bool(parts & supporting)
 
     def _bm25(self, query_tokens: list[str], document: list[str]) -> float:
         if not document or not self.chunks:

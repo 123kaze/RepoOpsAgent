@@ -1,0 +1,54 @@
+[
+  {
+    "task_id": "nanobot-issue-1875",
+    "category": "insufficient-information",
+    "files": [
+      "nanobot/channels/telegram/runtime.py",
+      "nanobot/channels/telegram/tests/test_telegram_channel.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "30ab1f73b6f88de9"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "57c2fe8932ee7034"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4d347f544180f8e1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9bb7876b702f0dd7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d2132f5a250ebb96"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "306f260d62d7da51"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b6376f757cc1f634"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4ccb4bb78e9972aa"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4ec9c8d00546724c"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 3,
+    "cited_claims": 3,
+    "citations": 4,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

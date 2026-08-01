@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T02:46:33.982876+00:00",
+  "agent": "Claude Code",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 1,
+  "total_tool_calls": 23,
+  "total_duration_ms": 113276,
+  "total_usage": {
+    "cached_tokens": 153472,
+    "completion_tokens": 5822,
+    "prompt_tokens": 12646,
+    "total_tokens": 171940
+  },
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 0.6666666666666666,
+    "tool_precision": 0.6666666666666666,
+    "tool_recall": 0.4,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.07142857142857142,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 23.0
+  },
+  "cases": [
+    {
+      "case_id": "bat-issue-3679",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 23,
+      "duration_ms": 113276,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ]
+}

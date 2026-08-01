@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from nanobot.repoops.benchmark import (
     BenchmarkAnswer,
     BenchmarkCase,
@@ -7,6 +9,7 @@ from nanobot.repoops.benchmark import (
     BenchmarkEvidence,
     ToolTrace,
     Trajectory,
+    _benchmark_snapshot,
     _build_prompt,
     _redact,
     _redact_text,
@@ -85,6 +88,26 @@ def test_parse_answer_accepts_json_after_a_short_prefix() -> None:
     assert answer.files == ["a.py"]
 
 
+def test_benchmark_requires_one_snapshot_per_invocation() -> None:
+    first = BenchmarkCase(
+        case_id="one",
+        task_type="issue_analysis",
+        repository="owner/repo",
+        number=1,
+        title="One",
+        prompt="Analyze",
+        source_url="https://github.com/owner/repo/issues/1",
+        snapshot_sha="a" * 40,
+    )
+    second = first.model_copy(
+        update={"case_id": "two", "number": 2, "snapshot_sha": "b" * 40}
+    )
+
+    assert _benchmark_snapshot([first]) == "a" * 40
+    with pytest.raises(ValueError, match="cannot use multiple snapshots"):
+        _benchmark_snapshot([first, second])
+
+
 def test_parse_answer_repairs_a_malformed_string_in_a_fenced_object() -> None:
     answer = parse_answer(
         'done\n```json\n{"category":"bug","confirmed_facts":['
@@ -155,6 +178,34 @@ def test_merge_runs_recomputes_metrics_from_trajectories(tmp_path) -> None:
     assert (output / "metrics.json").exists()
 
 
+def test_merge_runs_accepts_an_agent_specific_prediction_builder(tmp_path) -> None:
+    answer = BenchmarkAnswer(
+        category="bug",
+        files=["nanobot/agent/runner.py"],
+    )
+    trajectory = _trajectory(answer)
+    shard = tmp_path / "shard" / "trajectories"
+    shard.mkdir(parents=True)
+    (shard / "issue-1.json").write_text(trajectory.model_dump_json())
+
+    calls: list[str] = []
+
+    def prediction_builder(task: EvalTask, item: Trajectory):
+        calls.append(item.case_id)
+        return trajectory_prediction(task, item)
+
+    summary = merge_runs(
+        [tmp_path / "shard"],
+        tmp_path / "merged",
+        tasks=[_task()],
+        agent="Claude Code",
+        prediction_builder=prediction_builder,
+    )
+
+    assert summary["agent"] == "Claude Code"
+    assert calls == ["issue-1"]
+
+
 def test_string_tool_arguments_are_preserved_and_scored_invalid() -> None:
     trajectory = _trajectory(
         BenchmarkAnswer(category="bug", files=["nanobot/agent/runner.py"])
@@ -206,3 +257,11 @@ def test_benchmark_prompt_names_the_only_valid_file_tool() -> None:
 
     assert "读取文件必须调用 `repoops_read_file`" in prompt
     assert "`read_file`、`exec`、`grep` 和 `find_files`" in prompt
+    assert "新增一个配置开关" in prompt
+    assert "逐字复制一个" in prompt
+    assert f"Issue 标题：{case.title}" in prompt
+    assert "不要把标题已经明确的" in prompt
+    assert "runner 硬性固定" in prompt
+    assert "pre-fix 快照不存在" in prompt
+    assert "声明/CLI → 序列化 → 配置解析" in prompt
+    assert "serialize config" in prompt

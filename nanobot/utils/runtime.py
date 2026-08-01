@@ -11,6 +11,7 @@ from loguru import logger
 from nanobot.utils.helpers import stringify_text_blocks
 
 _MAX_REPEAT_EXTERNAL_LOOKUPS = 2
+_MAX_REPO_FILE_READS_PER_PATH = 2
 
 # Third same-target workspace violation in a turn escalates to "stop retrying".
 _MAX_REPEAT_WORKSPACE_VIOLATIONS = 2
@@ -26,11 +27,22 @@ FINALIZATION_RETRY_PROMPT = (
 )
 
 BUDGET_EXHAUSTED_FINALIZATION_PROMPT = (
-    "The tool-call budget for this turn is exhausted. Based only on the "
-    "conversation and tool results above, provide a concise final response to "
-    "the user. Do not call or request tools. Do not claim the task is complete "
-    "unless the evidence above clearly shows it is complete. State what was "
-    "done, what remains, and the best next step if anything is incomplete."
+    "The tool-call budget for this turn is exhausted and no tools are available "
+    "in this finalization call. Based only on the conversation and tool results "
+    "above, answer the user's original request now. Preserve every output-format "
+    "constraint from the original request (for example, JSON-only or a requested "
+    "schema). Output only the final user-facing answer: do not emit or describe "
+    "tool calls, DSML, XML tool tags, function names, or tool arguments. Do not "
+    "claim the task is complete unless the evidence above clearly shows it is "
+    "complete; represent missing information in the format the user requested."
+)
+
+TOOL_MARKUP_RECOVERY_PROMPT = (
+    "Your previous finalization response still contained serialized tool-call markup. "
+    "That response cannot be shown to the user, and tools remain unavailable. Rewrite it now "
+    "as the final user-facing answer only. Preserve the original output schema exactly. Do not "
+    "emit DSML, XML/function tags, tool names, invocations, parameters, or commentary about this "
+    "retry."
 )
 
 LENGTH_RECOVERY_PROMPT = (
@@ -80,6 +92,11 @@ def build_finalization_retry_message() -> dict[str, str]:
 def build_budget_exhausted_finalization_message() -> dict[str, str]:
     """Prompt the model for a no-tools final response after budget exhaustion."""
     return {"role": "user", "content": BUDGET_EXHAUSTED_FINALIZATION_PROMPT}
+
+
+def build_tool_markup_recovery_message() -> dict[str, str]:
+    """Ask for one clean no-tools rewrite after serialized tool markup leaks."""
+    return {"role": "user", "content": TOOL_MARKUP_RECOVERY_PROMPT}
 
 
 def build_length_recovery_message(content: str) -> dict[str, str]:
@@ -139,6 +156,39 @@ def repeated_external_lookup_error(
     return (
         "Error: repeated external lookup blocked. "
         "Use the results you already have to answer, or try a meaningfully different source."
+    )
+
+
+def repeated_repo_file_read_error(
+    tool_name: str,
+    arguments: Any,
+    seen_counts: dict[str, int],
+) -> str | None:
+    """Stop an agent from panning through one repository file indefinitely.
+
+    RepoOps can read up to 1,000 lines in one bounded call. Two ranges leave room for a focused
+    follow-up while forcing subsequent investigation to use retrieval or another file in the
+    call chain. This is scoped to the RepoOps tool so ordinary interactive file reads keep their
+    existing behavior.
+    """
+    if tool_name != "repoops_read_file" or not isinstance(arguments, dict):
+        return None
+    params = cast(dict[str, Any], arguments)
+    path = str(params.get("path") or "").strip()
+    if not path:
+        return None
+    repository = str(params.get("repository") or "").strip().lower()
+    ref = str(params.get("ref") or "HEAD").strip().lower()
+    signature = f"{repository}:{ref}:{path}"
+    count = seen_counts.get(signature, 0) + 1
+    seen_counts[signature] = count
+    if count <= _MAX_REPO_FILE_READS_PER_PATH:
+        return None
+    logger.warning("Blocking repeated RepoOps file read {} on attempt {}", signature, count)
+    return (
+        "Error: per-file RepoOps read budget exhausted. You already inspected two ranges from "
+        f"'{path}'. Do not retry or pan through another range in this file. Use the existing "
+        "evidence, search for a related caller/configuration/serialization file, or finalize."
     )
 
 

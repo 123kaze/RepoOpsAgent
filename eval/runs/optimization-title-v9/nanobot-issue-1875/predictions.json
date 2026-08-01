@@ -1,0 +1,63 @@
+[
+  {
+    "task_id": "nanobot-issue-1875",
+    "category": "feature",
+    "files": [
+      "nanobot/channels/telegram/runtime.py",
+      "nanobot/channels/feishu/runtime.py",
+      "nanobot/channels/feishu/config.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "30ab1f73b6f88de9"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "57c2fe8932ee7034"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "8768ba8546b12d32"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b27c2fea9f4ceca7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4a6b9aa028261631"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c3ffac1c68de0120"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "60720367c93b0ac2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "80118f18164f645d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d4a52baec6fb914c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "64f62dfa186c3b01"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "91765a72b0b559f7"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

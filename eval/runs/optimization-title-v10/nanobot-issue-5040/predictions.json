@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "nanobot-issue-5040",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/tools/mcp.py",
+      "nanobot/providers/anthropic_provider.py",
+      "tests/tools/test_mcp_tool.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "26f92d6a7387c302"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "e5e0adf0adcfde69"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ef847d4c971c6cba"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "af6523f830e81e53"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "adddb56c5a0bf98d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ba7109bab96cb5a3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ba92165ba6ed1a2f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4a335f1572090ba2"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

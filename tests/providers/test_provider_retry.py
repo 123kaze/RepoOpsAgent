@@ -84,6 +84,34 @@ async def test_chat_with_retry_does_not_retry_non_transient_error(monkeypatch) -
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "error",
+    [
+        ValueError("key must be a string at line 1 column 1181"),
+        ValueError("expected `:` at line 1 column 1647"),
+    ],
+)
+async def test_chat_with_retry_recovers_from_provider_response_parse_error(
+    monkeypatch, error: Exception,
+) -> None:
+    provider = ScriptedProvider([error, LLMResponse(content="recovered")])
+    delays: list[int] = []
+
+    async def _fake_sleep(delay: int) -> None:
+        delays.append(delay)
+
+    monkeypatch.setattr("nanobot.providers.base.asyncio.sleep", _fake_sleep)
+
+    response = await provider.chat_with_retry(
+        messages=[{"role": "user", "content": "hello"}]
+    )
+
+    assert response.content == "recovered"
+    assert provider.calls == 2
+    assert delays == [1]
+
+
+@pytest.mark.asyncio
 async def test_chat_with_retry_returns_final_error_after_retries(monkeypatch) -> None:
     provider = ScriptedProvider([
         LLMResponse(content="429 rate limit a", finish_reason="error"),

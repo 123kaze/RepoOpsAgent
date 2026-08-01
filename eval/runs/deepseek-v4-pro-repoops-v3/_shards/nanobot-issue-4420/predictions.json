@@ -1,0 +1,68 @@
+[
+  {
+    "task_id": "nanobot-issue-4420",
+    "category": "performance",
+    "files": [
+      "nanobot/utils/helpers.py",
+      "tests/utils/test_token_estimation.py",
+      "nanobot/agent/runner.py",
+      "nanobot/agent/tools/registry.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "a8edd62e7c776216"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "ba92cfe23ec6e713"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "b058a54a766eb2a9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "31791e9f4ff4ab99"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d3c5d17b5fed8161"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9b5fa6dcd747ed21"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "82a3a25b1e08b52a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cbffc7a9988671a2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0bbf549cfc0b7423"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4dc0450de7d62aab"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dd4012598c4e5afd"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "dc200aa4886a31e7"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 14,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

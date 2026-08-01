@@ -1,0 +1,83 @@
+[
+  {
+    "task_id": "nanobot-issue-4043",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "9304a492f3fc2df9"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "8a19d71c9055598d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9e7c7757dbc66d9f"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "4534a16fbda0fefa"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "aba72bd1b1674009"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c23f87684f19f685"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3834dfd2bce3f571"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3bb9c3c80b6851eb"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "37a08acb487b046a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "dbf4c53defed60f3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "693b7c6af1f3d3ab"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b53aa57b95a4aed3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0b7ecf32be09b751"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9d87682d52341b66"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1f548628d147943a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1f749058f1712a53"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b43724a543ddd273"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

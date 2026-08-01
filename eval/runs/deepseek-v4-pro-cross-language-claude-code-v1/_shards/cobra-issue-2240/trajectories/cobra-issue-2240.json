@@ -1,0 +1,557 @@
+{
+  "schema_version": "1.0",
+  "case_id": "cobra-issue-2240",
+  "task_type": "issue_analysis",
+  "repository": "spf13/cobra",
+  "number": 2240,
+  "model": "deepseek-v4-pro",
+  "started_at": "2026-08-01T02:31:58.719976+00:00",
+  "completed_at": "2026-08-01T02:34:26.765040+00:00",
+  "duration_ms": 148043,
+  "source_url": "https://github.com/spf13/cobra/issues/2240",
+  "snapshot_sha": "f98cf4216d3cb5235e6e0cd00ee00959deb1dc65",
+  "prompt": "你是只读的 GitHub Issue 分析 Agent。分析真实历史 Issue，判断分类，定位当前固定代码\n快照中最相关的实现文件，并严格区分证据支持的事实与尚待验证的假设。\n\n任务：分析 Issue #2240，判断分类，定位最相关的实现文件，并用 Issue 与 pre-fix 代码证据区分事实和根因假设。\n仓库：spf13/cobra\nIssue：#2240\n本地代码快照：f98cf4216d3cb5235e6e0cd00ee00959deb1dc65\n工作目录已经固定在该快照。\n\n只允许以下调查方式：\n1. 用一次 `gh issue view 2240 --repo spf13/cobra --json number,title,body,state,labels,comments,url`\n   获取 Issue；确有必要时再用一次只读的 `gh issue list` 或 `gh search issues`。\n2. 用 Read 读取文件；Bash 只可执行只读的 rg/grep/find 搜索以及上述 gh issue 命令。\n   不要执行会写文件的 shell 命令，不要调用 git，不要访问其他仓库。\n3. 不要编辑、写入或删除文件，不要启动子 Agent。\n\n效率约束：调查工具总计最多 8 次。先读取 Issue，再并行做本地搜索；最多读取 3 个精确\n文件范围。信息不足时写入 missing_information，不要继续泛搜。\n\n最终结果必须满足提供的 JSON Schema。files 最多 5 个仓库相对路径并按相关度排序。\nconfirmed_facts 和 hypotheses 的每条 claim 都要引用 evidence_ids。evidence.source 必须是\n工具输出中出现过的原始 Issue URL 或仓库相对文件路径；excerpt 必须原样摘自工具输出。\n这是只读分析，approval_required 必须为 false。不要查看或推断评测标准答案。",
+  "tool_trace": [
+    {
+      "sequence": 1,
+      "iteration": 0,
+      "tool_call_id": "call_00_TFA5x3HyA0hXQOBrZdFu2682",
+      "name": "Bash",
+      "arguments": {
+        "command": "gh issue view 2240 --repo spf13/cobra --json number,title,body,state,labels,comments,url",
+        "description": "Fetch GitHub Issue #2240 details"
+      },
+      "status": "ok",
+      "output": "{\"body\":\"When using `SetHelpFunc` the function gets given a `Command` object and you'd think you could use `Context()` to get the right context off the command, but it doesn't actually get set. \\n\\nWe hit this in pulumi: https://github.com/pulumi/pulumi/issues/18659\\n\\nI can work around via just a context.Background call instead, but feels like this should just work as the parent \\\"help\\\" command does have a context.\",\"comments\":[{\"id\":\"IC_kwDOAL_eiM6fPtCi\",\"author\":{\"login\":\"Frassle\"},\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"Will see if I can raise a PR to fix this.\",\"createdAt\":\"2025-02-20T14:39:04Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[],\"url\":\"https://github.com/spf13/cobra/issues/2240#issuecomment-2671693986\",\"viewerDidAuthor\":false}],\"labels\":[],\"number\":2240,\"state\":\"CLOSED\",\"title\":\"Command passed to SetHelpFunc doesn't have a context\",\"url\":\"https://github.com/spf13/cobra/issues/2240\"}",
+      "output_sha256": "182d889038bf137c6d391eed5ba2137dc8132998e461a33be1265808b23e05ad",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 2,
+      "iteration": 1,
+      "tool_call_id": "call_00_cod1sktZe9el32nouuPN2653",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"SetHelpFunc\" --type go",
+        "description": "Search for SetHelpFunc references in codebase"
+      },
+      "status": "ok",
+      "output": "command.go:332:// SetHelpFunc sets help function. Can be defined by Application.\ncommand.go:333:func (c *Command) SetHelpFunc(f func(*Command, []string)) {\ncommand.go:482:// HelpFunc returns either the function set by SetHelpFunc for this command",
+      "output_sha256": "78c2be858268b480efcec6599bf9972c7b8a8c6fda0c3226d8c822876b0a41d2",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 3,
+      "iteration": 2,
+      "tool_call_id": "call_01_SmSArI01Qc4NnzG7t5Ko7827",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"helpFunc\\|HelpFunc\\|helpCommand\" --type go",
+        "description": "Search for helpFunc or HelpFunc in command.go"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 4,
+      "iteration": 3,
+      "tool_call_id": "call_02_Ac95gApUm5fACOSxMGUo0815",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"\\.HelpFunc\\b\\|\\.helpFunc\\b\" --type go",
+        "description": "Search for where help is invoked/templated"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 5,
+      "iteration": 4,
+      "tool_call_id": "call_00_UhwH4wauYyeuZJyoleex2501",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "offset": 325,
+        "limit": 40
+      },
+      "status": "ok",
+      "output": "325\t\n326\t// SetFlagErrorFunc sets a function to generate an error when flag parsing\n327\t// fails.\n328\tfunc (c *Command) SetFlagErrorFunc(f func(*Command, error) error) {\n329\t\tc.flagErrorFunc = f\n330\t}\n331\t\n332\t// SetHelpFunc sets help function. Can be defined by Application.\n333\tfunc (c *Command) SetHelpFunc(f func(*Command, []string)) {\n334\t\tc.helpFunc = f\n335\t}\n336\t\n337\t// SetHelpCommand sets help command.\n338\tfunc (c *Command) SetHelpCommand(cmd *Command) {\n339\t\tc.helpCommand = cmd\n340\t}\n341\t\n342\t// SetHelpCommandGroupID sets the group id of the help command.\n343\tfunc (c *Command) SetHelpCommandGroupID(groupID string) {\n344\t\tif c.helpCommand != nil {\n345\t\t\tc.helpCommand.GroupID = groupID\n346\t\t}\n347\t\t// helpCommandGroupID is used if no helpCommand is defined by the user\n348\t\tc.helpCommandGroupID = groupID\n349\t}\n350\t\n351\t// SetCompletionCommandGroupID sets the group id of the completion command.\n352\tfunc (c *Command) SetCompletionCommandGroupID(groupID string) {\n353\t\t// completionCommandGroupID is used if no completion command is defined by the user\n354\t\tc.Root().completionCommandGroupID = groupID\n355\t}\n356\t\n357\t// SetHelpTemplate sets help template to be used. Application can use it to set custom template.\n358\tfunc (c *Command) SetHelpTemplate(s string) {\n359\t\tif s == \"\" {\n360\t\t\tc.helpTemplate = nil\n361\t\t\treturn\n362\t\t}\n363\t\tc.helpTemplate = tmpl(s)\n364\t}",
+      "output_sha256": "e70639d1f83c003ac016f8f2d7e15b539f8d1ed6388afb30d0f41994f41082be",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 6,
+      "iteration": 5,
+      "tool_call_id": "call_01_8zWRNd9nYy87jHWQDwQb9274",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "offset": 475,
+        "limit": 30
+      },
+      "status": "ok",
+      "output": "475\t// Usage puts out the usage for the command.\n476\t// Used when a user provides invalid input.\n477\t// Can be defined by user by overriding UsageFunc.\n478\tfunc (c *Command) Usage() error {\n479\t\treturn c.UsageFunc()(c)\n480\t}\n481\t\n482\t// HelpFunc returns either the function set by SetHelpFunc for this command\n483\t// or a parent, or it returns a function with default help behavior.\n484\tfunc (c *Command) HelpFunc() func(*Command, []string) {\n485\t\tif c.helpFunc != nil {\n486\t\t\treturn c.helpFunc\n487\t\t}\n488\t\tif c.HasParent() {\n489\t\t\treturn c.Parent().HelpFunc()\n490\t\t}\n491\t\treturn func(c *Command, a []string) {\n492\t\t\tc.mergePersistentFlags()\n493\t\t\tfn := c.getHelpTemplateFunc()\n494\t\t\t// The help should be sent to stdout\n495\t\t\t// See https://github.com/spf13/cobra/issues/1002\n496\t\t\terr := fn(c.OutOrStdout(), c)\n497\t\t\tif err != nil {\n498\t\t\t\tc.PrintErrln(err)\n499\t\t\t}\n500\t\t}\n501\t}\n502\t\n503\t// getHelpTemplateFunc returns the help template function for the command\n504\t// going up the command tree if necessary.",
+      "output_sha256": "0e6ac9173876610dbd3f3d3e4a9004c61e0fd5cb94dac1ca72261b450ae30679",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 7,
+      "iteration": 6,
+      "tool_call_id": "call_00_jvRpSHI6iMx6GmRXM2jk1999",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"helpCommand\\|initHelp\\|cobra\\.Command\\|helpCmd\" --type go command.go | head -40",
+        "description": "Search for help command initialization in command.go"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 8,
+      "iteration": 7,
+      "tool_call_id": "call_01_kTUFMKoZOjOia06utA9D2752",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"func.*initHelp\\|func.*helpCommand\\|SetContext.*help\\|help.*SetContext\\|help.*Context\" --type go",
+        "description": "Search for help command init and context setting"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 9,
+      "iteration": 8,
+      "tool_call_id": "call_00_jxZZzWyXThBP77CC24DY4913",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"helpCommand\\|help_command\\|initHelp\\|c.help\" --type go command.go | head -50",
+        "description": "Search for help-related fields and initialization"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 10,
+      "iteration": 9,
+      "tool_call_id": "call_01_fs4Y38bImxm3bQSBPjpM2848",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"func (c \\*Command) Execute\\|func (c \\*Command) execute\\b\\|Help\\b\" --type go command.go | head -30",
+        "description": "Search for Execute and Help method definitions"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 11,
+      "iteration": 10,
+      "tool_call_id": "call_00_3vkYffArHDkcSilqB7Qd4416",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"helpCommand\" command.go",
+        "description": "Search for helpCommand string in command.go"
+      },
+      "status": "ok",
+      "output": "38:\thelpCommandName = \"help\"\n182:\t// helpCommand is command with usage 'help'. If it's not defined by user,\n184:\thelpCommand *Command\n185:\t// helpCommandGroupID is the group id for the helpCommand\n186:\thelpCommandGroupID string\n339:\tc.helpCommand = cmd\n344:\tif c.helpCommand != nil {\n345:\t\tc.helpCommand.GroupID = groupID\n347:\t// helpCommandGroupID is used if no helpCommand is defined by the user\n348:\tc.helpCommandGroupID = groupID\n1268:\tif c.helpCommand == nil {\n1269:\t\tc.helpCommand = &Command{\n1285:\t\t\t\t\tif subCmd.IsAvailableCommand() || subCmd == cmd.helpCommand {\n1304:\t\t\tGroupID: c.helpCommandGroupID,\n1307:\tc.RemoveCommand(c.helpCommand)\n1308:\tc.AddCommand(c.helpCommand)\n1315:\tc.helpCommand = nil\n1373:\t\tif (sub.IsAvailableCommand() || sub == c.helpCommand) && sub.GroupID == \"\" {\n1607:\tif c.HasParent() && c.Parent().helpCommand == c {\n1991:\t\t\t\tif subcmd.IsAvailableCommand() || subcmd.Name() == helpCommandName {\n1999:\t\t\t\t\tif subcmd.GroupID == group.ID && (subcmd.IsAvailableCommand() || subcmd.Name() == helpCommandName) {\n2007:\t\t\t\t\tif subcmd.GroupID == \"\" && (subcmd.IsAvailableCommand() || subcmd.Name() == helpCommandName) {",
+      "output_sha256": "7ec905801931ba9118827f2d5f8c26f4eae97c45f53c118e928da682b2f752f0",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 12,
+      "iteration": 11,
+      "tool_call_id": "call_00_zZUTov7Fn3fkA1Z3lHNH9528",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "offset": 1260,
+        "limit": 60
+      },
+      "status": "ok",
+      "output": "1260\t// InitDefaultHelpCmd adds default help command to c.\n1261\t// It is called automatically by executing the c or by calling help and usage.\n1262\t// If c already has help command or c has no subcommands, it will do nothing.\n1263\tfunc (c *Command) InitDefaultHelpCmd() {\n1264\t\tif !c.HasSubCommands() {\n1265\t\t\treturn\n1266\t\t}\n1267\t\n1268\t\tif c.helpCommand == nil {\n1269\t\t\tc.helpCommand = &Command{\n1270\t\t\t\tUse:   \"help [command]\",\n1271\t\t\t\tShort: \"Help about any command\",\n1272\t\t\t\tLong: `Help provides help for any command in the application.\n1273\tSimply type ` + c.DisplayName() + ` help [path to command] for full details.`,\n1274\t\t\t\tValidArgsFunction: func(c *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n1275\t\t\t\t\tvar completions []Completion\n1276\t\t\t\t\tcmd, _, e := c.Root().Find(args)\n1277\t\t\t\t\tif e != nil {\n1278\t\t\t\t\t\treturn nil, ShellCompDirectiveNoFileComp\n1279\t\t\t\t\t}\n1280\t\t\t\t\tif cmd == nil {\n1281\t\t\t\t\t\t// Root help command.\n1282\t\t\t\t\t\tcmd = c.Root()\n1283\t\t\t\t\t}\n1284\t\t\t\t\tfor _, subCmd := range cmd.Commands() {\n1285\t\t\t\t\t\tif subCmd.IsAvailableCommand() || subCmd == cmd.helpCommand {\n1286\t\t\t\t\t\t\tif strings.HasPrefix(subCmd.Name(), toComplete) {\n1287\t\t\t\t\t\t\t\tcompletions = append(completions, CompletionWithDesc(subCmd.Name(), subCmd.Short))\n1288\t\t\t\t\t\t\t}\n1289\t\t\t\t\t\t}\n1290\t\t\t\t\t}\n1291\t\t\t\t\treturn completions, ShellCompDirectiveNoFileComp\n1292\t\t\t\t},\n1293\t\t\t\tRun: func(c *Command, args []string) {\n1294\t\t\t\t\tcmd, _, e := c.Root().Find(args)\n1295\t\t\t\t\tif cmd == nil || e != nil {\n1296\t\t\t\t\t\tc.Printf(\"Unknown help topic %#q\\n\", args)\n1297\t\t\t\t\t\tCheckErr(c.Root().Usage())\n1298\t\t\t\t\t} else {\n1299\t\t\t\t\t\tcmd.InitDefaultHelpFlag()    // make possible 'help' flag to be shown\n1300\t\t\t\t\t\tcmd.InitDefaultVersionFlag() // make possible 'version' flag to be shown\n1301\t\t\t\t\t\tCheckErr(cmd.Help())\n1302\t\t\t\t\t}\n1303\t\t\t\t},\n1304\t\t\t\tGroupID: c.helpCommandGroupID,\n1305\t\t\t}\n1306\t\t}\n1307\t\tc.RemoveCommand(c.helpCommand)\n1308\t\tc.AddCommand(c.helpCommand)\n1309\t}\n1310\t\n1311\t// ResetCommands delete parent, subcommand and help command from c.\n1312\tfunc (c *Command) ResetCommands() {\n1313\t\tc.parent = nil\n1314\t\tc.commands = nil\n1315\t\tc.helpCommand = nil\n1316\t\tc.parentsPflags = nil\n1317\t}\n1318\t\n1319\t// Sorts commands by their names.",
+      "output_sha256": "bb49336a5ba9b063429998951dc1351d1fe09263bb7c02a600595ed722cc9dc4",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 13,
+      "iteration": 12,
+      "tool_call_id": "call_01_o87QdFpXJiazhGnihUJa6784",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "offset": 175,
+        "limit": 25
+      },
+      "status": "ok",
+      "output": "175\t\t// flagErrorFunc is func defined by user and it's called when the parsing of\n176\t\t// flags returns an error.\n177\t\tflagErrorFunc func(*Command, error) error\n178\t\t// helpTemplate is help template defined by user.\n179\t\thelpTemplate *tmplFunc\n180\t\t// helpFunc is help func defined by user.\n181\t\thelpFunc func(*Command, []string)\n182\t\t// helpCommand is command with usage 'help'. If it's not defined by user,\n183\t\t// cobra uses default help command.\n184\t\thelpCommand *Command\n185\t\t// helpCommandGroupID is the group id for the helpCommand\n186\t\thelpCommandGroupID string\n187\t\n188\t\t// completionCommandGroupID is the group id for the completion command\n189\t\tcompletionCommandGroupID string\n190\t\n191\t\t// versionTemplate is the version template defined by user.\n192\t\tversionTemplate *tmplFunc\n193\t\n194\t\t// errPrefix is the error message prefix defined by user.\n195\t\terrPrefix string\n196\t\n197\t\t// inReader is a reader defined by the user that replaces stdin\n198\t\tinReader io.Reader\n199\t\t// outWriter is a writer defined by the user that replaces stdout",
+      "output_sha256": "917e60214878f0a051c62a2ea7f6eacfefe08a42075ecc3c96a3600ba3cd4db2",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 14,
+      "iteration": 13,
+      "tool_call_id": "call_00_K0m5fmTqAqv2BhKuSx6X3015",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"func.*Help\\(\\)\\|func.*help\\b\\|\\.Help\\(\\)\" command.go | head -20",
+        "description": "Search for Help() method and calls"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 15,
+      "iteration": 14,
+      "tool_call_id": "call_01_L1HvgxUdqQhSGXnZbmoG1258",
+      "name": "Bash",
+      "arguments": {
+        "command": "rg -n \"func.*Execute[A-Z]\\|ExecuteC\\b\\|func.*execute\\b\" command.go | head -20",
+        "description": "Search for Execute methods in command.go"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 16,
+      "iteration": 15,
+      "tool_call_id": "call_00_whIVYSMguQBnYOWdxqad6425",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"func.*Help\" command.go",
+        "description": "Search for Help function definitions using grep"
+      },
+      "status": "ok",
+      "output": "333:func (c *Command) SetHelpFunc(f func(*Command, []string)) {\n338:func (c *Command) SetHelpCommand(cmd *Command) {\n343:func (c *Command) SetHelpCommandGroupID(groupID string) {\n358:func (c *Command) SetHelpTemplate(s string) {\n482:// HelpFunc returns either the function set by SetHelpFunc for this command\n484:func (c *Command) HelpFunc() func(*Command, []string) {\n505:func (c *Command) getHelpTemplateFunc() func(w io.Writer, data interface{}) error {\n520:func (c *Command) Help() error {\n605:func (c *Command) HelpTemplate() string {\n1219:func (c *Command) InitDefaultHelpFlag() {\n1263:func (c *Command) InitDefaultHelpCmd() {\n1623:func (c *Command) IsAdditionalHelpTopicCommand() bool {\n1643:func (c *Command) HasHelpSubCommands() bool {\n2042:func defaultHelpFunc(w io.Writer, in interface{}) error {",
+      "output_sha256": "360e97385b4146050ad866b35f919748cd570e6cae08fd803156d6d43fca085e",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 17,
+      "iteration": 16,
+      "tool_call_id": "call_01_Kg0noXlPZvSe7sX7KxoS0152",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"func.*Execute\" command.go",
+        "description": "Search for Execute function definitions using grep"
+      },
+      "status": "ok",
+      "output": "1062:func (c *Command) ExecuteContext(ctx context.Context) error {\n1070:func (c *Command) Execute() error {\n1078:func (c *Command) ExecuteContextC(ctx context.Context) (*Command, error) {\n1084:func (c *Command) ExecuteC() (cmd *Command, err error) {",
+      "output_sha256": "cb684e63ebba7ec1a6434e3f21af0b1e51eaf30932c6de3fb148189e164a6d2e",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 18,
+      "iteration": 17,
+      "tool_call_id": "call_00_aYnyh1Z0OA1FdUa9iT3I8482",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "limit": 50,
+        "offset": 520
+      },
+      "status": "ok",
+      "output": "520\tfunc (c *Command) Help() error {\n521\t\tc.HelpFunc()(c, []string{})\n522\t\treturn nil\n523\t}\n524\t\n525\t// UsageString returns usage string.\n526\tfunc (c *Command) UsageString() string {\n527\t\t// Storing normal writers\n528\t\ttmpOutput := c.outWriter\n529\t\ttmpErr := c.errWriter\n530\t\n531\t\tbb := new(bytes.Buffer)\n532\t\tc.outWriter = bb\n533\t\tc.errWriter = bb\n534\t\n535\t\tCheckErr(c.Usage())\n536\t\n537\t\t// Setting things back to normal\n538\t\tc.outWriter = tmpOutput\n539\t\tc.errWriter = tmpErr\n540\t\n541\t\treturn bb.String()\n542\t}\n543\t\n544\t// FlagErrorFunc returns either the function set by SetFlagErrorFunc for this\n545\t// command or a parent, or it returns a function which returns the original\n546\t// error.\n547\tfunc (c *Command) FlagErrorFunc() (f func(*Command, error) error) {\n548\t\tif c.flagErrorFunc != nil {\n549\t\t\treturn c.flagErrorFunc\n550\t\t}\n551\t\n552\t\tif c.HasParent() {\n553\t\t\treturn c.parent.FlagErrorFunc()\n554\t\t}\n555\t\treturn func(c *Command, err error) error {\n556\t\t\treturn err\n557\t\t}\n558\t}\n559\t\n560\tvar minUsagePadding = 25\n561\t\n562\t// UsagePadding return padding for the usage.\n563\tfunc (c *Command) UsagePadding() int {\n564\t\tif c.parent == nil || minUsagePadding > c.parent.commandsMaxUseLen {\n565\t\t\treturn minUsagePadding\n566\t\t}\n567\t\treturn c.parent.commandsMaxUseLen\n568\t}\n569\t",
+      "output_sha256": "b96be98276df7edfa7290b97bf06cb49a9e9d0ea51fe07471525d48de19d3b08",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 19,
+      "iteration": 18,
+      "tool_call_id": "call_01_Lmf8x85rMfOxhUCJtfCU0873",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "limit": 50,
+        "offset": 1060
+      },
+      "status": "ok",
+      "output": "1060\t// Retrieve ctx by calling cmd.Context() inside your *Run lifecycle or ValidArgs\n1061\t// functions.\n1062\tfunc (c *Command) ExecuteContext(ctx context.Context) error {\n1063\t\tc.ctx = ctx\n1064\t\treturn c.Execute()\n1065\t}\n1066\t\n1067\t// Execute uses the args (os.Args[1:] by default)\n1068\t// and run through the command tree finding appropriate matches\n1069\t// for commands and then corresponding flags.\n1070\tfunc (c *Command) Execute() error {\n1071\t\t_, err := c.ExecuteC()\n1072\t\treturn err\n1073\t}\n1074\t\n1075\t// ExecuteContextC is the same as ExecuteC(), but sets the ctx on the command.\n1076\t// Retrieve ctx by calling cmd.Context() inside your *Run lifecycle or ValidArgs\n1077\t// functions.\n1078\tfunc (c *Command) ExecuteContextC(ctx context.Context) (*Command, error) {\n1079\t\tc.ctx = ctx\n1080\t\treturn c.ExecuteC()\n1081\t}\n1082\t\n1083\t// ExecuteC executes the command.\n1084\tfunc (c *Command) ExecuteC() (cmd *Command, err error) {\n1085\t\tif c.ctx == nil {\n1086\t\t\tc.ctx = context.Background()\n1087\t\t}\n1088\t\n1089\t\t// Regardless of what command execute is called on, run on Root only\n1090\t\tif c.HasParent() {\n1091\t\t\treturn c.Root().ExecuteC()\n1092\t\t}\n1093\t\n1094\t\t// windows hook\n1095\t\tif preExecHookFn != nil {\n1096\t\t\tpreExecHookFn(c)\n1097\t\t}\n1098\t\n1099\t\t// initialize help at the last point to allow for user overriding\n1100\t\tc.InitDefaultHelpCmd()\n1101\t\n1102\t\targs := c.args\n1103\t\n1104\t\t// Workaround FAIL with \"go test -v\" or \"cobra.test -test.v\", see #155\n1105\t\tif c.args == nil && filepath.Base(os.Args[0]) != \"cobra.test\" {\n1106\t\t\targs = os.Args[1:]\n1107\t\t}\n1108\t\n1109\t\t// initialize the __complete command to be used for shell completion",
+      "output_sha256": "07596945ba64995d5579a16827f23413ec4d808470482d5b415fc04cab9c26d7",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 20,
+      "iteration": 19,
+      "tool_call_id": "call_00_fQ4oLYwViPwXVn6Mz5cW5480",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"func.*Context\\(\\)\" command.go",
+        "description": "Search for Context() method definition"
+      },
+      "status": "ok",
+      "output": "269:func (c *Command) Context() context.Context {\n275:func (c *Command) SetContext(ctx context.Context) {\n1062:func (c *Command) ExecuteContext(ctx context.Context) error {\n1078:func (c *Command) ExecuteContextC(ctx context.Context) (*Command, error) {",
+      "output_sha256": "79597f178814479eadca0d89a310f8a15da9091a179093dc36f8e3897341cea5",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 21,
+      "iteration": 20,
+      "tool_call_id": "call_00_ET_GPuHjSi9eINbn3r3tMdu4689",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "limit": 20,
+        "offset": 269
+      },
+      "status": "ok",
+      "output": "269\tfunc (c *Command) Context() context.Context {\n270\t\treturn c.ctx\n271\t}\n272\t\n273\t// SetContext sets context for the command. This context will be overwritten by\n274\t// Command.ExecuteContext or Command.ExecuteContextC.\n275\tfunc (c *Command) SetContext(ctx context.Context) {\n276\t\tc.ctx = ctx\n277\t}\n278\t\n279\t// SetArgs sets arguments for the command. It is set to os.Args[1:] by default, if desired, can be overridden\n280\t// particularly useful when testing.\n281\tfunc (c *Command) SetArgs(a []string) {\n282\t\tc.args = a\n283\t}\n284\t\n285\t// SetOutput sets the destination for usage and error messages.\n286\t// If output is nil, os.Stderr is used.\n287\t//\n288\t// Deprecated: Use SetOut and/or SetErr instead",
+      "output_sha256": "bc0adebe2a777742280d63fde27c98c8f4530b63a77adf137ab4a2d8bff75aec",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 22,
+      "iteration": 21,
+      "tool_call_id": "call_00_0AFtAY0BMyD8Wjpd9o6k9496",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"func.*execute\\|func.*Execute\\b\\|ctx\\b\" command.go | head -40",
+        "description": "Search for execute and ctx references"
+      },
+      "status": "ok",
+      "output": "117:\t// The *Run functions are executed in the following order:\n124:\t// The *PreRun and *PostRun functions will only be executed if the Run function of the current\n218:\tctx context.Context\n270:\treturn c.ctx\n275:func (c *Command) SetContext(ctx context.Context) {\n276:\tc.ctx = ctx\n905:func (c *Command) execute(a []string) (err error) {\n1059:// ExecuteContext is the same as Execute(), but sets the ctx on the command.\n1060:// Retrieve ctx by calling cmd.Context() inside your *Run lifecycle or ValidArgs\n1062:func (c *Command) ExecuteContext(ctx context.Context) error {\n1063:\tc.ctx = ctx\n1070:func (c *Command) Execute() error {\n1075:// ExecuteContextC is the same as ExecuteC(), but sets the ctx on the command.\n1076:// Retrieve ctx by calling cmd.Context() inside your *Run lifecycle or ValidArgs\n1078:func (c *Command) ExecuteContextC(ctx context.Context) (*Command, error) {\n1079:\tc.ctx = ctx\n1085:\tif c.ctx == nil {\n1086:\t\tc.ctx = context.Background()\n1144:\tif cmd.ctx == nil {\n1145:\t\tcmd.ctx = c.ctx\n1931:// tmplFunc holds a template and a function that will execute said template.",
+      "output_sha256": "1441b005a81145419beab86c25b1882c2430fa34618452c46804eefdc9a32377",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 23,
+      "iteration": 22,
+      "tool_call_id": "call_00_jQ2EakDyi1GCe8huma198000",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "limit": 60,
+        "offset": 905
+      },
+      "status": "ok",
+      "output": "905\tfunc (c *Command) execute(a []string) (err error) {\n906\t\tif c == nil {\n907\t\t\treturn fmt.Errorf(\"called Execute() on a nil Command\")\n908\t\t}\n909\t\n910\t\tif len(c.Deprecated) > 0 {\n911\t\t\tc.Printf(\"Command %q is deprecated, %s\\n\", c.Name(), c.Deprecated)\n912\t\t}\n913\t\n914\t\t// initialize help and version flag at the last point possible to allow for user\n915\t\t// overriding\n916\t\tc.InitDefaultHelpFlag()\n917\t\tc.InitDefaultVersionFlag()\n918\t\n919\t\terr = c.ParseFlags(a)\n920\t\tif err != nil {\n921\t\t\treturn c.FlagErrorFunc()(c, err)\n922\t\t}\n923\t\n924\t\t// If help is called, regardless of other flags, return we want help.\n925\t\t// Also say we need help if the command isn't runnable.\n926\t\thelpVal, err := c.Flags().GetBool(helpFlagName)\n927\t\tif err != nil {\n928\t\t\t// should be impossible to get here as we always declare a help\n929\t\t\t// flag in InitDefaultHelpFlag()\n930\t\t\tc.Println(\"\\\"help\\\" flag declared as non-bool. Please correct your code\")\n931\t\t\treturn err\n932\t\t}\n933\t\n934\t\tif helpVal {\n935\t\t\treturn flag.ErrHelp\n936\t\t}\n937\t\n938\t\t// for back-compat, only add version flag behavior if version is defined\n939\t\tif c.Version != \"\" {\n940\t\t\tversionVal, err := c.Flags().GetBool(\"version\")\n941\t\t\tif err != nil {\n942\t\t\t\tc.Println(\"\\\"version\\\" flag declared as non-bool. Please correct your code\")\n943\t\t\t\treturn err\n944\t\t\t}\n945\t\t\tif versionVal {\n946\t\t\t\tfn := c.getVersionTemplateFunc()\n947\t\t\t\terr := fn(c.OutOrStdout(), c)\n948\t\t\t\tif err != nil {\n949\t\t\t\t\tc.Println(err)\n950\t\t\t\t}\n951\t\t\t\treturn err\n952\t\t\t}\n953\t\t}\n954\t\n955\t\tif !c.Runnable() {\n956\t\t\treturn flag.ErrHelp\n957\t\t}\n958\t\n959\t\tc.preRun()\n960\t\n961\t\tdefer c.postRun()\n962\t\n963\t\targWoFlags := c.Flags().Args()\n964\t\tif c.DisableFlagParsing {",
+      "output_sha256": "ac24b976a4a405d74b28bbeffa31b0001eb5473cc9699aa2c233a92f7f7a11ed",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 24,
+      "iteration": 23,
+      "tool_call_id": "call_01_qic1XccHPhuRzoyUmAS72174",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "limit": 40,
+        "offset": 1125
+      },
+      "status": "ok",
+      "output": "1125\t\tif err != nil {\n1126\t\t\t// If found parse to a subcommand and then failed, talk about the subcommand\n1127\t\t\tif cmd != nil {\n1128\t\t\t\tc = cmd\n1129\t\t\t}\n1130\t\t\tif !c.SilenceErrors {\n1131\t\t\t\tc.PrintErrln(c.ErrPrefix(), err.Error())\n1132\t\t\t\tc.PrintErrf(\"Run '%v --help' for usage.\\n\", c.CommandPath())\n1133\t\t\t}\n1134\t\t\treturn c, err\n1135\t\t}\n1136\t\n1137\t\tcmd.commandCalledAs.called = true\n1138\t\tif cmd.commandCalledAs.name == \"\" {\n1139\t\t\tcmd.commandCalledAs.name = cmd.Name()\n1140\t\t}\n1141\t\n1142\t\t// We have to pass global context to children command\n1143\t\t// if context is present on the parent command.\n1144\t\tif cmd.ctx == nil {\n1145\t\t\tcmd.ctx = c.ctx\n1146\t\t}\n1147\t\n1148\t\terr = cmd.execute(flags)\n1149\t\tif err != nil {\n1150\t\t\t// Always show help if requested, even if SilenceErrors is in\n1151\t\t\t// effect\n1152\t\t\tif errors.Is(err, flag.ErrHelp) {\n1153\t\t\t\tcmd.HelpFunc()(cmd, args)\n1154\t\t\t\treturn cmd, nil\n1155\t\t\t}\n1156\t\n1157\t\t\t// If root command has SilenceErrors flagged,\n1158\t\t\t// all subcommands should respect it\n1159\t\t\tif !cmd.SilenceErrors && !c.SilenceErrors {\n1160\t\t\t\tc.PrintErrln(cmd.ErrPrefix(), err.Error())\n1161\t\t\t}\n1162\t\n1163\t\t\t// If root command has SilenceUsage flagged,\n1164\t\t\t// all subcommands should respect it",
+      "output_sha256": "6966478eecab0182bea340c46c57f9e6febcba199b2c0986a2fe160bcc6da271",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 25,
+      "iteration": 24,
+      "tool_call_id": "call_00_gU1SCr1hKLPPzRw1g6Sp3281",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"func.*Find\\b\" command.go",
+        "description": "Search for Find method definition"
+      },
+      "status": "ok",
+      "output": "757:func (c *Command) Find(args []string) (*Command, []string, error) {",
+      "output_sha256": "80f58e4d64dd3bbc08380d5910f0f27225adc173592e79379bd2d4ac1df298fa",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 26,
+      "iteration": 25,
+      "tool_call_id": "call_00_ET_6fCNbPbw6trTPbJiiQfA9465",
+      "name": "Read",
+      "arguments": {
+        "file_path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-claude/cobra-issue-2240/command.go",
+        "limit": 50,
+        "offset": 757
+      },
+      "status": "ok",
+      "output": "757\tfunc (c *Command) Find(args []string) (*Command, []string, error) {\n758\t\tvar innerfind func(*Command, []string) (*Command, []string)\n759\t\n760\t\tinnerfind = func(c *Command, innerArgs []string) (*Command, []string) {\n761\t\t\targsWOflags := stripFlags(innerArgs, c)\n762\t\t\tif len(argsWOflags) == 0 {\n763\t\t\t\treturn c, innerArgs\n764\t\t\t}\n765\t\t\tnextSubCmd := argsWOflags[0]\n766\t\n767\t\t\tcmd := c.findNext(nextSubCmd)\n768\t\t\tif cmd != nil {\n769\t\t\t\treturn innerfind(cmd, c.argsMinusFirstX(innerArgs, nextSubCmd))\n770\t\t\t}\n771\t\t\treturn c, innerArgs\n772\t\t}\n773\t\n774\t\tcommandFound, a := innerfind(c, args)\n775\t\tif commandFound.Args == nil {\n776\t\t\treturn commandFound, a, legacyArgs(commandFound, stripFlags(a, commandFound))\n777\t\t}\n778\t\treturn commandFound, a, nil\n779\t}\n780\t\n781\tfunc (c *Command) findSuggestions(arg string) string {\n782\t\tif c.DisableSuggestions {\n783\t\t\treturn \"\"\n784\t\t}\n785\t\tif c.SuggestionsMinimumDistance <= 0 {\n786\t\t\tc.SuggestionsMinimumDistance = 2\n787\t\t}\n788\t\tvar sb strings.Builder\n789\t\tif suggestions := c.SuggestionsFor(arg); len(suggestions) > 0 {\n790\t\t\tsb.WriteString(\"\\n\\nDid you mean this?\\n\")\n791\t\t\tfor _, s := range suggestions {\n792\t\t\t\t_, _ = fmt.Fprintf(&sb, \"\\t%v\\n\", s)\n793\t\t\t}\n794\t\t}\n795\t\treturn sb.String()\n796\t}\n797\t\n798\tfunc (c *Command) findNext(next string) *Command {\n799\t\tmatches := make([]*Command, 0)\n800\t\tfor _, cmd := range c.commands {\n801\t\t\tif commandNameMatches(cmd.Name(), next) || cmd.HasAlias(next) {\n802\t\t\t\tcmd.commandCalledAs.name = next\n803\t\t\t\treturn cmd\n804\t\t\t}\n805\t\t\tif EnablePrefixMatching && cmd.hasNameOrAliasPrefix(next) {\n806\t\t\t\tmatches = append(matches, cmd)",
+      "output_sha256": "94f4ac73bec1b8ca3a26ba547d7691b7c29ab09c17f11dd5fa36e03d6af09eb9",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 27,
+      "iteration": 26,
+      "tool_call_id": "call_00_aYMOOQCYsbr9en07mNVf3145",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"SetHelpFunc\\|HelpFunc\" command_test.go | head -20",
+        "description": "Search for help function tests in command_test.go"
+      },
+      "status": "ok",
+      "output": "(Bash completed with no output)",
+      "output_sha256": "cac1685585590361647e7a27b58a25a590f335bfcd0ab70fcdc0424e40c20843",
+      "error": "",
+      "duration_ms": null
+    },
+    {
+      "sequence": 28,
+      "iteration": 27,
+      "tool_call_id": "call_00_ET_lIFpaIBrsCMBO4xkp1G78211",
+      "name": "Bash",
+      "arguments": {
+        "command": "grep -n \"SetHelpFunc\\|HelpFunc\" *.go",
+        "description": "Search for SetHelpFunc/HelpFunc across all Go files"
+      },
+      "status": "ok",
+      "output": "active_help_test.go:35:\tactiveHelpFunc := func(cmd *Command, args []string, toComplete string) ([]string, ShellCompDirective) {\nactive_help_test.go:41:\trootCmd.ValidArgsFunction = activeHelpFunc\nactive_help_test.go:67:\tchildCmd.ValidArgsFunction = activeHelpFunc\ncommand.go:332:// SetHelpFunc sets help function. Can be defined by Application.\ncommand.go:333:func (c *Command) SetHelpFunc(f func(*Command, []string)) {\ncommand.go:482:// HelpFunc returns either the function set by SetHelpFunc for this command\ncommand.go:484:func (c *Command) HelpFunc() func(*Command, []string) {\ncommand.go:489:\t\treturn c.Parent().HelpFunc()\ncommand.go:514:\treturn defaultHelpFunc\ncommand.go:519:// Can be defined by user by overriding HelpFunc.\ncommand.go:521:\tc.HelpFunc()(c, []string{})\ncommand.go:1153:\t\t\tcmd.HelpFunc()(cmd, args)\ncommand.go:2041:// defaultHelpFunc is equivalent to executing defaultHelpTemplate. The two should be changed in sync.\ncommand.go:2042:func defaultHelpFunc(w io.Writer, in interface{}) error {",
+      "output_sha256": "09c1b40986d5b555dac27e769b93725f614f9128d1a4fd7a5e1dc4c001b703d6",
+      "error": "",
+      "duration_ms": null
+    }
+  ],
+  "final_answer": "{\"echo\":false,\"subtask_type\":\"review\",\"category\":\"bug\",\"files\":[\"command.go\"],\"confirmed_facts\":[{\"claim\":\"Issue #2240 reports that the Command object passed to a custom help function (set via SetHelpFunc) does not have a context set, so calling cmd.Context() returns nil.\",\"evidence_ids\":[\"issue-2240\"]},{\"claim\":\"Help() method at command.go:520-523 calls c.HelpFunc()(c, []string{}) without ensuring c.ctx is set.\",\"evidence_ids\":[\"help-method\"]},{\"claim\":\"The help command's Run function (line 1293) calls c.Root().Find(args) to locate the target command, then calls cmd.Help() on it, but Find() at line 757-778 does not propagate context to the found command.\",\"evidence_ids\":[\"helpcmd-run\",\"find-method\"]},{\"claim\":\"Context propagation to child commands only happens during the execute flow at line 1144-1145 in ExecuteC(), where cmd.ctx is set from c.ctx before execution.\",\"evidence_ids\":[\"context-propagation\"]},{\"claim\":\"Context() at line 269-271 directly returns c.ctx with no fallback logic.\",\"evidence_ids\":[\"context-method\"]}],\"hypotheses\":[{\"claim\":\"The root cause is that Help() does not propagate context to the command being helped before invoking the help function. When the help command's Run calls cmd.Help(), the target command (found via Find) has ctx == nil, so the custom help function cannot access the context.\",\"evidence_ids\":[\"help-method\",\"helpcmd-run\",\"find-method\",\"context-propagation\"]},{\"claim\":\"A fix would need to ensure context propagation in Help() (e.g., copying context from parent or root command if nil) or in the help command's Run before calling cmd.Help().\",\"evidence_ids\":[\"help-method\",\"helpcmd-run\"]}],\"evidence\":[{\"evidence_id\":\"issue-2240\",\"source\":\"https://github.com/spf13/cobra/issues/2240\",\"locator\":\"Issue body\",\"excerpt\":\"When using SetHelpFunc the function gets given a Command object and you'd think you could use Context() to get the right context off the command, but it doesn't actually get set.\"},{\"evidence_id\":\"help-method\",\"source\":\"command.go\",\"locator\":\"Lines 520-523\",\"excerpt\":\"func (c *Command) Help() error {\\n\\tc.HelpFunc()(c, []string{})\\n\\treturn nil\\n}\"},{\"evidence_id\":\"helpcmd-run\",\"source\":\"command.go\",\"locator\":\"Lines 1293-1302\",\"excerpt\":\"Run: func(c *Command, args []string) {\\n\\tcmd, _, e := c.Root().Find(args)\\n\\tif cmd == nil || e != nil {\\n\\t\\tc.Printf(\\\"Unknown help topic %#q\\\\n\\\", args)\\n\\t\\tCheckErr(c.Root().Usage())\\n\\t} else {\\n\\t\\tcmd.InitDefaultHelpFlag()\\n\\t\\tcmd.InitDefaultVersionFlag()\\n\\t\\tCheckErr(cmd.Help())\\n\\t}\\n}\"},{\"evidence_id\":\"find-method\",\"source\":\"command.go\",\"locator\":\"Lines 757-778\",\"excerpt\":\"func (c *Command) Find(args []string) (*Command, []string, error) {\\n\\tvar innerfind func(*Command, []string) (*Command, []string)\\n\\tinnerfind = func(c *Command, innerArgs []string) (*Command, []string) {\\n\\t\\targsWOflags := stripFlags(innerArgs, c)\\n\\t\\tif len(argsWOflags) == 0 {\\n\\t\\t\\treturn c, innerArgs\\n\\t\\t}\\n\\t\\tnextSubCmd := argsWOflags[0]\\n\\t\\tcmd := c.findNext(nextSubCmd)\\n\\t\\tif cmd != nil {\\n\\t\\t\\treturn innerfind(cmd, c.argsMinusFirstX(innerArgs, nextSubCmd))\\n\\t\\t}\\n\\t\\treturn c, innerArgs\\n\\t}\\n\\tcommandFound, a := innerfind(c, args)\\n\\tif commandFound.Args == nil {\\n\\t\\treturn commandFound, a, legacyArgs(commandFound, stripFlags(a, commandFound))\\n\\t}\\n\\treturn commandFound, a, nil\\n}\"},{\"evidence_id\":\"context-propagation\",\"source\":\"command.go\",\"locator\":\"Lines 1144-1146\",\"excerpt\":\"if cmd.ctx == nil {\\n\\tcmd.ctx = c.ctx\\n}\"},{\"evidence_id\":\"context-method\",\"source\":\"command.go\",\"locator\":\"Lines 269-271\",\"excerpt\":\"func (c *Command) Context() context.Context {\\n\\treturn c.ctx\\n}\"}],\"missing_information\":[],\"recommended_actions\":[\"Add context propagation in Help() so that if c.ctx is nil, it is set from parent/root before the help function is called\",\"Alternatively, propagate context from parent in the help command's Run before calling cmd.Help()\"],\"approval_required\":false}",
+  "parsed_answer": {
+    "category": "bug",
+    "files": [
+      "command.go"
+    ],
+    "confirmed_facts": [
+      {
+        "claim": "Issue #2240 reports that the Command object passed to a custom help function (set via SetHelpFunc) does not have a context set, so calling cmd.Context() returns nil.",
+        "evidence_ids": [
+          "issue-2240"
+        ]
+      },
+      {
+        "claim": "Help() method at command.go:520-523 calls c.HelpFunc()(c, []string{}) without ensuring c.ctx is set.",
+        "evidence_ids": [
+          "help-method"
+        ]
+      },
+      {
+        "claim": "The help command's Run function (line 1293) calls c.Root().Find(args) to locate the target command, then calls cmd.Help() on it, but Find() at line 757-778 does not propagate context to the found command.",
+        "evidence_ids": [
+          "helpcmd-run",
+          "find-method"
+        ]
+      },
+      {
+        "claim": "Context propagation to child commands only happens during the execute flow at line 1144-1145 in ExecuteC(), where cmd.ctx is set from c.ctx before execution.",
+        "evidence_ids": [
+          "context-propagation"
+        ]
+      },
+      {
+        "claim": "Context() at line 269-271 directly returns c.ctx with no fallback logic.",
+        "evidence_ids": [
+          "context-method"
+        ]
+      }
+    ],
+    "hypotheses": [
+      {
+        "claim": "The root cause is that Help() does not propagate context to the command being helped before invoking the help function. When the help command's Run calls cmd.Help(), the target command (found via Find) has ctx == nil, so the custom help function cannot access the context.",
+        "evidence_ids": [
+          "help-method",
+          "helpcmd-run",
+          "find-method",
+          "context-propagation"
+        ]
+      },
+      {
+        "claim": "A fix would need to ensure context propagation in Help() (e.g., copying context from parent or root command if nil) or in the help command's Run before calling cmd.Help().",
+        "evidence_ids": [
+          "help-method",
+          "helpcmd-run"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "evidence_id": "issue-2240",
+        "source": "https://github.com/spf13/cobra/issues/2240",
+        "locator": "Issue body",
+        "excerpt": "When using SetHelpFunc the function gets given a Command object and you'd think you could use Context() to get the right context off the command, but it doesn't actually get set."
+      },
+      {
+        "evidence_id": "help-method",
+        "source": "command.go",
+        "locator": "Lines 520-523",
+        "excerpt": "func (c *Command) Help() error {\n\tc.HelpFunc()(c, []string{})\n\treturn nil\n}"
+      },
+      {
+        "evidence_id": "helpcmd-run",
+        "source": "command.go",
+        "locator": "Lines 1293-1302",
+        "excerpt": "Run: func(c *Command, args []string) {\n\tcmd, _, e := c.Root().Find(args)\n\tif cmd == nil || e != nil {\n\t\tc.Printf(\"Unknown help topic %#q\\n\", args)\n\t\tCheckErr(c.Root().Usage())\n\t} else {\n\t\tcmd.InitDefaultHelpFlag()\n\t\tcmd.InitDefaultVersionFlag()\n\t\tCheckErr(cmd.Help())\n\t}\n}"
+      },
+      {
+        "evidence_id": "find-method",
+        "source": "command.go",
+        "locator": "Lines 757-778",
+        "excerpt": "func (c *Command) Find(args []string) (*Command, []string, error) {\n\tvar innerfind func(*Command, []string) (*Command, []string)\n\tinnerfind = func(c *Command, innerArgs []string) (*Command, []string) {\n\t\targsWOflags := stripFlags(innerArgs, c)\n\t\tif len(argsWOflags) == 0 {\n\t\t\treturn c, innerArgs\n\t\t}\n\t\tnextSubCmd := argsWOflags[0]\n\t\tcmd := c.findNext(nextSubCmd)\n\t\tif cmd != nil {\n\t\t\treturn innerfind(cmd, c.argsMinusFirstX(innerArgs, nextSubCmd))\n\t\t}\n\t\treturn c, innerArgs\n\t}\n\tcommandFound, a := innerfind(c, args)\n\tif commandFound.Args == nil {\n\t\treturn commandFound, a, legacyArgs(commandFound, stripFlags(a, commandFound))\n\t}\n\treturn commandFound, a, nil\n}"
+      },
+      {
+        "evidence_id": "context-propagation",
+        "source": "command.go",
+        "locator": "Lines 1144-1146",
+        "excerpt": "if cmd.ctx == nil {\n\tcmd.ctx = c.ctx\n}"
+      },
+      {
+        "evidence_id": "context-method",
+        "source": "command.go",
+        "locator": "Lines 269-271",
+        "excerpt": "func (c *Command) Context() context.Context {\n\treturn c.ctx\n}"
+      }
+    ],
+    "missing_information": [],
+    "recommended_actions": [
+      "Add context propagation in Help() so that if c.ctx is nil, it is set from parent/root before the help function is called",
+      "Alternatively, propagate context from parent in the help command's Run before calling cmd.Help()"
+    ],
+    "approval_required": false
+  },
+  "parse_error": "",
+  "usage": {
+    "prompt_tokens": 9645,
+    "completion_tokens": 6737,
+    "cached_tokens": 144128,
+    "total_tokens": 160510
+  },
+  "stop_reason": "success",
+  "run_error": ""
+}

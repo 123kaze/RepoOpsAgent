@@ -1,0 +1,81 @@
+[
+  {
+    "task_id": "nanobot-issue-4940",
+    "category": "bug",
+    "files": [
+      "nanobot/session/manager.py",
+      "nanobot/webui/workspaces.py",
+      "tests/session/test_session_list_repair_legacy.py",
+      "tests/agent/test_session_collision.py",
+      "nanobot/webui/session_list_index.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "7ac257210d199486"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "58a14611439f98b2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d0b199798182a599"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "cbc590360db32bb1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fd44ce0f203c5ee0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b4ce1ffd966f6997"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d1a05b742be80aab"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "afb8b5f2080158bb"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6b1c57a9f4b64602"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e6b92bfca67b393b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "36dc9e05a1928542"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "de60da7a8a4dd7f1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a537d1ba1795f4df"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "88bd265fa5463174"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "090b0059b7f1146a"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 13,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

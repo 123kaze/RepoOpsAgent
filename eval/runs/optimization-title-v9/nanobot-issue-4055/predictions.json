@@ -1,0 +1,55 @@
+[
+  {
+    "task_id": "nanobot-issue-4055",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/memory.py",
+      "tests/agent/test_memory_store.py",
+      "nanobot/agent/context_governance.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "cd1ee27840ed34e4"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "5b76b0f0e300fa46"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "dae35779f420571c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "68c5192d29b246be"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "efcaa7fe80b7f14b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "78b511e70a373050"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5c2a14c31718aa57"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e9a220d0aa366986"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2ee82e88760ba7a8"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 4,
+    "cited_claims": 4,
+    "citations": 5,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

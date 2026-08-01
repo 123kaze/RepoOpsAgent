@@ -1,0 +1,67 @@
+[
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1f9cec127827f1da"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a17b8d14702efbdd"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "33615aa68a3eaa08"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b3045ec2c5448c54"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "01a8b8c001edfa64"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8edd04374ba166e3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a4308fe7da664008"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "022db429487a43ad"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2aca816acec45b7e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7671e59cc246bed5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7e46c42f99433a43"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0cdc2cee2a4fe384"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "29c460e919f8f422"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "case_id": "nanobot-issue-1875",
+  "task_type": "issue_analysis",
+  "repository": "HKUDS/nanobot",
+  "number": 1875,
+  "model": "<synthetic>",
+  "started_at": "2026-07-31T09:28:16.961827+00:00",
+  "completed_at": "2026-07-31T09:28:37.464490+00:00",
+  "duration_ms": 20502,
+  "source_url": "https://github.com/HKUDS/nanobot/issues/1875",
+  "snapshot_sha": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+  "prompt": "你是只读的 GitHub Issue 分析 Agent。分析真实历史 Issue，判断分类，定位当前固定代码\n快照中最相关的实现文件，并严格区分证据支持的事实与尚待验证的假设。\n\n任务：分析 Issue #1875 的 Telegram 回复上下文需求，定位消息接收与引用内容拼接代码。\n仓库：HKUDS/nanobot\nIssue：#1875\n本地代码快照：6a1a45d07a6de420ba87c419ae30fcb4af76d4d0\n工作目录已经固定在该快照。\n\n只允许以下调查方式：\n1. 用一次 `gh issue view 1875 --repo HKUDS/nanobot --json number,title,body,state,labels,comments,url`\n   获取 Issue；确有必要时再用一次只读的 `gh issue list` 或 `gh search issues`。\n2. 用 Read 读取文件；Bash 只可执行只读的 rg/grep/find 搜索以及上述 gh issue 命令。\n   不要执行会写文件的 shell 命令，不要调用 git，不要访问其他仓库。\n3. 不要编辑、写入或删除文件，不要启动子 Agent。\n\n效率约束：调查工具总计最多 8 次。先读取 Issue，再并行做本地搜索；最多读取 3 个精确\n文件范围。信息不足时写入 missing_information，不要继续泛搜。\n\n最终结果必须满足提供的 JSON Schema。files 最多 5 个仓库相对路径并按相关度排序。\nconfirmed_facts 和 hypotheses 的每条 claim 都要引用 evidence_ids。evidence.source 必须是\n工具输出中出现过的原始 Issue URL 或仓库相对文件路径；excerpt 必须原样摘自工具输出。\n这是只读分析，approval_required 必须为 false。不要查看或推断评测标准答案。",
+  "tool_trace": [],
+  "final_answer": "API Error: Connection closed mid-response. The response above may be incomplete.",
+  "parsed_answer": null,
+  "parse_error": "final answer did not contain a valid JSON object",
+  "usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "cached_tokens": 0,
+    "total_tokens": 0
+  },
+  "stop_reason": "success",
+  "run_error": "API Error: Connection closed mid-response. The response above may be incomplete."
+}

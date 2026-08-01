@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T02:40:51.146251+00:00",
+  "agent": "RepoOps Agent",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 1,
+  "total_tool_calls": 8,
+  "total_usage": {
+    "cache_read_input_tokens": 71040,
+    "cached_tokens": 71040,
+    "completion_tokens": 4834,
+    "prompt_tokens": 92152,
+    "provider_tokens": 96986,
+    "total_tokens": 96986
+  },
+  "cases": [
+    {
+      "case_id": "bat-issue-3803",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 94316,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 1.0,
+    "tool_precision": 0.8333333333333334,
+    "tool_recall": 1.0,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 8.0
+  }
+}

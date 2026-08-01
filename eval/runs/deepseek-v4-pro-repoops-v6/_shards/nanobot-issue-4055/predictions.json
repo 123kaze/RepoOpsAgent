@@ -1,0 +1,49 @@
+[
+  {
+    "task_id": "nanobot-issue-4055",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/memory.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "cd1ee27840ed34e4"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "5b76b0f0e300fa46"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b1430fa819d3b611"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c9a63d0b8ae7823d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "62f6dcf350fe10fc"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ff1db05a768a226d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c02883a9094f2e3e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5f8a4938bbdbab87"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 4,
+    "cited_claims": 4,
+    "citations": 6,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

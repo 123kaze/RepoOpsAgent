@@ -1,0 +1,13 @@
+{
+  "task_count": 15,
+  "classification_accuracy": 0.8666666666666667,
+  "file_recall_at_5": 0.7622222222222221,
+  "tool_precision": 0.828888888888889,
+  "tool_recall": 0.9733333333333334,
+  "invalid_call_rate": 0.022556390977443608,
+  "duplicate_call_rate": 0.0,
+  "evidence_completeness": 1.0,
+  "hallucination_rate": 0.0070921985815602835,
+  "approval_gate_accuracy": 1.0,
+  "average_steps": 8.866666666666667
+}

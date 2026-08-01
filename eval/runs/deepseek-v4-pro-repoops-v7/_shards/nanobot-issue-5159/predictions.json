@@ -1,0 +1,60 @@
+[
+  {
+    "task_id": "nanobot-issue-5159",
+    "category": "bug",
+    "files": [
+      "nanobot/cli/commands.py",
+      "nanobot/agent/tools/shell.py",
+      "nanobot/agent/tools/exec_session.py",
+      "tests/tools/test_exec_platform.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f1282456550ce67c"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "2dd9a1480d86be79"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "52eb765db54a7e7d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c5388a8350d055b5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "84ca6f28a6c89ed4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "df52ed405e6bfdc5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b94141732064fb19"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c8eb9395a09fba0c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e095c6ae7cbd043a"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "c841a11c2b108744"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

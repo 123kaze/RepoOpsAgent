@@ -1,0 +1,59 @@
+[
+  {
+    "task_id": "nanobot-issue-4064",
+    "category": "bug",
+    "files": [
+      "nanobot/session/turn_continuation.py",
+      "nanobot/agent/loop.py",
+      "tests/agent/test_runner_injections.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "67580c4e080532d8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "96059dd084f6230e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2f10b0cbdc672044"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0a9e77c64045a0f9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7d9894bcce30e6a4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a7037379dd58a344"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3e3df63e52cef2e1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6d06c3be2e916c30"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "bc2498ffd1e4f80c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b164297ffef05212"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

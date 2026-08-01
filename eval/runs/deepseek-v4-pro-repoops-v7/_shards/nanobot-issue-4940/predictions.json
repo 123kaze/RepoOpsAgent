@@ -1,0 +1,57 @@
+[
+  {
+    "task_id": "nanobot-issue-4940",
+    "category": "bug",
+    "files": [
+      "nanobot/session/manager.py",
+      "nanobot/webui/workspaces.py",
+      "nanobot/config/paths.py",
+      "nanobot/security/workspace_access.py",
+      "tests/session/test_session_list_repair_legacy.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "7ac257210d199486"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "58a14611439f98b2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "83dab8f12a752a31"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bf3a7603c95707ee"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f8e1a9f79b08e568"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a36397c6087c2e79"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c0ade1cf609a1891"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e600f52410ea3479"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a5466fdbb64e80f2"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

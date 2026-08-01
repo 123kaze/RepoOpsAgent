@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T02:41:57.507493+00:00",
+  "agent": "Claude Code",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 1,
+  "total_tool_calls": 31,
+  "total_duration_ms": 381460,
+  "total_usage": {
+    "cached_tokens": 471808,
+    "completion_tokens": 19838,
+    "prompt_tokens": 31599,
+    "total_tokens": 523245
+  },
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 1.0,
+    "tool_precision": 0.6666666666666666,
+    "tool_recall": 0.4,
+    "invalid_call_rate": 0.06451612903225806,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 31.0
+  },
+  "cases": [
+    {
+      "case_id": "vitest-issue-10289",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 31,
+      "duration_ms": 381460,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ]
+}

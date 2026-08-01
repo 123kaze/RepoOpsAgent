@@ -1,0 +1,57 @@
+[
+  {
+    "task_id": "cobra-issue-2209",
+    "category": "feature",
+    "files": [
+      "completions.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "48c6390a757ebcec"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "7fab3df900441ec6"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "dfa560fdbc9a1643"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "249f4b170f6fe659"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9905b70fa9377dde"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1d8194770484a3b2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8ab088bbea6f7329"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f45ef7157e835454"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6582ff00ed587911"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "207f5575f61ca30c"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

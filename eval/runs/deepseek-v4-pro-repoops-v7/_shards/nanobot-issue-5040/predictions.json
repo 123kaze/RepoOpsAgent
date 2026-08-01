@@ -1,0 +1,59 @@
+[
+  {
+    "task_id": "nanobot-issue-5040",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/tools/mcp.py",
+      "nanobot/providers/anthropic_provider.py",
+      "tests/tools/test_mcp_tool.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "26f92d6a7387c302"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "e5e0adf0adcfde69"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "e63ded6780cdfd86"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4f8d93346c041b4d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cb2722469924e8c4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2ec167a9d1d8c7a7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "49522e577d4cf22f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c1c96c3cff077cb4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2eace8df8c732a34"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9e3605b30bf6e242"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

@@ -121,15 +121,23 @@ class RepoOpsToolConfig(Base):
     timeout: int = Field(default=30, ge=1, le=120)
     max_download_bytes: int = Field(default=5_000_000, ge=100_000, le=50_000_000)
     max_output_chars: int = Field(default=60_000, ge=2_000, le=200_000)
+    pinned_read_ref: str = Field(default="", max_length=200)
+    read_pinned_ref_from_workspace: bool = False
 
 
-@dataclass(frozen=True)
+@dataclass
 class _RepoOpsRuntime:
     workspace: Path
     config: RepoOpsToolConfig
     guard: RepoGuard
     tasks: RepoTaskStore
     drafts: DraftStore
+
+    def rebind_state_dir(self, state_dir: str) -> None:
+        """Point already-constructed state stores at a fresh contained directory."""
+        self.config.state_dir = state_dir
+        self.tasks = RepoTaskStore(self.workspace, state_dir)
+        self.drafts = DraftStore(self.workspace, state_dir)
 
     def client(self) -> GitHubClient:
         return GitHubClient(
@@ -438,29 +446,57 @@ class RepoOpsReadFileTool(_RepoOpsTool):
     ) -> str:
         try:
             repo = self._repository(repository)
+            effective_ref = self.runtime.config.pinned_read_ref or ref
             if end_line < start_line:
                 raise GitHubAPIError("end_line must be greater than or equal to start_line")
             if end_line - start_line + 1 > 1_000:
                 raise GitHubAPIError("A single read cannot exceed 1,000 lines")
-            encoded_path = GitHubClient.encode_path(path)
-            payload = await self.runtime.client().request_json(
-                "GET",
-                f"repos/{repo}/contents/{encoded_path}",
-                params={"ref": ref},
-            )
-            if not isinstance(payload, dict):
-                raise GitHubAPIError("GitHub file response was not an object")
-            data = cast(dict[str, JsonValue], payload)
-            raw_content = data.get("content")
-            encoding = data.get("encoding")
-            if not isinstance(raw_content, str) or encoding != "base64":
-                raise GitHubAPIError("GitHub did not return base64 file content")
-            try:
-                decoded = base64.b64decode(raw_content, validate=False).decode(
-                    "utf-8", errors="replace"
+            if self.runtime.config.read_pinned_ref_from_workspace:
+                if not self.runtime.config.pinned_read_ref:
+                    raise GitHubAPIError(
+                        "workspace reads require an explicitly pinned repository ref"
+                    )
+                try:
+                    workspace = self.runtime.workspace.resolve(strict=True)
+                    candidate = (workspace / path).resolve(strict=True)
+                except OSError as exc:
+                    raise GitHubAPIError(
+                        "repository path does not exist in the pinned workspace"
+                    ) from exc
+                try:
+                    candidate.relative_to(workspace)
+                except ValueError as exc:
+                    raise GitHubAPIError("repository path escapes the checked-out workspace") from exc
+                try:
+                    if not candidate.is_file():
+                        raise GitHubAPIError("repository path is not a regular file")
+                    if candidate.stat().st_size > self.runtime.config.max_download_bytes:
+                        raise GitHubAPIError(
+                            "repository file exceeds the configured download size limit"
+                        )
+                    decoded = candidate.read_text(encoding="utf-8", errors="replace")
+                except OSError as exc:
+                    raise GitHubAPIError("unable to read repository file") from exc
+            else:
+                encoded_path = GitHubClient.encode_path(path)
+                payload = await self.runtime.client().request_json(
+                    "GET",
+                    f"repos/{repo}/contents/{encoded_path}",
+                    params={"ref": effective_ref},
                 )
-            except ValueError as exc:
-                raise GitHubAPIError("GitHub returned invalid base64 file content") from exc
+                if not isinstance(payload, dict):
+                    raise GitHubAPIError("GitHub file response was not an object")
+                data = cast(dict[str, JsonValue], payload)
+                raw_content = data.get("content")
+                encoding = data.get("encoding")
+                if not isinstance(raw_content, str) or encoding != "base64":
+                    raise GitHubAPIError("GitHub did not return base64 file content")
+                try:
+                    decoded = base64.b64decode(raw_content, validate=False).decode(
+                        "utf-8", errors="replace"
+                    )
+                except ValueError as exc:
+                    raise GitHubAPIError("GitHub returned invalid base64 file content") from exc
             lines = decoded.splitlines()
             selected = lines[start_line - 1 : end_line]
             numbered = "\n".join(
@@ -472,7 +508,8 @@ class RepoOpsReadFileTool(_RepoOpsTool):
                 numbered = numbered[:limit] + f"\n... [truncated at {limit} characters]"
             return (
                 f"{_UNTRUSTED_BANNER}\n"
-                f"repository={repo} path={path} ref={ref} lines={start_line}-{start_line + len(selected) - 1}\n"
+                f"repository={repo} path={path} ref={effective_ref} "
+                f"lines={start_line}-{start_line + len(selected) - 1}\n"
                 f"{numbered}"
             )
         except (GitHubAPIError, RepoOpsSafetyError) as exc:
@@ -657,20 +694,29 @@ class RepoOpsSearchWorkspaceTool(_RepoOpsTool):
         try:
             chunks = WorkspaceIndexer(self.runtime.workspace).index(path)
             hits = HybridRetriever(chunks).search(query, top_k=top_k)
-            payload = [
-                {
-                    "path": hit.chunk.path,
-                    "start_line": hit.chunk.start_line,
-                    "end_line": hit.chunk.end_line,
-                    "symbol": hit.chunk.symbol,
-                    "score": round(hit.score, 6),
-                    "lexical_score": round(hit.lexical_score, 6),
-                    "semantic_score": round(hit.semantic_score, 6),
-                    "reason": hit.reason,
-                    "excerpt": hit.chunk.text[:4_000],
-                }
-                for hit in hits
-            ]
+            excerpt_chars = 4_000
+            payload: list[dict[str, Any]] = []
+            while True:
+                payload = [
+                    {
+                        "path": hit.chunk.path,
+                        "start_line": hit.chunk.start_line,
+                        "end_line": hit.chunk.end_line,
+                        "symbol": hit.chunk.symbol,
+                        "score": round(hit.score, 6),
+                        "lexical_score": round(hit.lexical_score, 6),
+                        "semantic_score": round(hit.semantic_score, 6),
+                        "reason": hit.reason,
+                        "excerpt": hit.chunk.text[:excerpt_chars],
+                    }
+                    for hit in hits
+                ]
+                encoded = json.dumps(payload, ensure_ascii=False, indent=2)
+                limit = self.runtime.config.max_output_chars
+                if len(encoded) <= limit or excerpt_chars <= 96 or not hits:
+                    break
+                excess_per_hit = (len(encoded) - limit + len(hits) - 1) // len(hits)
+                excerpt_chars = max(96, excerpt_chars - excess_per_hit - 32)
             return self._json_output(payload)
         except (OSError, ValueError) as exc:
             return self._error(exc)

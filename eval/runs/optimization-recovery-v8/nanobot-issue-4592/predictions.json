@@ -1,0 +1,56 @@
+[
+  {
+    "task_id": "nanobot-issue-4592",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/tools/shell.py",
+      "nanobot/agent/tools/cli_apps.py",
+      "tests/tools/test_tool_validation.py",
+      "nanobot/config/migration.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "fb84282b03d824bc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "4ef9510a9203ec88"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bd92deaffb72d9dc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "95c8d7051ad99510"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bbf9846504e239a1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "df637f10d4c905ce"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2d41e403d15e6353"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "60882e4c3efd7305"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fde54f78d4a76d72"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 6,
+    "hallucinated_citations": 2,
+    "approval_required": false
+  }
+]

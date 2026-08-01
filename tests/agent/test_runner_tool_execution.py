@@ -254,6 +254,62 @@ async def test_runner_does_not_batch_exclusive_read_only_tools():
 
 
 @pytest.mark.asyncio
+async def test_repoops_third_same_file_read_forces_no_tools_finalization():
+    provider = MagicMock()
+    calls: list[dict] = []
+
+    async def chat_with_retry(*, messages, tools=None, **kwargs):
+        calls.append({"messages": messages, "tools": tools})
+        if len(calls) <= 3:
+            return LLMResponse(
+                content="",
+                tool_calls=[
+                    ToolCallRequest(
+                        id=f"read-{len(calls)}",
+                        name="repoops_read_file",
+                        arguments={
+                            "repository": "owner/repo",
+                            "path": "src/large.ts",
+                            "start_line": len(calls) * 100,
+                            "end_line": len(calls) * 100 + 99,
+                        },
+                    )
+                ],
+            )
+        return LLMResponse(content='{"status":"enough-evidence"}')
+
+    provider.chat_with_retry = chat_with_retry
+    tools = ToolRegistry()
+    shared_events: list[str] = []
+    tools.register(_DelayTool(
+        "repoops_read_file",
+        delay=0,
+        read_only=True,
+        shared_events=shared_events,
+    ))
+
+    result = await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "inspect the repository"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=8,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+    ))
+
+    assert result.stop_reason == "tool_budget_exhausted"
+    assert result.final_content == '{"status":"enough-evidence"}'
+    assert len(calls) == 4
+    assert calls[-1]["tools"] is None
+    assert shared_events == [
+        "start:repoops_read_file",
+        "end:repoops_read_file",
+        "start:repoops_read_file",
+        "end:repoops_read_file",
+    ]
+
+
+@pytest.mark.asyncio
 async def test_runner_rejects_near_miss_tool_name_without_executing():
     provider = MagicMock()
     call_count = {"n": 0}

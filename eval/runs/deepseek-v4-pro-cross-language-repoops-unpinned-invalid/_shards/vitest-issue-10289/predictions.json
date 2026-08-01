@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1e189ebe13783fdc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "055fc7ea8febe182"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "e2c1de31561687cc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ec3973387f59d102"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3bea7b4fda0a3735"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "cb2ef9d01039d05a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "713516c22a5150cd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ba5036dc38ef5797"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e18b49272a1297b0"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

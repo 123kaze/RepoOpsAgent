@@ -1,0 +1,81 @@
+[
+  {
+    "task_id": "nanobot-issue-4924",
+    "category": "bug",
+    "files": [
+      "nanobot/cli/gateway_runtime.py",
+      "nanobot/session/keys.py",
+      "nanobot/agent/loop.py",
+      "nanobot/config/schema.py",
+      "tests/cli/test_commands.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "2cfa581053f40dcd"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "6bdf5ff05dcf36fb"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "5b92b25aeba3bced"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bc56a06bb031cd5e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f3490c5ebe35c6ed"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "20fe19e22728c239"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7b80127105b61c3f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bf46cab68a6a4d58"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1cf80d57f348c53c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "67d377e8ffa5df05"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "740f4512cd7544cd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bd80b12bb34907c8"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "522b3ce5e36c267c"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "634942829bfad473"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "baff369a2e2ad3e6"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 13,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

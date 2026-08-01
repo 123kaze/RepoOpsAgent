@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T02:46:36.018160+00:00",
+  "agent": "Claude Code",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 15,
+  "successful_cases": 13,
+  "total_tool_calls": 220,
+  "total_duration_ms": 2066397,
+  "total_usage": {
+    "cached_tokens": 2093184,
+    "completion_tokens": 93356,
+    "prompt_tokens": 238009,
+    "total_tokens": 2424549
+  },
+  "cases": [
+    {
+      "case_id": "bat-issue-3002",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 147672,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3663",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 90615,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3679",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 23,
+      "duration_ms": 113276,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3803",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 64705,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3825",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 58253,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-1933",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 222815,
+      "run_error": "error_max_structured_output_retries",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2017",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 20,
+      "duration_ms": 117249,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2209",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 18,
+      "duration_ms": 168524,
+      "run_error": "error_max_structured_output_retries",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2240",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 28,
+      "duration_ms": 148043,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2257",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 166442,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10289",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 31,
+      "duration_ms": 381460,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10307",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 64640,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10459",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 13,
+      "duration_ms": 118361,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10520",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 5,
+      "duration_ms": 61444,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-7352",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 25,
+      "duration_ms": 142898,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "shard_count": 15,
+  "metrics": {
+    "task_count": 15,
+    "classification_accuracy": 0.8666666666666667,
+    "file_recall_at_5": 0.7711111111111111,
+    "tool_precision": 0.6722222222222222,
+    "tool_recall": 0.4133333333333334,
+    "invalid_call_rate": 0.05454545454545454,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.044585987261146494,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 14.666666666666666
+  }
+}

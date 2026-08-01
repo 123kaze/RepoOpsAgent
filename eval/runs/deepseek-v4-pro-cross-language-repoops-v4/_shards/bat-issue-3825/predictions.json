@@ -1,0 +1,52 @@
+[
+  {
+    "task_id": "bat-issue-3825",
+    "category": "bug",
+    "files": [
+      "src/bin/bat/main.rs",
+      "src/output.rs",
+      "src/paging.rs",
+      "src/bin/bat/app.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "07fd38e76521c720"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "e65c06bfc2589355"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "39de7414bc3b8078"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a50936780f26b32a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "38020466ae9734c3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5e0bd44ebe0a6c91"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "83e60d5387bec833"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "b54593806d5f37b5"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

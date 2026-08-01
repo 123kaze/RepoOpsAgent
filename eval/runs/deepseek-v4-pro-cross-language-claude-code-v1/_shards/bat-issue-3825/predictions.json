@@ -1,0 +1,59 @@
+[
+  {
+    "task_id": "bat-issue-3825",
+    "category": "bug",
+    "files": [
+      "src/bin/bat/main.rs",
+      "src/bin/bat/app.rs",
+      "src/pager.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f32ea24ef03c964a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "23d517b30182916c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b6dfc0ab297bedc2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "766f3d2de5e5a097"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "82a61bf7c0abe157"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "627138eb3b9c235c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "31c4947a99ec89bc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d1afaa593608ee3d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "83fd279cae69c7f7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "afb0923071516948"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 9,
+    "hallucinated_citations": 2,
+    "approval_required": false
+  }
+]

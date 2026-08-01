@@ -1,0 +1,45 @@
+[
+  {
+    "task_id": "cobra-issue-2017",
+    "category": "feature",
+    "files": [
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "55d65a9c840a7d0f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "cef00813b68b5290"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "7c3a9c4c010c3446"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9761687fbccf75f2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3996333d927bf241"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dd7f04017f1023a3"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "594cf37e2f7e1d5b"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 14,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

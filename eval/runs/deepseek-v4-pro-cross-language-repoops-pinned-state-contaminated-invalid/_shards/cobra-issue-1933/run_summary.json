@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T02:57:26.011220+00:00",
+  "agent": "RepoOps Agent",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 1,
+  "total_tool_calls": 7,
+  "total_usage": {
+    "cache_read_input_tokens": 60928,
+    "cached_tokens": 60928,
+    "completion_tokens": 3956,
+    "prompt_tokens": 86491,
+    "provider_tokens": 90447,
+    "total_tokens": 90447
+  },
+  "cases": [
+    {
+      "case_id": "cobra-issue-1933",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 82013,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 1.0,
+    "tool_precision": 0.8333333333333334,
+    "tool_recall": 1.0,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 7.0
+  }
+}

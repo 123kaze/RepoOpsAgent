@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T07:36:40.249184+00:00",
+  "agent": "RepoOps Agent",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 1,
+  "total_tool_calls": 10,
+  "total_usage": {
+    "cache_read_input_tokens": 100224,
+    "cached_tokens": 100224,
+    "completion_tokens": 7582,
+    "prompt_tokens": 117867,
+    "provider_tokens": 125449,
+    "total_tokens": 125449
+  },
+  "cases": [
+    {
+      "case_id": "nanobot-issue-5051",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 523714,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 1.0,
+    "tool_precision": 0.75,
+    "tool_recall": 0.6,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 10.0
+  }
+}

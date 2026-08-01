@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "vitest-issue-10459",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/vitest/src/node/types/coverage.ts",
+      "packages/vitest/src/node/cli/cli-config.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6d12818645e3991f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "447392d126597175"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "bbd1aac62567463a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "32cba2c2412a9c39"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c07ff871d0c2054d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "67f7098e270e23bd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e1a2d191363a3bec"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "f1c3969bc0f25c7e"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

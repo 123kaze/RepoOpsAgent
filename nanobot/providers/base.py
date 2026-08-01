@@ -326,6 +326,15 @@ class LLMProvider(ABC):
     )
     _RETRYABLE_STATUS_CODES = frozenset({408, 409, 429})
     _TRANSIENT_ERROR_KINDS = frozenset({"timeout", "connection"})
+    _RESPONSE_PARSE_ERROR = re.compile(
+        r"(?i)(?:"
+        r"key must be a string|"
+        r"expected\s+[`'\"]?.{0,16}[`'\"]?|"
+        r"trailing characters|"
+        r"eof while parsing|"
+        r"unterminated string"
+        r")\s+(?:at\s+)?line\s+\d+\s+column\s+\d+"
+    )
     _NON_RETRYABLE_429_ERROR_TOKENS = frozenset({
         "insufficient_quota",
         "quota_exceeded",
@@ -775,7 +784,7 @@ class LLMProvider(ABC):
         except asyncio.CancelledError:
             raise
         except Exception as exc:
-            return LLMResponse(content=f"Error calling LLM: {exc}", finish_reason="error")
+            return self._unexpected_exception_response(exc)
 
     async def chat_stream(
         self,
@@ -849,7 +858,28 @@ class LLMProvider(ABC):
         except asyncio.CancelledError:
             raise
         except Exception as exc:
-            return LLMResponse(content=f"Error calling LLM: {exc}", finish_reason="error")
+            return self._unexpected_exception_response(exc)
+
+    @classmethod
+    def _unexpected_exception_response(cls, exc: Exception) -> LLMResponse:
+        """Preserve unexpected provider failures and mark response decode errors retryable.
+
+        OpenAI/Anthropic-compatible gateways sometimes return a complete HTTP response whose
+        model-generated tool arguments are malformed JSON. SDKs surface that as a local decode
+        exception rather than an HTTP status, so the ordinary retry classifier previously
+        treated a one-off generation defect as permanent. A fresh request is safe and bounded by
+        the existing provider retry budget.
+        """
+        detail = str(exc)
+        response_parse_error = isinstance(exc, json.JSONDecodeError) or bool(
+            cls._RESPONSE_PARSE_ERROR.search(detail)
+        )
+        return LLMResponse(
+            content=f"Error calling LLM: {detail}",
+            finish_reason="error",
+            error_kind="response_parse" if response_parse_error else None,
+            error_should_retry=True if response_parse_error else None,
+        )
 
     async def chat_stream_with_retry(
         self,

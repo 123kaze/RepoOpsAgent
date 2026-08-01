@@ -1,0 +1,46 @@
+[
+  {
+    "task_id": "bat-issue-3002",
+    "category": "bug",
+    "files": [
+      "src/input.rs",
+      "src/controller.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "ea26e143da272786"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "352b77cf874e5c97"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "32cf00957a9893a7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "84391659d087f01c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7e20fc8842061928"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8f28f6cf3297b410"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "388289cbdbbbb103"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

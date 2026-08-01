@@ -1,0 +1,43 @@
+[
+  {
+    "task_id": "cobra-issue-1933",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f46730a1575d9e50"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f4cfdc728e5bf40f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "da1ebc16f1865962"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0c2e902cf175dcda"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ae1d5fcb4d090645"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9564816e5451de54"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "de8ca180a938b2ef"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

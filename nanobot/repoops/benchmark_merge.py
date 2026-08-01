@@ -5,12 +5,15 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
 
 from nanobot.repoops.benchmark import Trajectory, parse_answer, trajectory_prediction
-from nanobot.repoops.evaluation import EvalTask, evaluate, load_tasks
+from nanobot.repoops.evaluation import EvalPrediction, EvalTask, evaluate, load_tasks
+
+PredictionBuilder = Callable[[EvalTask, Trajectory], EvalPrediction]
 
 
 def _load_trajectory(path: Path) -> Trajectory:
@@ -37,6 +40,8 @@ def merge_runs(
     output_dir: Path,
     *,
     tasks: list[EvalTask] | None = None,
+    agent: str = "RepoOps Agent",
+    prediction_builder: PredictionBuilder = trajectory_prediction,
 ) -> dict[str, Any]:
     trajectories: list[Trajectory] = []
     seen_ids: set[str] = set()
@@ -60,13 +65,14 @@ def merge_runs(
     summary: dict[str, Any] = {
         "schema_version": "1.0",
         "generated_at": datetime.now(UTC).isoformat(),
-        "agent": "RepoOps Agent",
+        "agent": agent,
         "models": sorted({item.model for item in trajectories if item.model}),
         "case_count": len(trajectories),
         "successful_cases": sum(
             not item.run_error and not item.parse_error for item in trajectories
         ),
         "total_tool_calls": sum(len(item.tool_trace) for item in trajectories),
+        "total_duration_ms": sum(item.duration_ms for item in trajectories),
         "total_usage": {
             key: sum(item.usage.get(key, 0) for item in trajectories)
             for key in sorted({key for item in trajectories for key in item.usage})
@@ -93,7 +99,7 @@ def merge_runs(
             raise ValueError(f"Trajectories do not match tasks: {', '.join(unknown)}")
         selected_tasks = [tasks_by_id[item.case_id] for item in trajectories]
         predictions = [
-            trajectory_prediction(tasks_by_id[item.case_id], item)
+            prediction_builder(tasks_by_id[item.case_id], item)
             for item in trajectories
         ]
         metrics = evaluate(selected_tasks, predictions)
@@ -113,12 +119,27 @@ def main() -> None:
     parser.add_argument("--input-dir", type=Path, action="append", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--tasks", type=Path)
+    parser.add_argument(
+        "--agent",
+        choices=("repoops", "claude-code"),
+        default="repoops",
+        help="Select the prediction normalizer and summary label",
+    )
     args = parser.parse_args()
     tasks = load_tasks(args.tasks) if args.tasks else None
+    agent = "RepoOps Agent"
+    prediction_builder = trajectory_prediction
+    if args.agent == "claude-code":
+        from nanobot.repoops.claude_benchmark import claude_trajectory_prediction
+
+        agent = "Claude Code"
+        prediction_builder = claude_trajectory_prediction
     summary = merge_runs(
         cast(list[Path], args.input_dir),
         args.output_dir,
         tasks=tasks,
+        agent=agent,
+        prediction_builder=prediction_builder,
     )
     print(
         f"Merged {summary['case_count']} cases; "

@@ -1,0 +1,85 @@
+[
+  {
+    "task_id": "nanobot-issue-4107",
+    "category": "feature",
+    "files": [
+      "nanobot/agent/tools/shell.py",
+      "nanobot/agent/tools/sandbox.py",
+      "nanobot/config/schema.py",
+      "nanobot/config_base.py",
+      "tests/tools/test_tool_validation.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f4277ddbea3e23fc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "2c324da436fc80fc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9abb8bcf5a312c66"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4ab6d4f6d13911ac"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ace6957228d6938b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f2a3feeed3659ee7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8cb6eb3d01e9a3d6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5f7d662a03f5b545"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3437df613aca336a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3d6976dbcba173ca"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a44af14b7c66e685"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e453a4d99d0ae2f0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1eba830b03e1b256"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a711c86f188b2126"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d156417cbce0b990"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "99abc4170b6dffd1"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

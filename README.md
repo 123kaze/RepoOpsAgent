@@ -72,9 +72,10 @@ Skill 和评测层。详细设计见 [架构文档](docs/architecture.md)。
 简历中可以直接写成：
 
 > 基于 nanobot 二次开发 RepoOps Agent，实现 15 个 GitHub/RAG/状态工具、SSRF
-> 防护与跨轮人工审批状态机；构建 20 条真实历史 Issue 固定快照评测集并用 DeepSeek
-> V4 Pro 实跑，取得 80.0% 分类准确率、75.3% File Recall@5，完整保存 222 次
-> 可观察工具调用；全仓 5991 个 Python 与 896 个 WebUI 测试通过。
+> 防护与跨轮人工审批状态机；构建 Python、Go、TypeScript、Rust 四仓库真实历史
+> Issue 评测集并用 DeepSeek V4 Pro 实跑；在 15 条逐任务 pre-fix 跨语言对照中达到
+> 100.0% 分类、93.1% File Recall@5 和 15/15 结构化成功，同主模型 Claude Code 为
+> 86.7%、77.1% 和 13/15；调查调用减少 37.7%，并保存完整轨迹与无效 run 审计。
 
 ## 快速开始
 
@@ -190,52 +191,98 @@ benchmark.py
 [pytest import mismatch](eval/runs/deepseek-v4-pro-demo/trajectories/demo-ci-29994514347.json)。
 
 <!-- BENCHMARK_RESULTS_START -->
-20 条隔离正式基线已完成，其中 17 条生成可解析的最终 JSON，3 条在工具迭代上限
-处未完成结构化收尾：
+修复上下文治理并真正重绑独立 task store 后，20 条干净 Python v3 有 18 条生成
+可解析 JSON：
 
-| 指标 | 结果 |
-|---|---:|
-| Classification Accuracy | 80.0% |
-| File Recall@5 | 75.3% |
-| Tool Precision / Recall | 71.2% / 96.0% |
-| Invalid / Duplicate Call Rate | 9.5% / 0.0% |
-| Evidence Completeness | 99.1% |
-| Hallucinated Citation Rate | 0.0% |
-| Approval Gate Accuracy | 100.0% |
-| Average Tool Steps | 11.1 |
+| 指标 | 旧基线 | RepoOps v3 |
+|---|---:|---:|
+| Structured Success | 17/20 | **18/20** |
+| Classification Accuracy | 80.0% | **85.0%** |
+| File Recall@5 | 75.3% | **77.0%** |
+| Tool Precision / Recall | 71.2% / **96.0%** | **82.5%** / 95.0% |
+| Invalid / Duplicate Call Rate | 9.5% / 0.0% | **1.5% / 0.0%** |
+| Evidence Completeness | 99.1% | **100.0%** |
+| Hallucinated Citation Rate | 0.0% | 0.0% |
+| Approval Gate Accuracy | 100.0% | 100.0% |
+| Average Tool Steps | 11.1 | **9.85** |
 
-共记录 222 次工具调用、2,843,770 provider tokens。原始数字见
-[metrics.json](eval/runs/deepseek-v4-pro-baseline/metrics.json)，成功/失败、耗时与
-usage 见 [run_summary.json](eval/runs/deepseek-v4-pro-baseline/run_summary.json)。
+RepoOps v3 共记录 197 次工具调用、3,014,807 runner-reported total tokens；相比旧
+基线调用减少 11.3%，但 tokens 增加 6.0%。原始数字见
+[metrics.json](eval/runs/deepseek-v4-pro-repoops-v3/metrics.json)，逐题状态、耗时与
+usage 见 [run_summary.json](eval/runs/deepseek-v4-pro-repoops-v3/run_summary.json)。
 <!-- BENCHMARK_RESULTS_END -->
 
-3 条无效输出和一次 security→feature 误分类都进入分母，没有补答案或选择性重跑。
-此外有 21 次无效工具调用：19 次误用未注册的 `read_file`、1 次误用 `exec`、1 次
-漏传 `repoops_read_file.repository`。这些调用全部失败并被计分；它们证明工具注册
-边界生效，也暴露了 DeepSeek 受通用 nanobot tool contract 影响的对齐问题。
-数据来源、标签策略、复现协议和指标边界见 [数据集说明](eval/DATASET.md) 与
-[评估报告](EVALUATION_REPORT.md)。
+此前报告过的 Python v2（20/20、95.0%）在复核中发现读取了旧 baseline 的 task state，
+已改名为 `deepseek-v4-pro-repoops-state-contaminated-invalid` 并从正式指标撤回。这里
+宁可保留较低的干净 v3，也不把缓存污染包装成优化收益。
+
+唯一分类不一致是 #3768：人工标签为 security，模型按 GitHub 的 `enhancement` label
+和 `feat(pairing)` PR 分为 feature；正式结果仍保留原标签，没有事后改成 100%。
+另外两条失败是 #5118 的 Provider 工具参数解析错误、#4043 达到迭代上限后仍输出
+DSML 工具语法。File Recall 的部分漏召回来自 PR 时点的 `cli/commands.py` 在固定快照中已迁移到
+`cli/gateway_runtime.py`、`cli/agent.py` 或 `command/builtin.py`，因此 77.0% 仍按
+原始标签报告，并单独披露路径漂移。
+
+同主模型、同任务的本机 Claude Code 2.1.220 对照为 15/20 结构化成功、70.0% 全量
+分类、65.0% 全量 File Recall@5 和 340 次调查调用；RepoOps v3 为 18/20、85.0%、
+77.0% 和 197 次。仅看成功输出，两边分类为 94.4% vs 93.3%，File Recall 为
+85.6% vs 86.7%。这说明差距主要来自 Agent 可靠性和工具效率，而不是把模型
+能力包装成项目能力。完整协议、逐题结果、失败样本和公平性限制见
+[RepoOps vs Claude Code 对照报告](RepoOps项目文档/RepoOps与Claude-Code对照评测报告.md)。
+
+为验证不只适用于 Python，又在 Cobra（Go）、Vitest（TypeScript）和 bat（Rust）
+各选 5 条真实历史 Issue。每条任务都使用关闭 PR 第一父提交对应的独立 pre-fix
+worktree，并让 RepoOps 与 Claude Code 使用同一 `deepseek-v4-pro` 主模型实跑：
+
+| 跨语言指标 | RepoOps Agent | Claude Code |
+|---|---:|---:|
+| Structured Success | **15/15（100.0%）** | 13/15（86.7%） |
+| Classification Accuracy | **100.0%** | 86.7% |
+| File Recall@5 | **93.1%** | 77.1% |
+| 调查工具调用 | **137** | 220 |
+| Runner-reported tokens | **1,881,777** | 2,424,549 |
+| 平均单题耗时 | **125.8 秒** | 137.8 秒 |
+
+RepoOps 的调用少 37.7%、tokens 少 22.4%、累计耗时少 8.7%，15 条均结构化成功，
+引用幻觉率为 0。该结果说明本轮领域检索与收尾可靠性优于 Claude Code，但样本仍只有
+三个仓库各 5 条、只运行一次，不能外推为通用代码 Agent 排名。审计还淘汰了两轮
+污染结果：首次试跑的远程
+精确读取可能泄漏到 post-fix `HEAD`；第二轮虽钉住 SHA，却复用了旧 task state。
+修复为工具层强制 SHA、重新绑定独立 state store，并加入工具参数恢复、检索去重与
+稀有查询词覆盖后，才生成上述正式 v4 结果。
+完整任务、分语言与逐题结果见
+[跨语言多仓库对照评测报告](RepoOps项目文档/跨语言多仓库对照评测报告.md)。
+
+数据来源、标签策略和指标边界另见
+[真实历史任务集说明](RepoOps项目文档/真实历史任务集说明.md) 与
+[项目评估报告](RepoOps项目文档/项目评估报告.md)；本轮优化、压力实验取舍和统一
+简历口径见[优化复测结论](RepoOps项目文档/优化复测结论.md)。旧基线仍保留在
+[`eval/runs/deepseek-v4-pro-baseline`](eval/runs/deepseek-v4-pro-baseline)，没有
+覆盖历史失败。
 
 复现 20 条基线：
 
 ```bash
 git -C /path/to/nanobot-source worktree add --detach \
-  /tmp/repoops-nanobot-eval \
+  /tmp/repoops-agent-eval-6a1a45d0 \
   6a1a45d07a6de420ba87c419ae30fcb4af76d4d0
-export DEEPSEEK_API_KEY='...'
-export GITHUB_TOKEN='...'
+export REPOOPS_DEEPSEEK_AUTH_TOKEN='...'
+export REPOOPS_GITHUB_TOKEN='...'
 
 uv run python -m nanobot.repoops.benchmark \
   --tasks eval/repoops_tasks.json \
-  --config eval/deepseek_config.example.json \
-  --workspace /tmp/repoops-nanobot-eval \
-  --output-dir eval/runs/deepseek-v4-pro-baseline
+  --config eval/deepseek_anthropic_config.example.json \
+  --workspace /tmp/repoops-agent-eval-6a1a45d0 \
+  --output-dir eval/runs/deepseek-v4-pro-repoops-v3
 ```
+
+跨语言评测使用 `nanobot.repoops.cross_language_benchmark` 为每题自动准备 pre-fix
+worktree；RepoOps 和 Claude Code 的完整复现命令见上述跨语言报告。
 
 输出结构：
 
 ```text
-eval/runs/deepseek-v4-pro-baseline/
+eval/runs/deepseek-v4-pro-repoops-v3/
 ├── trajectories/<task-id>.json  # 完整可观察工具轨迹
 ├── predictions.json             # 从轨迹自动提取的预测
 ├── metrics.json                 # 确定性评分
@@ -270,15 +317,16 @@ npm run lint
 
 当前工程验证覆盖 RepoOps 工具、GitHub HTTP/SSRF、Actions 日志、检索、状态原子
 写入、审批绕过、benchmark 解析/评分，以及 nanobot 全量 Python/WebUI 回归。精确
-命令和结果见 [评估报告](EVALUATION_REPORT.md)。
+命令和结果见 [项目评估报告](RepoOps项目文档/项目评估报告.md)。
 
 ## 面试时主动讲清楚的边界
 
 - 这是基于 nanobot 二次开发，不声称从零实现 Agent runtime；我的工作集中在
   RepoOps 工具、安全、检索、状态、评测和产品化裁剪。
 - 默认自主只读，不是“让 Agent 自动 merge 所有 PR”；写操作必须人工批准。
-- 当前真实 benchmark 来自一个 Python 仓库、一个固定 commit 和一次模型配置，
-  不能外推为跨语言生产准确率。
+- 当前证据包含一个 Python 仓库的 20 条统一快照任务，以及 Go、TypeScript、Rust
+  三仓库各 5 条 pre-fix 任务；仍然只有少量仓库、一次模型配置和一次采样，不能
+  外推为跨语言生产准确率或通用 Agent 排名。
 - 本地 trigram 是轻量语义近似，不冒充 dense embedding；它的价值是离线、
   可复现和源码不外传。
 - 模型可能过度检索。未加预算的首轮用了 25 步；加入显式预算并隔离会话/状态后，
@@ -297,10 +345,13 @@ docs/                             架构与配置
 
 更多材料：
 
-- [实现记录](IMPLEMENTATION_REPORT.md)
-- [评估报告](EVALUATION_REPORT.md)
-- [Bad Cases](BAD_CASES.md)
-- [源码学习笔记](STUDY_NOTES.md)
+- [中文文档索引](RepoOps项目文档/文档索引.md)
+- [开发实现报告](RepoOps项目文档/开发实现报告.md)
+- [项目评估报告](RepoOps项目文档/项目评估报告.md)
+- [RepoOps 与 Claude Code 对照评测](RepoOps项目文档/RepoOps与Claude-Code对照评测报告.md)
+- [跨语言多仓库对照评测](RepoOps项目文档/跨语言多仓库对照评测报告.md)
+- [失败案例与风险清单](RepoOps项目文档/失败案例与风险清单.md)
+- [源码学习与设计笔记](RepoOps项目文档/源码学习与设计笔记.md)
 - [开发上手路线](Agent开发实习上手路线.md)
 
 本项目保留 nanobot 的 MIT 许可证和第三方声明：

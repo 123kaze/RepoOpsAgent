@@ -1,0 +1,41 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/absolute/path/to/per-task-worktree",
+      "model": "deepseek-v4-pro",
+      "provider": "anthropic",
+      "maxTokens": 4096,
+      "maxToolIterations": 10,
+      "temperature": 0.1,
+      "failOnToolError": false
+    }
+  },
+  "providers": {
+    "anthropic": {
+      "apiKey": "${REPOOPS_DEEPSEEK_AUTH_TOKEN}",
+      "apiBase": "https://api.deepseek.com/anthropic",
+      "extraHeaders": {
+        "Authorization": "Bearer ${REPOOPS_DEEPSEEK_AUTH_TOKEN}"
+      }
+    }
+  },
+  "tools": {
+    "restrictToWorkspace": true,
+    "web": {"enable": false},
+    "exec": {"enable": false},
+    "file": {"enable": false},
+    "cliApps": {"enable": false},
+    "my": {"enable": false},
+    "repoops": {
+      "enable": true,
+      "allowedRepositories": [
+        "HKUDS/nanobot",
+        "spf13/cobra",
+        "vitest-dev/vitest",
+        "sharkdp/bat"
+      ],
+      "token": "${REPOOPS_GITHUB_TOKEN}",
+      "maxOutputChars": 16000
+    }
+  }
+}

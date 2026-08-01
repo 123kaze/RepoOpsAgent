@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T06:30:32.173790+00:00",
+  "agent": "RepoOps Agent",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 20,
+  "successful_cases": 20,
+  "total_tool_calls": 218,
+  "total_duration_ms": 4434309,
+  "total_usage": {
+    "cache_read_input_tokens": 2109184,
+    "cached_tokens": 2109184,
+    "completion_tokens": 114113,
+    "prompt_tokens": 2588674,
+    "provider_tokens": 2702787,
+    "total_tokens": 2702787
+  },
+  "cases": [
+    {
+      "case_id": "nanobot-issue-1875",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 539257,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-3650",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 14,
+      "duration_ms": 125924,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-3768",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 12,
+      "duration_ms": 147249,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4043",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 220244,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4055",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 133611,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4064",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 367294,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4107",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 204449,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4204",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 12,
+      "duration_ms": 136447,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4420",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 13,
+      "duration_ms": 144648,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4592",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 335000,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4872",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 13,
+      "duration_ms": 148300,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4924",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 12,
+      "duration_ms": 135228,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-4940",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 182517,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5028",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 127499,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5040",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 126295,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5041",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 377870,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5051",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 12,
+      "duration_ms": 400199,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5118",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 12,
+      "duration_ms": 220705,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5133",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 261468,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "nanobot-issue-5159",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 100105,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "shard_count": 20,
+  "metrics": {
+    "task_count": 20,
+    "classification_accuracy": 0.7,
+    "file_recall_at_5": 0.7366666666666666,
+    "tool_precision": 0.7958333333333336,
+    "tool_recall": 0.8,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.012578616352201259,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 10.9
+  }
+}

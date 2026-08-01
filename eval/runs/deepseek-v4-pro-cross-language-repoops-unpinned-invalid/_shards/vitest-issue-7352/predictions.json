@@ -1,0 +1,73 @@
+[
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/cli/cli-config.ts",
+      "packages/vitest/src/node/cli/cli-api.ts",
+      "packages/vitest/src/node/types/config.ts",
+      "packages/vitest/src/node/projects/resolveProjects.ts",
+      "packages/vitest/src/node/reporters/reported-tasks.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1f9cec127827f1da"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a17b8d14702efbdd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c1ce855364bccbb6"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "c9b456de62605dec"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "64c40b98bd81131a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "bd16cf163f8651ed"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "84750608b6c4ff01"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c591708c3e2dcbb9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "20a81d7ec8b2bbae"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7da0d1322a052d9c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ab14b47dd3fcd2dc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4917efce8ca9cb53"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "b8b4bf75058f64be"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

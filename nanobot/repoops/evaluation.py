@@ -19,6 +19,7 @@ class EvalTask(BaseModel):
     task_id: str
     title: str = ""
     repository: str = ""
+    language: str = ""
     issue_number: int = Field(gt=0)
     prompt: str
     expected_category: str

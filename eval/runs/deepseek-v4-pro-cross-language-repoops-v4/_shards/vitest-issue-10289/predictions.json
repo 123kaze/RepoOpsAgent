@@ -1,0 +1,58 @@
+[
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/coverage-istanbul/src/provider.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1e189ebe13783fdc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "055fc7ea8febe182"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "366cd67956459c41"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fe8c71dfaee95f07"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "71aa17cc437eb877"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5d4dd29fbd78f20b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d7fe8dabe38ed27b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "53af40680b7e410e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ebc2a518617365b5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e681f9ea3157efa0"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

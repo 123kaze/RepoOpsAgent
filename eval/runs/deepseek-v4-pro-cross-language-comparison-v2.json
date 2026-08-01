@@ -1,0 +1,726 @@
+{
+  "schema_version": "1.0",
+  "task_count": 15,
+  "repositories": [
+    "sharkdp/bat",
+    "spf13/cobra",
+    "vitest-dev/vitest"
+  ],
+  "languages": [
+    "Go",
+    "Rust",
+    "TypeScript"
+  ],
+  "snapshot_strategy": "per-task pre-fix first parent of the merged reference PR",
+  "agents": {
+    "repoops": {
+      "agent": "RepoOps Agent",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "overall": {
+        "task_count": 15,
+        "structured_successes": 15,
+        "structured_success_rate": 1.0,
+        "metrics": {
+          "task_count": 15,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.9311111111111111,
+          "tool_precision": 0.8088888888888891,
+          "tool_recall": 0.8533333333333335,
+          "invalid_call_rate": 0.0072992700729927005,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 0.9801980198019802,
+          "hallucination_rate": 0.0,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 9.133333333333333
+        },
+        "successful_output_metrics": {
+          "task_count": 15,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.9311111111111111,
+          "tool_precision": 0.8088888888888891,
+          "tool_recall": 0.8533333333333335,
+          "invalid_call_rate": 0.0072992700729927005,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 0.9801980198019802,
+          "hallucination_rate": 0.0,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 9.133333333333333
+        },
+        "total_tool_calls": 137,
+        "total_duration_ms": 1886797,
+        "mean_duration_ms": 125786,
+        "median_duration_ms": 110928,
+        "max_duration_ms": 269854,
+        "median_tool_calls": 9,
+        "max_tool_calls": 12,
+        "total_usage": {
+          "cache_read_input_tokens": 1317888,
+          "cached_tokens": 1317888,
+          "completion_tokens": 66569,
+          "prompt_tokens": 1815208,
+          "provider_tokens": 1881777,
+          "total_tokens": 1881777
+        },
+        "failed_cases": []
+      },
+      "by_language": {
+        "Go": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9696969696969697,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9696969696969697,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "total_tool_calls": 43,
+          "total_duration_ms": 830555,
+          "mean_duration_ms": 166111,
+          "median_duration_ms": 200683,
+          "max_duration_ms": 269854,
+          "median_tool_calls": 8,
+          "max_tool_calls": 10,
+          "total_usage": {
+            "cache_read_input_tokens": 451328,
+            "cached_tokens": 451328,
+            "completion_tokens": 18220,
+            "prompt_tokens": 629700,
+            "provider_tokens": 647920,
+            "total_tokens": 647920
+          },
+          "failed_cases": []
+        },
+        "Rust": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8800000000000001,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8800000000000001,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "total_tool_calls": 47,
+          "total_duration_ms": 518672,
+          "mean_duration_ms": 103734,
+          "median_duration_ms": 108536,
+          "max_duration_ms": 121784,
+          "median_tool_calls": 9,
+          "max_tool_calls": 12,
+          "total_usage": {
+            "cache_read_input_tokens": 400640,
+            "cached_tokens": 400640,
+            "completion_tokens": 25300,
+            "prompt_tokens": 565015,
+            "provider_tokens": 590315,
+            "total_tokens": 590315
+          },
+          "failed_cases": []
+        },
+        "TypeScript": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.96,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8799999999999999,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9705882352941176,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.96,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8799999999999999,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9705882352941176,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "total_tool_calls": 47,
+          "total_duration_ms": 537570,
+          "mean_duration_ms": 107514,
+          "median_duration_ms": 110928,
+          "max_duration_ms": 130501,
+          "median_tool_calls": 10,
+          "max_tool_calls": 12,
+          "total_usage": {
+            "cache_read_input_tokens": 465920,
+            "cached_tokens": 465920,
+            "completion_tokens": 23049,
+            "prompt_tokens": 620493,
+            "provider_tokens": 643542,
+            "total_tokens": 643542
+          },
+          "failed_cases": []
+        }
+      },
+      "by_repository": {
+        "sharkdp/bat": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8800000000000001,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8800000000000001,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "total_tool_calls": 47,
+          "total_duration_ms": 518672,
+          "mean_duration_ms": 103734,
+          "median_duration_ms": 108536,
+          "max_duration_ms": 121784,
+          "median_tool_calls": 9,
+          "max_tool_calls": 12,
+          "total_usage": {
+            "cache_read_input_tokens": 400640,
+            "cached_tokens": 400640,
+            "completion_tokens": 25300,
+            "prompt_tokens": 565015,
+            "provider_tokens": 590315,
+            "total_tokens": 590315
+          },
+          "failed_cases": []
+        },
+        "spf13/cobra": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9696969696969697,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9696969696969697,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "total_tool_calls": 43,
+          "total_duration_ms": 830555,
+          "mean_duration_ms": 166111,
+          "median_duration_ms": 200683,
+          "max_duration_ms": 269854,
+          "median_tool_calls": 8,
+          "max_tool_calls": 10,
+          "total_usage": {
+            "cache_read_input_tokens": 451328,
+            "cached_tokens": 451328,
+            "completion_tokens": 18220,
+            "prompt_tokens": 629700,
+            "provider_tokens": 647920,
+            "total_tokens": 647920
+          },
+          "failed_cases": []
+        },
+        "vitest-dev/vitest": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.96,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8799999999999999,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9705882352941176,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.96,
+            "tool_precision": 0.8133333333333332,
+            "tool_recall": 0.8799999999999999,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9705882352941176,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.4
+          },
+          "total_tool_calls": 47,
+          "total_duration_ms": 537570,
+          "mean_duration_ms": 107514,
+          "median_duration_ms": 110928,
+          "max_duration_ms": 130501,
+          "median_tool_calls": 10,
+          "max_tool_calls": 12,
+          "total_usage": {
+            "cache_read_input_tokens": 465920,
+            "cached_tokens": 465920,
+            "completion_tokens": 23049,
+            "prompt_tokens": 620493,
+            "provider_tokens": 643542,
+            "total_tokens": 643542
+          },
+          "failed_cases": []
+        }
+      }
+    },
+    "claude_code": {
+      "agent": "Claude Code",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "overall": {
+        "task_count": 15,
+        "structured_successes": 13,
+        "structured_success_rate": 0.8666666666666667,
+        "metrics": {
+          "task_count": 15,
+          "classification_accuracy": 0.8666666666666667,
+          "file_recall_at_5": 0.7711111111111111,
+          "tool_precision": 0.6722222222222222,
+          "tool_recall": 0.41333333333333333,
+          "invalid_call_rate": 0.05454545454545454,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.044585987261146494,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 14.666666666666666
+        },
+        "successful_output_metrics": {
+          "task_count": 13,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.8897435897435897,
+          "tool_precision": 0.6730769230769231,
+          "tool_recall": 0.4153846153846154,
+          "invalid_call_rate": 0.06153846153846154,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.044585987261146494,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 15.0
+        },
+        "total_tool_calls": 220,
+        "total_duration_ms": 2066397,
+        "mean_duration_ms": 137760,
+        "median_duration_ms": 118361,
+        "max_duration_ms": 381460,
+        "median_tool_calls": 10,
+        "max_tool_calls": 31,
+        "total_usage": {
+          "cached_tokens": 2093184,
+          "completion_tokens": 93356,
+          "prompt_tokens": 238009,
+          "total_tokens": 2424549
+        },
+        "failed_cases": [
+          {
+            "task_id": "cobra-issue-1933",
+            "run_error": "error_max_structured_output_retries",
+            "parse_error": "",
+            "tool_calls": 7,
+            "duration_ms": 222815
+          },
+          {
+            "task_id": "cobra-issue-2209",
+            "run_error": "error_max_structured_output_retries",
+            "parse_error": "",
+            "tool_calls": 18,
+            "duration_ms": 168524
+          }
+        ]
+      },
+      "by_language": {
+        "Go": {
+          "task_count": 5,
+          "structured_successes": 3,
+          "structured_success_rate": 0.6,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.6,
+            "file_recall_at_5": 0.6,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024096385542168676,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.6
+          },
+          "successful_output_metrics": {
+            "task_count": 3,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4000000000000001,
+            "invalid_call_rate": 0.034482758620689655,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 19.333333333333332
+          },
+          "total_tool_calls": 83,
+          "total_duration_ms": 823073,
+          "mean_duration_ms": 164615,
+          "median_duration_ms": 166442,
+          "max_duration_ms": 222815,
+          "median_tool_calls": 18,
+          "max_tool_calls": 28,
+          "total_usage": {
+            "cached_tokens": 487552,
+            "completion_tokens": 30006,
+            "prompt_tokens": 72633,
+            "total_tokens": 590191
+          },
+          "failed_cases": [
+            {
+              "task_id": "cobra-issue-1933",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 7,
+              "duration_ms": 222815
+            },
+            {
+              "task_id": "cobra-issue-2209",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 18,
+              "duration_ms": 168524
+            }
+          ]
+        },
+        "Rust": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "total_tool_calls": 56,
+          "total_duration_ms": 474521,
+          "mean_duration_ms": 94904,
+          "median_duration_ms": 90615,
+          "max_duration_ms": 147672,
+          "median_tool_calls": 8,
+          "max_tool_calls": 23,
+          "total_usage": {
+            "cached_tokens": 364928,
+            "completion_tokens": 24600,
+            "prompt_tokens": 55606,
+            "total_tokens": 445134
+          },
+          "failed_cases": []
+        },
+        "TypeScript": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "total_tool_calls": 81,
+          "total_duration_ms": 768803,
+          "mean_duration_ms": 153761,
+          "median_duration_ms": 118361,
+          "max_duration_ms": 381460,
+          "median_tool_calls": 13,
+          "max_tool_calls": 31,
+          "total_usage": {
+            "cached_tokens": 1240704,
+            "completion_tokens": 38750,
+            "prompt_tokens": 109770,
+            "total_tokens": 1389224
+          },
+          "failed_cases": []
+        }
+      },
+      "by_repository": {
+        "sharkdp/bat": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "total_tool_calls": 56,
+          "total_duration_ms": 474521,
+          "mean_duration_ms": 94904,
+          "median_duration_ms": 90615,
+          "max_duration_ms": 147672,
+          "median_tool_calls": 8,
+          "max_tool_calls": 23,
+          "total_usage": {
+            "cached_tokens": 364928,
+            "completion_tokens": 24600,
+            "prompt_tokens": 55606,
+            "total_tokens": 445134
+          },
+          "failed_cases": []
+        },
+        "spf13/cobra": {
+          "task_count": 5,
+          "structured_successes": 3,
+          "structured_success_rate": 0.6,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.6,
+            "file_recall_at_5": 0.6,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024096385542168676,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.6
+          },
+          "successful_output_metrics": {
+            "task_count": 3,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4000000000000001,
+            "invalid_call_rate": 0.034482758620689655,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 19.333333333333332
+          },
+          "total_tool_calls": 83,
+          "total_duration_ms": 823073,
+          "mean_duration_ms": 164615,
+          "median_duration_ms": 166442,
+          "max_duration_ms": 222815,
+          "median_tool_calls": 18,
+          "max_tool_calls": 28,
+          "total_usage": {
+            "cached_tokens": 487552,
+            "completion_tokens": 30006,
+            "prompt_tokens": 72633,
+            "total_tokens": 590191
+          },
+          "failed_cases": [
+            {
+              "task_id": "cobra-issue-1933",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 7,
+              "duration_ms": 222815
+            },
+            {
+              "task_id": "cobra-issue-2209",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 18,
+              "duration_ms": 168524
+            }
+          ]
+        },
+        "vitest-dev/vitest": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "total_tool_calls": 81,
+          "total_duration_ms": 768803,
+          "mean_duration_ms": 153761,
+          "median_duration_ms": 118361,
+          "max_duration_ms": 381460,
+          "median_tool_calls": 13,
+          "max_tool_calls": 31,
+          "total_usage": {
+            "cached_tokens": 1240704,
+            "completion_tokens": 38750,
+            "prompt_tokens": 109770,
+            "total_tokens": 1389224
+          },
+          "failed_cases": []
+        }
+      }
+    }
+  }
+}

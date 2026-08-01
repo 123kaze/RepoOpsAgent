@@ -1,0 +1,53 @@
+[
+  {
+    "task_id": "bat-issue-3803",
+    "category": "bug",
+    "files": [
+      "src/printer.rs",
+      "src/pretty_printer.rs",
+      "src/controller.rs",
+      "src/style.rs",
+      "tests/test_pretty_printer.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "37e29e99aba986e1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ee50164d0dcc5e12"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2f91d62004afbc45"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f2f29c187f2e4aee"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "adb10673f9055d2e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8bb379a16163fe80"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3ac01e3cf447407d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1474553520aec551"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

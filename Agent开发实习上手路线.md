@@ -135,9 +135,9 @@ repoops/
 ├── config.py
 ├── main.py
 │
-├── STUDY_NOTES.md                  # nanobot 源码阅读笔记
+├── RepoOps项目文档/源码学习与设计笔记.md  # nanobot 源码阅读笔记
 ├── ARCHITECTURE.md                 # 架构文档
-├── BAD_CASES.md                    # Bad case 记录
+├── RepoOps项目文档/失败案例与风险清单.md  # Bad case 记录
 └── EVAL_REPORT.md                  # 评测报告
 ```
 
@@ -291,7 +291,7 @@ class RepoTaskState(BaseModel):
 - [ ] PR 审查 Skill 跑通 3 个真实 PR
 - [ ] 结构化任务状态持久化
 - [ ] 重复调用检测生效
-- [ ] `STUDY_NOTES.md` 至少 10 条"我和 nanobot 的设计差异+分析"
+- [ ] `RepoOps项目文档/源码学习与设计笔记.md` 至少 10 条“我和 nanobot 的设计差异+分析”
 - [ ] 5 条 bad case 记录
 - [ ] 你能口述 nanobot 核心循环的数据流
 
@@ -424,7 +424,8 @@ Agent 生成草稿
 - [ ] 日报自动生成
 - [ ] 三级权限生效，写操作需要人工确认
 - [ ] 20 条 Issue 评测跑通，所有指标有数据
-- [ ] `ARCHITECTURE.md` + `BAD_CASES.md` + `EVAL_REPORT.md` 三份文档完成
+- [ ] `docs/architecture.md` + `RepoOps项目文档/失败案例与风险清单.md` +
+  `RepoOps项目文档/项目评估报告.md` 三份文档完成
 - [ ] Bad case 不少于 10 条
 - [ ] 评测数据可对比（改 RAG 参数前后 Recall 变化、加去重前后重复调用率变化）
 
@@ -436,39 +437,37 @@ Agent 生成草稿
 
 > 我基于 nanobot 做了一个特化的 GitHub 仓库维护 Agent。nanobot 提供模型、工具、记忆、渠道和定时任务运行时，我在之上做了研发场景的二次开发。
 >
-> 工具层我实现了 10 个原子化的 GitHub 工具——Issue 读取、PR 审查、CI 日志、代码搜索。工具设计遵守 ACI 原则——每个工具是 Agent 的一个目标动作，不是 API 的薄封装。
+> 工具层我实现了 15 个带 schema 的领域工具，覆盖 Issue、PR、CI、代码检索、任务状态和写操作审批。工具设计遵守 ACI 原则——每个工具是 Agent 的一个目标动作，不是 API 的薄封装。
 >
 > 状态管理层我设计了 RepoTaskState——为每个 Issue 和 PR 维护确认的事实、缺失信息、假设、证据链和已执行工具。这让 Agent 在长对话中不丢失上下文，也避免把假设当事实。
 >
-> RAG 层我区分了检索策略——代码问题用符号搜索优先，文档问题用混合 RAG，历史问题用语义匹配。向量检索负责找候选文件，精确代码搜索负责获取证据。
+> RAG 层采用 AST 符号分块、BM25 与 trigram 的轻量混合检索，先按唯一路径聚合，再补充稀有查询词覆盖；精确读取固定在任务对应的 pre-fix SHA。当前没有把未实现的向量库或 cross-encoder 包装成项目能力。
 >
 > 安全层所有工具分三级——只读自动执行、低风险生成草稿、高风险需要人工确认。外部 Issue 内容视为不可信文本防止 Prompt Injection。
 >
-> 评测层我建了 20 条标注 Issue 的评测集，从分类准确率、File Recall@5、工具选择准确率、幻觉率、平均步骤数等维度量化评估。
+> 评测层覆盖 Python、Go、TypeScript、Rust 四个公开仓库。当前主结果是 15 条逐任务 pre-fix 跨语言 Issue：RepoOps 使用 DeepSeek V4 Pro 达到 15/15 结构化成功、100.0% 分类和 93.1% File Recall@5；同主模型 Claude Code 为 13/15、86.7% 和 77.1%。
 
 ### 面试追问：你觉得最核心的一个设计决策是什么
 
 > 我认为是"不把所有文件都向量化"的检索策略。很多人做代码 RAG 就是把整个仓库扔进向量库，但代码检索和文档检索有本质区别。搜"task_runner"这种精确符号，BM25 比向量检索准得多——向量检索可能返回不包含这个符号但"语义相近"的文件，对开发者来说完全是噪音。
 >
-> 我的设计是先做 Query 分类——判断是符号搜索还是语义搜索——再选择检索策略。这导致 File Recall@5 提升了 X%，无效调用率下降了 Y%。（填入你的真实数据）
+> 我的实现把同一路径的多个 chunk 先聚合，再保留稀有查询词命中的候选，并保证 top-k 工具输出是有效 JSON。跨语言 v3 到 v4 的 File Recall@5 从 79.1% 提升到 93.1%，Invalid Call Rate 从 0.76% 降到 0.73%；但这是整组工程优化后的结果，不能把全部增益只归因于单个检索改动。
 
 ### 面试追问：这个项目和直接配一个 GitHub MCP Server 有什么区别
 
-> 配一个 MCP Server 是 10 分钟的事——Agent 能调 API，但不知道先调哪一个、不知道怎么串联、不知道什么时候该停下来问用户补充信息。我的 RepoOps 有三个额外的层：
+> 配一个 MCP Server 是 10 分钟的事——Agent 能调 API，但不知道先调哪一个、不知道怎么串联、不知道什么时候该停下来问用户补充信息。我的 RepoOps 有五个额外的层：
 >
-> 第一是 Skill 层——Issue 分析、PR 审查、CI 诊断是完整的工作流，Agent 知道先做什么后做什么。第二是状态层——Agent 记住了自己查过什么、证据是什么、假设的置信度是多少。第三是评测层——改了代码立刻能看到指标变化。
+> 第一是 Skill 层——Issue 分析、PR 审查、CI 诊断是完整工作流。第二是工具层——15 个受 schema 约束的领域动作。第三是状态层——持久化 facts、hypotheses、evidence 和轨迹。第四是安全层——allowlist、SSRF 防护与跨轮审批。第五是评测层——真实历史任务、固定快照和失败轨迹审计。
 >
-> 这三层是"Agent 工程"和"调 API"之间的区别。
+> 这些工程边界是完整 Agent 系统与单纯接通 API 的区别；Skill 只是其中的 SOP 层。
 
 ---
 
 ## 简历描述
 
-> **RepoOps 开源仓库维护与研发协同 Agent｜Python / nanobot / MCP / RAG / GitHub API**
+> **RepoOps 开源仓库维护与研发协同 Agent｜Python / nanobot / RAG / GitHub API**
 >
-> 基于 nanobot 二次开发面向 GitHub 仓库的研发协同 Agent，支持 Issue 分类、代码定位、PR 审查、CI 失败诊断及定时项目摘要。扩展 10 个原子化 GitHub 工具，遵守 ACI 工具设计原则。结合代码符号搜索与混合 RAG 检索项目文档和历史 Issue，实现 Query 分类路由。使用结构化任务状态记录证据、假设及工具轨迹，避免 Agent 在长对话中丢失上下文或混淆事实与推测。实现只读/草稿/高风险三级权限控制，写操作需经人工确认。构建 20 条历史 Issue 评测集，从分类准确率、File Recall@5、工具调用质量、证据完整率和幻觉率等维度评估系统。
-
-（实际数据做出来后，将最后一句替换为具体数字。）
+> 基于 nanobot 二次开发 GitHub 仓库维护 Agent，实现 15 个 GitHub/RAG/状态工具、符号优先混合检索、证据持久化、SSRF 防护和跨轮人工审批。构建 Python/Go/TypeScript/Rust 四仓库真实历史 Issue 评测集；在 15 条逐任务 pre-fix 对照中取得 15/15 结构化成功、100.0% 分类、93.1% File Recall@5，同主模型 Claude Code 为 13/15、86.7%、77.1%，调查调用减少 37.7%。
 
 ---
 
@@ -477,13 +476,12 @@ Agent 生成草稿
 | 组件 | 工具 | 说明 |
 |------|------|------|
 | Agent 底座 | nanobot | 不改动内核，在此之上特化 |
-| LLM API | OpenAI / DeepSeek SDK | 双模型适配 |
-| GitHub 交互 | PyGithub | Issue/PR/CI 操作 |
-| 代码搜索 | BM25 (rank_bm25) | 符号/关键词精确搜索 |
-| 语义检索 | FAISS + text-embedding-3-small | 文档/Issue/Commit 语义匹配 |
-| Cross-encoder | BGE-Reranker-v2-m3 | 精排 |
+| LLM API | nanobot Provider / DeepSeek compatible endpoint | 复用 Provider 抽象，凭据只从环境变量读取 |
+| GitHub 交互 | httpx + GitHub REST | Issue/PR/CI 与受审批保护的写操作 |
+| 代码搜索 | Python AST + BM25 + trigram | 符号优先、路径聚合与模糊召回 |
+| 任务状态 | Pydantic + 原子 JSON | facts/hypotheses/evidence/tool trace |
+| 评测 | pytest + 自定义 benchmark harness | 固定快照、完整轨迹与 10 项指标 |
 | 文档处理 | pymupdf + python-docx | PDF + Word |
-| 评测 | 自写 Python 脚本 | 多维度指标体系 |
 
 **不用学**：LangChain/LlamaIndex（读 nanobot 源码比调任何框架都深）、Docker/K8s（第二周再加）、微调/LoRA/RLHF（模型训练岗的事）、React/前端（nanobot 有 WebUI）。
 
@@ -528,5 +526,6 @@ nanobot 原生支持 Subagent——独立工具注册、工作区权限、迭代
 
 1. **手写 ReAct 循环**（15 分钟）——你已经参考 nanobot 写过
 2. **设计一个工具的 Schema 并说明为什么这么设计**（10 分钟口头）——回到 ACI 原则，你的 GitHub 工具集就是答案
-3. **给定一个 Agent 的错误轨迹，分析问题并给出改进**（20 分钟）——你的 BAD_CASES.md 里全是素材
+3. **给定一个 Agent 的错误轨迹，分析问题并给出改进**（20 分钟）——你的
+   `RepoOps项目文档/失败案例与风险清单.md` 里全是素材
 4. **有一个代码仓库，设计 RAG 检索策略**（15 分钟口头）——你的 Query 分类路由就是答案

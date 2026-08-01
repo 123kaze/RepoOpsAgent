@@ -1,0 +1,808 @@
+[
+  {
+    "task_id": "bat-issue-3002",
+    "category": "bug",
+    "files": [
+      "src/input.rs",
+      "src/controller.rs",
+      "src/printer.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "611332ae936f72b8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "33a944b8f6e27299"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "6fe07b3604e55547"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4aaa317df1bef5c3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "39fa5704f05386a5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "653e3f717732f690"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0ac1775a8da8a73d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "eb0f018a0509a7af"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "26fff7edf9a80ccd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ea4d2d68ee8a2cf4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fe961e107d910ecf"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "bat-issue-3663",
+    "category": "bug",
+    "files": [
+      "src/input.rs",
+      "src/printer.rs",
+      "src/nonprintable_notation.rs",
+      "src/bin/bat/clap_app.rs",
+      "src/config.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "bdc839517cc17434"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "2b2f73c62aab1c58"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "f984ed8b54021ce4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "042ede750f831651"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "550da265cc7b65ef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3209bcc0b04de8a6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b798174425cd0ad2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "620d76ea85d7b832"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0322646a0f509b4d"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "bat-issue-3679",
+    "category": "feature",
+    "files": [
+      "src/bin/bat/config.rs",
+      "src/bin/bat/app.rs",
+      "src/bin/bat/clap_app.rs",
+      "src/config.rs",
+      "src/printer.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6462591d71708473"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "adcdf4775f09cf32"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "7b29f44f4ae7a2cd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5c276a9334b13ce7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "121924751d3ca415"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4ae28cfe9c3fd786"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "92dca48985df0215"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d5ab6d44a10b0457"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a6ae3a51021a53f0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5191b8f1d257b738"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f5ef6fd82b345f6b"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "800ba14fd39053f4"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "bat-issue-3803",
+    "category": "bug",
+    "files": [
+      "src/printer.rs",
+      "src/pretty_printer.rs",
+      "src/bin/bat/app.rs",
+      "src/style.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6feb020ba8983796"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "60e91c631c26915b"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "d31fa00ffce67b91"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2da17e76ba9df479"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "40e8899ebbf9c915"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "cca339d210851e9a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e5b9784c132566cf"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "bat-issue-3825",
+    "category": "bug",
+    "files": [
+      "src/bin/bat/main.rs",
+      "src/output.rs",
+      "src/paging.rs",
+      "src/bin/bat/app.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "07fd38e76521c720"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "e65c06bfc2589355"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "39de7414bc3b8078"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a50936780f26b32a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "38020466ae9734c3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5e0bd44ebe0a6c91"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "83e60d5387bec833"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "b54593806d5f37b5"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "cobra-issue-1933",
+    "category": "bug",
+    "files": [
+      "fish_completions.go",
+      "completions.go",
+      "active_help.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "39e85cca6b05529c"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "59e6da659f913f81"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "fddce5424d00a603"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c4f655d822aab4a5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d563e25779cc7c51"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "bdc756684574b4a5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "eb84035bf2880920"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "183ae869563744f4"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "cobra-issue-2017",
+    "category": "feature",
+    "files": [
+      "command.go",
+      "command_test.go",
+      "cobra.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "55d65a9c840a7d0f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "cef00813b68b5290"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "de5f13416d9bdad9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7bab86794fcd1ada"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "27d8d73f1a403abf"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dd7f04017f1023a3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "198e38c9592b9c4f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f018fd0458bcfb36"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "310601e03ef2ab68"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "cobra-issue-2209",
+    "category": "feature",
+    "files": [
+      "completions.go",
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "48c6390a757ebcec"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "7fab3df900441ec6"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "10022972033bf63f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2448ebccf878320a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a31855414cdd6c01"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9269b09074b42c24"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "94c51f46d71f67e6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "358c284cfad6b1ac"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 7,
+    "cited_claims": 6,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "cobra-issue-2240",
+    "category": "bug",
+    "files": [
+      "command.go",
+      "command_test.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "7024fbcadf20b6d8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a4e8076a63defab0"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "ab09746c4bedd99f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d7b81be8599760e3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1053de363542a949"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "603bc53c1ca8d1e9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "819b8e59ae5bd8b6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1a41343613923ed1"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "cobra-issue-2257",
+    "category": "bug",
+    "files": [
+      "completions.go",
+      "command.go",
+      "args.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "ea5aef7f08384664"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "c2a106212f7483c4"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "69e856f797938471"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "74614f1f110c0797"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fbc8ee0dc1207512"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "459711a6f9d1ab74"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4f56e30e3cf2e9ff"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4588771869936c88"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e46f5bfb1e64816d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7c8b1b7454112e89"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/coverage-istanbul/src/provider.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1e189ebe13783fdc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "055fc7ea8febe182"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "366cd67956459c41"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fe8c71dfaee95f07"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "71aa17cc437eb877"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5d4dd29fbd78f20b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d7fe8dabe38ed27b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "53af40680b7e410e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ebc2a518617365b5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e681f9ea3157efa0"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "vitest-issue-10307",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/runtime/console.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "81384278f6c5a3fb"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "dac39e89a5f7a2f2"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "07bc5b09d4673931"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b4402457f1e3f885"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ac855ac2e936390d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7dd5904e2a83ba12"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "4e381427ffb3c14f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "vitest-issue-10459",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/vitest/src/node/types/coverage.ts",
+      "packages/vitest/src/node/cli/cli-config.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6d12818645e3991f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "447392d126597175"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "bbd1aac62567463a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "32cba2c2412a9c39"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c07ff871d0c2054d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "67f7098e270e23bd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e1a2d191363a3bec"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "f1c3969bc0f25c7e"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "vitest-issue-10520",
+    "category": "bug",
+    "files": [
+      "packages/browser/src/client/orchestrator.ts",
+      "packages/browser/src/client/tester/tester.ts",
+      "packages/browser/src/client/channel.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "8b850d55bae66d7f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "caa010fe57392753"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "881c3660a94c4830"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "16c466c6df31da93"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ea2efcb17ef17c4a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dacd5ce07f386ebf"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fc75f2bd8768edb1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "aab114c33bfedc75"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0791ba6c7db8c3b0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a39bcfe67a66013f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 5,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/cli/cli-config.ts",
+      "packages/vitest/src/node/config/serializeConfig.ts",
+      "packages/vitest/src/runtime/config.ts",
+      "packages/vitest/src/node/cli/cli-api.ts",
+      "packages/vitest/src/node/types/config.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1f9cec127827f1da"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a17b8d14702efbdd"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "33615aa68a3eaa08"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b0b526ed9891d397"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "29f9a98b191107b3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1ac7ea9e29a44880"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8fca6a759ef48693"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b4291fcaa87e6b9b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6772c91e2b9bcf39"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "722ddc12cedf94b5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7f7693d3bf635b52"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c0ed206419ce1346"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

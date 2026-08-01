@@ -1,0 +1,67 @@
+[
+  {
+    "task_id": "nanobot-issue-3768",
+    "category": "security",
+    "files": [
+      "nanobot/channels/signal/runtime.py",
+      "nanobot/channels/base.py",
+      "nanobot/pairing/store.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "5208acebce4590f8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a20d2638bff1e2c7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "18586980ce4fb3ff"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "c28017c057b68bac"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "dd38a10dd701adb5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f0a9ce5dd609d37c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7cb8cbbe58ba585b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "63e7b88111952394"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ee4a0d0b71867584"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f0358c5a61a6e7fd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "62b1a7a6b4ee5f68"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "303d1a6b57881a01"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

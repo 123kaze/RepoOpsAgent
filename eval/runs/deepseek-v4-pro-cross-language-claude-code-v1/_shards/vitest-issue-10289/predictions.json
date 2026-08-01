@@ -1,0 +1,143 @@
+[
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/coverage-istanbul/src/provider.ts",
+      "packages/vitest/src/node/plugins/coverageTransform.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "902053927b89e292"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e275a437237a3d0c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f54318d2764bd2b8"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "206b516945058e7c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7236cbb673f701c9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c069b122ef5b3a7a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "69e3c4b4a7c2c550"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b9eb940cb77672a9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "90219f1dbdd9f1a9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c27decbfb8b86465"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ed2ab53d347a656a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "972759451b3eada2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b154a360c7e502c3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5788e1d9f36332e4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "83b28f98a027f02e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "35bab788a1a7d605"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c467a1dcec6e7f44"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f8b920da4de4e382"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4caf150efa936b18"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "cad84473d94e14dc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "32349be8569f1e7f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2b5ce89baa39c1c5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9dea4570d6337106"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "bb8f40d00754203f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "54d3e0d18f7e4ed3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "48c0a03179c38f0c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "15225fe2bcdd7619"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6276e12562a7236c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "36c18824f733b68a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "05afd35b02949048"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b54b71d5f8d62c69"
+      }
+    ],
+    "invalid_tool_calls": 2,
+    "evidence_claims": 13,
+    "cited_claims": 13,
+    "citations": 14,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

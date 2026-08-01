@@ -1,0 +1,62 @@
+[
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/coverage-istanbul/src/provider.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1e189ebe13783fdc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "055fc7ea8febe182"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "ad42af60cc25b9d3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "007fd972562d70f3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "67b02b9e98cd3afc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2d81a0a3bd4e2aef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e20ff8ba96296e60"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "06ce68bfeebfd327"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "09cd6b0e0623479e"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "6deab281dfdb9deb"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "d995ef4af635e2ce"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

@@ -1,0 +1,48 @@
+[
+  {
+    "task_id": "nanobot-issue-5051",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/runner.py",
+      "nanobot/utils/runtime.py",
+      "tests/agent/test_runner_hooks.py",
+      "tests/utils/test_length_recovery_runtime.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "9d2a13658482a385"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "4819cf61e0e7c41c"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "2eaf3ab67cf422ee"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "867885de10f989a4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4d30a53e58313880"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6d2f6d70f82ef110"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5ffb5a5281ace88f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 12,
+    "hallucinated_citations": 1,
+    "approval_required": false
+  }
+]

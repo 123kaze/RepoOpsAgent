@@ -117,6 +117,18 @@ class ContextGovernor:
         result = ensure_nonempty_tool_result(tool_name, result)
         if tool_name in TOOL_RESULT_OFFLOAD_EXEMPT_TOOLS:
             return result
+        # Persisting a large result is useful only when the active profile can
+        # read the generated artifact back. Restricted profiles such as
+        # RepoOps intentionally remove the generic read_file tool; handing the
+        # model an unreachable .nanobot/tool-results path makes the next tool
+        # call fail deterministically. Keep a bounded inline result instead.
+        if (
+            isinstance(result, str)
+            and len(result) > config.max_tool_result_chars
+            and isinstance(cast(object, config.tools.tool_names), list)
+            and "read_file" not in config.tools.tool_names
+        ):
+            return truncate_text(result, config.max_tool_result_chars)
         try:
             content = maybe_persist_tool_result(
                 config.workspace,

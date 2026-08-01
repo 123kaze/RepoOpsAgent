@@ -1,0 +1,58 @@
+[
+  {
+    "task_id": "nanobot-issue-1875",
+    "category": "feature",
+    "files": [
+      "nanobot/channels/telegram/runtime.py",
+      "nanobot/channels/telegram/tests/test_telegram_channel.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "30ab1f73b6f88de9"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "57c2fe8932ee7034"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cab463d6655fe9b5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7d72dfbd0a29e861"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d8b5daeb540b11b9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1c5c51865f76af4f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dfa1be7dfe4bfe73"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "066abce26ffc6acc"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "099a19c393ab5756"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e67d951a5ecbc812"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 4,
+    "cited_claims": 4,
+    "citations": 6,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

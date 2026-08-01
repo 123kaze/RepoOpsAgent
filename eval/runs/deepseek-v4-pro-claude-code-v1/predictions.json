@@ -1,0 +1,1691 @@
+[
+  {
+    "task_id": "nanobot-issue-1875",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-3650",
+    "category": "feature",
+    "files": [
+      "nanobot/config/schema.py",
+      "nanobot/cli/stream.py",
+      "nanobot/cli/agent.py",
+      "webui/src/components/settings/SettingsView.tsx",
+      "webui/src/lib/types.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "65095041b6d1cd46"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "944b755eaf8b41aa"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "91ebcc5cbe5b90de"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f038c3aa67e5da8c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "066c1df9c3a7978c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2067f77be94ba95e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "845e2f0c8e9ef15b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3750dcf402683419"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "17f7c21179ff68b5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "89fd1e5c65e6a04b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a6752f5d9bf8a40e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "15be2e6765941aa8"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b3df341f7ec106a1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c0e8b387ec239fa0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9158aa85a54ed687"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "507bf5f3b3f6943e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "90b3c6fab948ea8e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "14e73a177472e8c9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6442ea1df3e88f99"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ab2dad223abd419e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c2dd5d603aa17dc2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6c8a812b015fd244"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6fa530a3994df10d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "58f1d8c1acd3e8a7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "285a566f6360a71c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "23014da9f0eef11b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "50006156854d26cb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4c9ea2d3cc409801"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c69ab01fbd94cb57"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0baea3212a1c713f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "67faf3118c65e879"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6b332314b795b90a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a54e5bd06612df23"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "81f232d5d7424694"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 9,
+    "cited_claims": 9,
+    "citations": 14,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-3768",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "124418ea0c984d80"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5ca76d92a65a7e30"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d1d85671d0d7a742"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0f563fd2d2426801"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "43248ad42f669b42"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f0d2621b82a389ba"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e219ad64ee459d03"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "077c3d91573009e3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f667c4e8170a6d3a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4954cda69f76f18c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0dfdba3edb344f47"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4043",
+    "category": "feature",
+    "files": [
+      "nanobot/config/schema.py",
+      "nanobot/utils/document.py",
+      "nanobot/agent/loop.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "d9e0e133542bdfd8"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "93d8eb279dd7c8d0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fbb009c92a246cf9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9a902e0576f46cd5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "984eede09d2c66c5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "518ebb47bd6f786f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "41353aef42d21895"
+      },
+      {
+        "name": "claude_code:Bash",
+        "arguments_key": "f4cbda8d091877bd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "df126470b189cbc1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0bd97cc6dac6db24"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "eb79b81124132945"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9dc05305bba645b9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b0ff43d8329006fb"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 9,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4055",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/memory.py",
+      "nanobot/command/builtin.py",
+      "nanobot/cli/gateway_runtime.py",
+      "tests/agent/test_memory_store.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "166198f7864163b1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1c0fa45b66f73e64"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a7b6d1f5ac915a32"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f2db5e4b43c412a7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b342030fe73731e9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "deef86fec6465503"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d43aff0026be1576"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "764a3ce4af080101"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4064",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/loop.py",
+      "nanobot/agent/runner.py",
+      "nanobot/runtime_context.py",
+      "nanobot/bus/events.py",
+      "nanobot/agent/tools/context.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1703b482d4f2dd72"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5bea5483678baa3a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "303572c917d09c7b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "238ed9c858034c94"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "af8b0b9525056287"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5031a128441d7d47"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3c79cdd875a8f505"
+      },
+      {
+        "name": "claude_code:Bash",
+        "arguments_key": "d1e6d69711bfabac"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "19201ca356243054"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f69e418f692380df"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "62c74bcb7aa520a6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "467abc7d41154448"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8f0437b90bb5312b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6c4ebbdbc1f58bb4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fd02e380c0242e9e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "06dbbb9adbd1ff06"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "891512da0d0b983b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cec03344cbfc6de7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3fd1bb047829bd05"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "aad680a51a78186f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "95fa475071500263"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c8fb775d88936973"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "12cac62186c114d3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dbe32a816899d0fe"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c71c4d5a96069565"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f48f56223fef4d32"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "759a0f3040cc0436"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "62523200a3b92cba"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f301da164cca5387"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b11498ef0e449001"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f2ced80d8a467f9a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4b507aa5b07b3aaa"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a555869d95fa7673"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5a5b6723dcdd17b7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0770ce33d8bd0920"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4e81d36c89e44f25"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8cd44a6e786f054f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "366671bc3516accb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "37627ef970e561d3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4f05f2ebf662a001"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d3dacd53702aa0ab"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "685dfc6f662239e4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0b030e3626270b2a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2c2346c36daa3363"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d1b4148739a7af5b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a9c72fac0e7ab4a2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "28130560effda723"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "99a117341691240f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b794826e84816855"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c610733120d3fa1e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6d17b1708f5dbbf2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "66ef42208121ac64"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1ffbfede1efdc091"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7d1a46ee0d78f848"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5157a22e8e96e9be"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f3fa18dc10d999b2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2ab71ae1c9b7e147"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d58558ae33d1d4fa"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "aa22d0010c24d22d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "efd715ef63b5c868"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "161c980860d57a7e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9f7143d19f62b981"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9025f6489e299c6f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "12286d51f401117b"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 11,
+    "cited_claims": 11,
+    "citations": 15,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4107",
+    "category": "feature",
+    "files": [
+      "nanobot/agent/tools/shell.py",
+      "nanobot/agent/tools/sandbox.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "cde42e4112b77b25"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a1ca36f457ae798f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5b270f1626d8ff87"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a1bc4d4559651c11"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2856e03c40d43311"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3841f5b71e182a70"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "295d597daad4faf6"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4204",
+    "category": "feature",
+    "files": [
+      "nanobot/config/schema.py",
+      "nanobot/providers/factory.py",
+      "nanobot/providers/openai_compat_provider.py",
+      "tests/providers/test_extra_query_config.py",
+      "nanobot/webui/settings_api.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "2ebc063ad8b96864"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ab2dad223abd419e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6a2b953189d715f4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "14f4b5cf0e33104d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a8fd64d907328c95"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bfae16061cdbdca6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f733ea3af4ba994f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 10,
+    "cited_claims": 10,
+    "citations": 13,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4420",
+    "category": "performance",
+    "files": [
+      "nanobot/utils/helpers.py",
+      "nanobot/agent/context_governance.py",
+      "nanobot/agent/runner.py",
+      "tests/utils/test_token_estimation.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "59cf0627c36fa4e7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1b3312b4578a70ef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "223b33cc39841fd1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fa38925a86b15782"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f7ef7be7deb480cd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2b722181d0376f7a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ab3373b0ba929518"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "709abc71f17bc011"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3f1c3496111ab004"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f5c3d72e70c126e4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ac3baa1b3e1e9cbc"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "09364c50efa2933e"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4592",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/tools/shell.py",
+      "tests/tools/test_tool_validation.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "0e9421b8a751cd1d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "45e5d1211dc37219"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "369ea7d4953e50de"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "269260777a3ab10f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e5434cc02c9d7e8f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7111b193bf64c6e9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "df5181aaaa61d0b4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "585c663a017aac5e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bd43a08cf2422cfa"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2f70dec11dd25834"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f31d90451f2cfeb5"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 7,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4872",
+    "category": "bug",
+    "files": [
+      "nanobot/command/builtin.py",
+      "nanobot/cli/gateway_runtime.py",
+      "nanobot/agent/memory.py",
+      "nanobot/utils/gitstore.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "af6254fb03976fee"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2a5274337d20537e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c71ecfb14026d9e0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c7a98424a93ceb9d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4a952d9d78d1ae8b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "158c460de86702f5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "efa7f321110c1892"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6374bf2bcf10bd38"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ef50ad125d5f064a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3c71f46d06cb9354"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "bd5f817e4c4b9d20"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1676f5d5c5827a7b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b0b1b59f7cd1c63b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "908868ca515f37ea"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "245d4f3ad5712dbc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "66fbc4b1b04fe145"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "257c633243e4d7f9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3afbe6c64f3a8520"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a957a5da1a1b7ce6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4ad519b60f439a16"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e4f708efe750f386"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "92f8d29d5d449b1a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ab56bf15b05f48ab"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f15747fb607f75cc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7222e8ee8fe6953c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6c73053f7eb89287"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d4d8e829d0bb4aa3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6de667c4fa1914f4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "38f8851ffaf860e7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "489738ca8d118d9b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0b6315f592098e31"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "67c47a8103c064a1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "80bb08ffdf9bf2fa"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 14,
+    "hallucinated_citations": 2,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4924",
+    "category": "bug",
+    "files": [
+      "nanobot/cli/gateway_runtime.py",
+      "nanobot/session/keys.py",
+      "nanobot/agent/loop.py",
+      "nanobot/cron/session_delivery.py",
+      "tests/cli/test_commands.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "9f0290dd5d44226f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b884b87715c895bb"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5448d3792e82fb16"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "45911a8d0c9ab4af"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0f3e48e08e6f6115"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2c47582609f3b9a3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "681661e303ca4761"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3a9abe95d45f3aa0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d18ee2f110f9c2e3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5f177423d1654fdf"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4f712b4330f93536"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d87c8470891d9ca1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "808fdb3153821d97"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 11,
+    "cited_claims": 11,
+    "citations": 20,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-4940",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6c54bc205b3e4525"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ca11c41a494a9a23"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8e146970a27856e8"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a3d556e2d47a0090"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c46f4fe558706d32"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "aa3f234dd27d43b2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6af029c7abd5b56c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d63990dc54e24486"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ed1112ea902f9e29"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b86650b1bd977c8e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "17589a95392efbeb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8a1350cb6e4b5924"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "80dff70aa8889e3b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "54e4b0044247d133"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9d0ddda1ab680d8c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "dfdf5acce172a12a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9f5acea00c0a71c1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c5a470dcffeb176f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1561b020e263fab5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "eb9b8dfc078caea2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4d861a496fdf80b6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4abfc8c7791251e9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9b96921de1b34847"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bfd71b52650ccff8"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "cba8afe7e7ee9f07"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a6d7625535792e6e"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5028",
+    "category": "bug",
+    "files": [
+      "nanobot/webui/file_preview.py",
+      "nanobot/security/workspace_policy.py",
+      "nanobot/security/workspace_access.py",
+      "nanobot/agent/tools/filesystem.py",
+      "nanobot/agent/tools/path_utils.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "509f44440287a353"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7ea54f8ee613395c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9a6bd55fab134ee4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cee59fe780d0dee1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c45391f66204f960"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "910d1fad919755fa"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "89a7771343f0d0c6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "564d6adb4f418cb5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c6904780d7091603"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5986de480ec505b0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d3b3109db2a67b3a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "38fd1c0f0f1ae1ac"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0069977f448fc848"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b0b2fa2d043c91d7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e223152ff5164c2a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "14e73a177472e8c9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "42c979852dce241e"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 11,
+    "cited_claims": 11,
+    "citations": 12,
+    "hallucinated_citations": 1,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5040",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "8632073cfff76a0f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8fbc0c16ac8a36f5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d7649037a1402750"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "53fd03ff9e6fda42"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4bc4b4f7d1725541"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e49d6b4f9d4a8aa0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2b35dfff64ef222f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1d3bf13e785a38ae"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6178bee1140504be"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c5c9ab7e34ebb4ef"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b5ada30812db2296"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b7f2b32a0360fa8a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5f9d87e962042438"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0cdbbf43b85d37ff"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "41696e097fc372dd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9a1d0b71b2d7042a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b382bca92665cb80"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5041",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/memory.py",
+      "nanobot/command/builtin.py",
+      "nanobot/cli/gateway_runtime.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "59f4321b4609ca79"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2ad96625c6b7f3d6"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c9b5cb31ad30cc4c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4eaa48814a19a196"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6f081592bff5f7f2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f8fb10bed2d2a6f9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ac1f760c3caa737c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b520f9ddd4c2bcb9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b3d9b27dfa725bd2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ebf982a87da5d827"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0edf06ae89f08dd1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "13688b4d80e06031"
+      },
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1ece4ccd16e9bea2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2cf5091f9a42e8ed"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2cea0d3d1ff02d7b"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "34d9dc539a2dcb24"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9feeb7e4e0b57e71"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 14,
+    "hallucinated_citations": 1,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5051",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "876c2e9406673b09"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "818b1c45bd7716a3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1b1d9dbcb383c1a7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "62e336413b0c3eb0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "34fdb5dafc91afd0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a9298ae9243a8ad6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9f4b98244a501309"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e40e0753a140c248"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "87630f47768f385e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c090ac32a58e1bc9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7caed2a48844c2ef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "72c88152935d3719"
+      },
+      {
+        "name": "claude_code:Bash",
+        "arguments_key": "2a6bdba9c71151e3"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5118",
+    "category": "bug",
+    "files": [
+      "nanobot/utils/helpers.py",
+      "nanobot/agent/memory.py",
+      "nanobot/session/manager.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "63b0adbfcbe01428"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a609d8c44d8fc2b0"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f0bed6818740cb41"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9655e2806c362fd9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c2921a54382cc044"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3d5d65196c34a918"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "be4ecb7e27c48218"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ef24c4cdca3fcde3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b43b0ee2c00af2e1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7d40e506fe10bb51"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e6036d340cc8b31d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ed4dddf8400b938e"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5133",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/runner.py",
+      "tests/agent/test_runner_errors.py",
+      "nanobot/utils/runtime.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "c2a9c5486768612e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "072c93ac3824c018"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a705de9c00c5ba2f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "de3fa8adf6c85821"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0eaec37e47505987"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "74f10a89cdd3d76d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "83e80dd8c6ec9a5d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f6237b7b7692a8fe"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f87268870ee84ba4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3250209137b14322"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6e1531ece01be936"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a938e20acb4ad974"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "35cef87beee5d62f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0844da6d26096c5e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f1d5a1962851bfb3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fb3d6401ed833ae9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8b0a67f936aeba14"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 11,
+    "cited_claims": 11,
+    "citations": 14,
+    "hallucinated_citations": 2,
+    "approval_required": false
+  },
+  {
+    "task_id": "nanobot-issue-5159",
+    "category": "bug",
+    "files": [
+      "nanobot/agent/tools/shell.py",
+      "tests/tools/test_exec_platform.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "312743d62aa06681"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bf322b50f6a35e4b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "005fe6c1004a6d33"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4c241238027573c7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1ab7a22cfd3d30d4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e57ec5c16195d1cb"
+      },
+      {
+        "name": "claude_code:Bash",
+        "arguments_key": "2e57572c8d146d4d"
+      },
+      {
+        "name": "claude_code:Bash",
+        "arguments_key": "4380441fa1c2e333"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 5,
+    "cited_claims": 5,
+    "citations": 6,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

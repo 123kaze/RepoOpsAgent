@@ -1,0 +1,93 @@
+[
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/cli/cli-config.ts",
+      "packages/vitest/src/node/cli/cli-api.ts",
+      "packages/vitest/src/runtime/runner/types.ts",
+      "packages/vitest/src/node/projects/resolveProjects.ts",
+      "packages/vitest/src/node/types/config.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1f9cec127827f1da"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "a17b8d14702efbdd"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "33615aa68a3eaa08"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "72f0a8ae6f6ca1b3"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fc67fd954a1252a7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "896b9eba4f753401"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8fca6a759ef48693"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f5a6294f87b86a86"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1cc4d58f9d5b3f6a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1ee4f46b990b4e5e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c0d127193428c1f1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d5d287c4410f6fe5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8c24e3adaf2ebbef"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "211b7624248ef2c4"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "68da26a3c21c002f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6bb3dcfef1feafff"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "14eedebb74c94e70"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3a9557904ae47c2f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 10,
+    "hallucinated_citations": 2,
+    "approval_required": false
+  }
+]

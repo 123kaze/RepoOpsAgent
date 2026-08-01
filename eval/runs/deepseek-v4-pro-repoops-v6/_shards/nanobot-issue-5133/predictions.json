@@ -1,0 +1,55 @@
+[
+  {
+    "task_id": "nanobot-issue-5133",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "72992f0d19ddb97f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "b3e19e456f3f3bbf"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "25eef1e2d7a7a8cd"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "922ea4e597d371e0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "979025c3af457fa2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e593a68222d2b62a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "14749b161d875e7e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3e2d11e9fa8145f5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fc1e5371579a10a7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a3cc5fd7d3fed050"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

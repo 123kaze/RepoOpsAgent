@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T02:44:57.247862+00:00",
+  "agent": "RepoOps Agent",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 15,
+  "successful_cases": 13,
+  "total_tool_calls": 133,
+  "total_duration_ms": 1654090,
+  "total_usage": {
+    "cache_read_input_tokens": 1660672,
+    "cached_tokens": 1660672,
+    "completion_tokens": 80060,
+    "prompt_tokens": 2126438,
+    "provider_tokens": 2206498,
+    "total_tokens": 2206498
+  },
+  "cases": [
+    {
+      "case_id": "bat-issue-3002",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 165033,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3663",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 101147,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3679",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 13,
+      "duration_ms": 139772,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3803",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 94316,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3825",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 74387,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-1933",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 6,
+      "duration_ms": 72600,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2017",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 130426,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2209",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 87415,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2240",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 140433,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2257",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 146162,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10289",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 88577,
+      "run_error": "Error calling LLM: expected `:` at line 1 column 1130",
+      "parse_error": "final answer did not contain a valid JSON object"
+    },
+    {
+      "case_id": "vitest-issue-10307",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 8,
+      "duration_ms": 142869,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10459",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 6,
+      "duration_ms": 48706,
+      "run_error": "Error calling LLM: key must be a string at line 1 column 1499",
+      "parse_error": "final answer did not contain a valid JSON object"
+    },
+    {
+      "case_id": "vitest-issue-10520",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 81711,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-7352",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 13,
+      "duration_ms": 140536,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "shard_count": 15,
+  "metrics": {
+    "task_count": 15,
+    "classification_accuracy": 0.8666666666666667,
+    "file_recall_at_5": 0.7622222222222221,
+    "tool_precision": 0.828888888888889,
+    "tool_recall": 0.9733333333333334,
+    "invalid_call_rate": 0.022556390977443608,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0070921985815602835,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 8.866666666666667
+  }
+}

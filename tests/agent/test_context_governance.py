@@ -1,4 +1,10 @@
-from nanobot.agent.context_governance import ContextGovernor
+from unittest.mock import MagicMock
+
+from nanobot.agent.context_governance import (
+    ContextGovernanceConfig,
+    ContextGovernor,
+)
+from nanobot.agent.tools.registry import ToolRegistry
 
 
 def _assistant_tool_call(call_id: str) -> dict:
@@ -37,3 +43,27 @@ def test_drop_orphan_tool_results_drops_duplicate_tool_result() -> None:
     tool_results = [m for m in result if m.get("role") == "tool"]
     assert len(tool_results) == 1
     assert tool_results[0]["content"] == "first"
+
+
+def test_large_result_stays_inline_when_profile_has_no_read_file(tmp_path) -> None:
+    config = ContextGovernanceConfig(
+        provider=MagicMock(),
+        model="test-model",
+        tools=ToolRegistry(),
+        workspace=tmp_path,
+        session_key="restricted:profile",
+        max_tool_result_chars=256,
+    )
+
+    result = ContextGovernor.normalize_tool_result(
+        config,
+        "call_big",
+        "repoops_get_issue",
+        "x" * 2_000,
+    )
+
+    assert isinstance(result, str)
+    assert len(result) < 300
+    assert result.endswith("... (truncated)")
+    assert "[tool output persisted]" not in result
+    assert not (tmp_path / ".nanobot" / "tool-results").exists()

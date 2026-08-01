@@ -1,0 +1,73 @@
+[
+  {
+    "task_id": "nanobot-issue-5118",
+    "category": "bug",
+    "files": [
+      "nanobot/utils/helpers.py",
+      "nanobot/session/manager.py",
+      "nanobot/agent/memory.py",
+      "tests/agent/test_session_manager_history.py",
+      "nanobot/runtime_context.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "27a79b62523d27be"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "f684b499c466f0a9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d9d590773037788b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "aee633ebf900b5c1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "03a3599200ddc279"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f6118b1dae41c3a5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "790dd05265bbbbf5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a24a7ba6aac4d4e6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f30365a734ca33c5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b1e4b7998b44fb94"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3888303db0ceade5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3af635c650fbd2ef"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "629de1c0793921a8"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

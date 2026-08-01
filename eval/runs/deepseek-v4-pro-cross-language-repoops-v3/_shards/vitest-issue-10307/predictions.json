@@ -1,0 +1,49 @@
+[
+  {
+    "task_id": "vitest-issue-10307",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/runtime/console.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "81384278f6c5a3fb"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "dac39e89a5f7a2f2"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "43f9962b50c1762c"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7a950cf649cb9b10"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e12be834478775df"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5721f3703b2ef15d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "91cf27a4d8f997ae"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "806ad99e7ed76082"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 13,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

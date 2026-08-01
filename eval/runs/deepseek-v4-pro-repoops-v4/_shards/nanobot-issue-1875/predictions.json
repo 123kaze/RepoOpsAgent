@@ -1,0 +1,87 @@
+[
+  {
+    "task_id": "nanobot-issue-1875",
+    "category": "insufficient-information",
+    "files": [
+      "nanobot/channels/telegram/runtime.py",
+      "nanobot/channels/telegram/tests/test_telegram_channel.py",
+      "nanobot/bus/events.py"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "30ab1f73b6f88de9"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "57c2fe8932ee7034"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3bd8806806ed94b9"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f93c292565bdb2d1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6bdb78d73abcfae9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "435c45fe8aaeb4b8"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "462b9c9cf0c6e215"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "cc55492dd8eb5046"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ae86a02138b482f7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f99fdc670c6cc2c2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "595f313a91815725"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "efd23514e148bec1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "05686e56f90d69bd"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "5e4a3daad5e6847f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8cdfa5fd34ec5c72"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ad634a680d317279"
+      },
+      {
+        "name": "repoops_update_task_state",
+        "arguments_key": "ba8412584598ebf5"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 6,
+    "cited_claims": 5,
+    "citations": 7,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]
