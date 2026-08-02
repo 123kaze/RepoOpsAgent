@@ -1,0 +1,80 @@
+[
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/node/config/resolveConfig.ts",
+      "packages/vitest/src/node/coverage.ts",
+      "packages/coverage-v8/src/provider.ts",
+      "test/coverage-test/test/include-exclude.unit.test.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1e189ebe13783fdc"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "055fc7ea8febe182"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ad0c99c3ec096c8d"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "556da442336fdc7a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f7e9859339aebeb9"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "56faab10b0a1e4de"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "569ba35ed5ad662f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c4dfc19d803e29ff"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "2a351a35b9a71ce2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d7e4a348f9926173"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c072acf0fc9b4c5e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "8d2c46373afd4e9f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "973ac5ebccfa6e7d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "18344875369f2183"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1da8a0e74252665b"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 3,
+    "cited_claims": 3,
+    "citations": 4,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

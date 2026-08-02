@@ -31,7 +31,11 @@ RepoOps 使用 nanobot 的配置加载器，默认读取 `~/.nanobot/config.json
       "stateDir": ".repoops",
       "timeout": 30,
       "maxDownloadBytes": 5000000,
-      "maxOutputChars": 60000
+      "maxOutputChars": 60000,
+      "statusBarEnabled": true,
+      "statusBarToolBudget": 10,
+      "statusBarRepeatLimit": 3,
+      "statusBarNoProgressLimit": 3
     }
   }
 }
@@ -59,6 +63,13 @@ API rate limit 在认证后更稳定。任何 GitHub 写操作都要求 token �
 | `timeout` | `30` | API 超时秒数，范围 1–120 |
 | `maxDownloadBytes` | `5000000` | Actions 日志压缩包及展开总量上限 |
 | `maxOutputChars` | `60000` | 单个 RepoOps 工具输出上限 |
+| `statusBarEnabled` | `true` | 每轮向模型副本注入代码生成的状态栏 |
+| `statusBarToolBudget` | `10` | 默认工具预算；评测可按任务在调用属性中覆盖 |
+| `statusBarRepeatLimit` | `3` | 相同工具与规范化参数达到此次数后要求停止原样重试 |
+| `statusBarNoProgressLimit` | `3` | 连续无新增证据达到此次数后要求换策略或收尾 |
+
+状态栏不会保存到历史。预算和熔断字段是模型决策约束，不会替代 Runner 的迭代上限；
+GitHub 写入安全也不依赖它，仍由草稿—审批—执行状态机硬性保证。
 
 `allowedRepositories` 是 capability boundary，不是提示词。模型即使调用 shell、
 web 或构造其他 URL，也不应获得 RepoOps 之外的仓库权限。正式 benchmark 会进一步

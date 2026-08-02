@@ -1,0 +1,48 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/absolute/path/to/per-task-worktree",
+      "model": "deepseek-v4-pro",
+      "provider": "anthropic",
+      "maxTokens": 4096,
+      "maxToolIterations": 10,
+      "temperature": 0.1,
+      "failOnToolError": false,
+      "disabledSkills": [
+        "clawhub",
+        "cron",
+        "image-generation",
+        "memory",
+        "my",
+        "skill-creator",
+        "summarize",
+        "tmux",
+        "update-setup",
+        "weather"
+      ]
+    }
+  },
+  "providers": {
+    "anthropic": {
+      "apiKey": "${REPOOPS_DEEPSEEK_AUTH_TOKEN}",
+      "apiBase": "https://api.deepseek.com/anthropic",
+      "extraHeaders": {
+        "Authorization": "Bearer ${REPOOPS_DEEPSEEK_AUTH_TOKEN}"
+      }
+    }
+  },
+  "tools": {
+    "restrictToWorkspace": true,
+    "web": {"enable": false},
+    "exec": {
+      "enable": true,
+      "timeout": 60,
+      "allowPatterns": [
+        "gh (?:issue view|issue list|search issues) .+"
+      ]
+    },
+    "file": {"enable": true},
+    "cliApps": {"enable": false},
+    "my": {"enable": false}
+  }
+}

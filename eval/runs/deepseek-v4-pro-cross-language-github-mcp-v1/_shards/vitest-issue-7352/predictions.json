@@ -1,0 +1,81 @@
+[
+  {
+    "task_id": "vitest-issue-7352",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/cli/cli-config.ts",
+      "packages/vitest/src/node/types/config.ts",
+      "packages/vitest/src/runtime/runner/types.ts",
+      "packages/vitest/src/runtime/runner/run.ts",
+      "packages/vitest/src/runtime/runner/suite.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f07b2e425ff4273b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "10f754a0197b18ba"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "af01f5e3369a9f3a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "aef73f7c67efd3fe"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "ece4e7583ed05768"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d9777dd58df6752f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "98b301ba8cc13244"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7199dbac2456ac99"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7e73b1132605e022"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b18fd53ad603ce1b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "15bea9d635eeec88"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7a462a1a48a9fd5c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9ab4e821bc4f87cf"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f62a7ab6047286cc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4a38775dce806d96"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 16,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

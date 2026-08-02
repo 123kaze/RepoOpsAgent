@@ -1,0 +1,46 @@
+[
+  {
+    "task_id": "vitest-issue-10520",
+    "category": "bug",
+    "files": [
+      "packages/browser/src/client/orchestrator.ts",
+      "packages/browser/src/client/tester/tester.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "c837d6fe252cea58"
+      },
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "8c6d1d96fbc4aa2e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0500cc14c04e8aff"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1cead4fc72feb898"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "fe04776748057059"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "83142a4c85143c7f"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4c464e911eb0835c"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 7,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

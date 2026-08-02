@@ -1,0 +1,59 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/absolute/path/to/per-task-worktree",
+      "model": "deepseek-v4-pro",
+      "provider": "anthropic",
+      "maxTokens": 4096,
+      "maxToolIterations": 10,
+      "temperature": 0.1,
+      "failOnToolError": false,
+      "disabledSkills": [
+        "clawhub",
+        "cron",
+        "github",
+        "image-generation",
+        "memory",
+        "my",
+        "skill-creator",
+        "summarize",
+        "tmux",
+        "update-setup",
+        "weather"
+      ]
+    }
+  },
+  "providers": {
+    "anthropic": {
+      "apiKey": "${REPOOPS_DEEPSEEK_AUTH_TOKEN}",
+      "apiBase": "https://api.deepseek.com/anthropic",
+      "extraHeaders": {
+        "Authorization": "Bearer ${REPOOPS_DEEPSEEK_AUTH_TOKEN}"
+      }
+    }
+  },
+  "tools": {
+    "restrictToWorkspace": true,
+    "web": {"enable": false},
+    "exec": {"enable": false},
+    "file": {"enable": true},
+    "cliApps": {"enable": false},
+    "my": {"enable": false},
+    "mcpServers": {
+      "github": {
+        "type": "stdio",
+        "command": "${GITHUB_MCP_SERVER}",
+        "args": [
+          "stdio",
+          "--read-only",
+          "--tools=issue_read,search_issues"
+        ],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_MCP_TOKEN}"
+        },
+        "toolTimeout": 30,
+        "enabledTools": ["issue_read", "search_issues"]
+      }
+    }
+  }
+}

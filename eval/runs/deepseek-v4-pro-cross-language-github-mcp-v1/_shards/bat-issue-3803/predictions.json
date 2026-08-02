@@ -1,0 +1,44 @@
+[
+  {
+    "task_id": "bat-issue-3803",
+    "category": "bug",
+    "files": [
+      "src/printer.rs",
+      "src/config.rs",
+      "src/bin/bat/clap_app.rs",
+      "src/bin/bat/app.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "57b8b0012914e66e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0edeea1ddd9300d1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "42aee55be52847e7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7eee140d358296a5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c8df0c891ec7f5db"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a220104d69cbe00d"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

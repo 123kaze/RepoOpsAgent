@@ -1,0 +1,384 @@
+{
+  "schema_version": "1.0",
+  "case_id": "cobra-issue-2017",
+  "task_type": "issue_analysis",
+  "repository": "spf13/cobra",
+  "number": 2017,
+  "model": "deepseek-v4-pro",
+  "started_at": "2026-08-01T10:48:03.258739+00:00",
+  "completed_at": "2026-08-01T10:49:18.941651+00:00",
+  "duration_ms": 75676,
+  "source_url": "https://github.com/spf13/cobra/issues/2017",
+  "snapshot_sha": "48cea5c87b5299b68c3f5b7f2c67ea948717276f",
+  "prompt": "你是只读的 GitHub Issue 分析 Agent。分析真实历史 Issue，判断分类，定位固定代码快照\n中最相关的实现文件，并严格区分证据支持的事实与尚待验证的假设。\n\n任务：分析 Issue #2017，判断分类，定位最相关的实现文件，并用 Issue 与 pre-fix 代码证据区分事实和需求假设。\nIssue 标题：Support usage line when running as kubectl plugin\n仓库：spf13/cobra\nIssue：#2017\n本地代码快照：48cea5c87b5299b68c3f5b7f2c67ea948717276f\n工作目录已经固定在该 pre-fix commit。\n\nGitHub 数据只能调用官方 GitHub MCP Server 的只读工具：先调用\n`mcp_github_issue_read`，参数 method=`get`、owner=`spf13`、repo=`cobra`、\nissue_number=2017；确有必要时再调用一次 `mcp_github_search_issues`。本地代码\n只能调用 `grep`、`find_files`、`list_dir` 和 `read_file`。没有 shell/exec 工具。\n\n效率约束：调查工具总计最多 10 次、最多 6 个工具批次。先获取 Issue，再做最多两次\n本地搜索；最多读取 3 个精确文件范围。若 feature 目标名称在 pre-fix 快照不存在，选择\n类型和作用域相近的现有选项追踪“声明/CLI → 序列化 → 配置解析 → 运行时消费”，不要\n反复搜索缺失名称。信息不足时写入 missing_information，不要继续泛搜。\n\n完成调查后只输出一个 JSON 对象，不要使用 Markdown 代码块：\n{\n  \"category\": \"bug|feature|documentation|question|configuration|performance|security|insufficient-information\",\n  \"files\": [\"最多 5 个仓库相对路径，按相关度排序\"],\n  \"confirmed_facts\": [{\"claim\": \"证据直接支持的事实\", \"evidence_ids\": [\"E1\"]}],\n  \"hypotheses\": [{\"claim\": \"仍需验证的假设\", \"evidence_ids\": [\"E2\"]}],\n  \"evidence\": [{\n    \"evidence_id\": \"E1\",\n    \"source\": \"工具输出中出现的原始 Issue URL 或仓库相对路径\",\n    \"locator\": \"Issue 标识或行号范围\",\n    \"excerpt\": \"从工具结果逐字复制的连续短片段\"\n  }],\n  \"missing_information\": [\"尚未验证的信息\"],\n  \"recommended_actions\": [\"下一步\"],\n  \"approval_required\": false\n}\n分类边界：bug 是已有预期行为失效；feature 是请求新增当前快照尚不存在的能力、配置项\n或 API；configuration 只表示已有配置的使用、迁移或调优问题。不要因为网络失败或根因\n未确认而把标题已经明确的 bug/feature 降级为 insufficient-information。files 和\nevidence.source 只能使用工具结果实际出现的路径；excerpt 不得改写或用省略号拼接。\n不得查看或推断评测标准答案。这是只读评测，不得修改工作区或 GitHub。",
+  "tool_trace": [
+    {
+      "sequence": 1,
+      "iteration": 0,
+      "tool_call_id": "call_00_B5Vf64MqR55IXs4NaVjW0067",
+      "name": "mcp_github_issue_read",
+      "arguments": {
+        "method": "get",
+        "owner": "spf13",
+        "repo": "cobra",
+        "issue_number": 2017
+      },
+      "status": "ok",
+      "output": "{\"number\":2017,\"title\":\"Support usage line when running as kubectl plugin\",\"body\":\"When running as a kubectl plugin[1] we want the help text to look like a builtin \\nkubectl command. For example if we create a program `kubectl-cobra`:\\n\\n```Go\\n$ cat main.go \\npackage main\\n\\nimport (\\n\\t\\u0026#34;fmt\\u0026#34;\\n\\n\\t\\u0026#34;github.com/spf13/cobra\\u0026#34;\\n)\\n\\nfunc main() {\\n\\troot := \\u0026amp;cobra.Command{\\n\\t\\tUse: \\u0026#34;kubectl cobra\\u0026#34;,\\n\\t}\\n\\n\\tsub := \\u0026amp;cobra.Command{\\n\\t\\tUse: \\u0026#34;subcmd\\u0026#34;,\\n\\t\\tRun: func(cmd *cobra.Command, args []string) {\\n\\t\\t\\tfmt.Println(\\u0026#34;kubectl cobra subcmd\\u0026#34;)\\n\\t\\t},\\n\\t}\\n\\n\\troot.AddCommand(sub)\\n\\troot.Execute()\\n}\\n```\\n\\nWhen we run it we get unwanted output:\\n\\n```\\n$ kubectl cobra\\nUsage:\\n  kubectl [command]\\n\\nAvailable Commands:\\n  completion  Generate the autocompletion script for the specified shell\\n  help        Help about any command\\n  subcmd      \\n\\nFlags:\\n  -h, --help   help for kubectl\\n\\nUse \\u0026#34;kubectl [command] --help\\u0026#34; for more information about a command.\\n\\n$ kubectl cobra subcmd -h\\nUsage:\\n  kubectl subcmd [flags]\\n\\nFlags:\\n  -h, --help   help for subcmd\\n```\\n\\nThe wanted output:\\n```\\n$ kubectl cobra\\nUsage:\\n  kubectl cobra [command]\\n\\nAvailable Commands:\\n  completion  Generate the autocompletion script for the specified shell\\n  help        Help about any command\\n  subcmd      \\n\\nFlags:\\n  -h, --help   help for kubectl cobra\\n\\nUse \\u0026#34;kubectl cobra [command] --help\\u0026#34; for more information about a command.\\n\\n$ kubectl cobra subcmd -h\\nUsage:\\n  kubectl cobra subcmd [flags]\\n\\nFlags:\\n  -h, --help   help for subcmd\\n```\\n\\n\\nThe problem is we don\\u0026#39;t have a way to set the command name, it is guessed\\nbest on the first word of the `Use` field. `SetUsageFunc()` and `SetUsageTemplate()`\\nare not helpful in fixing this issue since it require re-implementing too much\\nlogic and template which a user really don\\u0026#39;t want to re-implement.\\n\\nMaybe we need `SetNameFunc()`, or `Name` field?\\n\\n## Workaround\\n\\nIf can get the wanted output using:\\n\\n```Go\\n\\troot := \\u0026amp;cobra.Command{\\n\\t\\tUse: \\u0026#34;kubectl\\\\u00A0cobra\\u0026#34;,\\n\\t}\\n```\\n\\nIt works for help output, but I did not check if this affects shell completion.\\n\\n[1] https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/\",\"state\":\"closed\",\"state_reason\":\"completed\",\"html_url\":\"https://github.com/spf13/cobra/issues/2017\",\"user\":{\"login\":\"nirs\",\"id\":395026,\"profile_url\":\"https://github.com/nirs\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/395026?v=4\"},\"author_association\":\"CONTRIBUTOR\",\"comments\":1,\"reactions\":{\"total_count\":1,\"+1\":0,\"-1\":0,\"laugh\":0,\"confused\":0,\"heart\":0,\"hooray\":0,\"rocket\":0,\"eyes\":1},\"created_at\":\"2023-08-16T15:05:57Z\",\"updated_at\":\"2023-11-02T12:15:28Z\",\"closed_at\":\"2023-11-02T12:15:28Z\",\"closed_by\":\"marckhouzam\"}",
+      "output_sha256": "97db6ea12191f2810caea905dd2d3640a672fed2764de8d0ecbf0685b016f15e",
+      "error": "",
+      "duration_ms": 836
+    },
+    {
+      "sequence": 2,
+      "iteration": 1,
+      "tool_call_id": "call_00_TyfZhzpJDfLqXdcyHRJB5740",
+      "name": "find_files",
+      "arguments": {
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017",
+        "query": "command.go",
+        "type": "go"
+      },
+      "status": "ok",
+      "output": "command.go",
+      "output_sha256": "4d7d1923693fc5ce892add2ea2907a744e77ea0b50c1939ccc5067cb48a466a3",
+      "error": "",
+      "duration_ms": 13
+    },
+    {
+      "sequence": 3,
+      "iteration": 1,
+      "tool_call_id": "call_01_DNtRKsrvtu6Q4SstntPo4822",
+      "name": "find_files",
+      "arguments": {
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017",
+        "query": "help.go",
+        "type": "go"
+      },
+      "status": "ok",
+      "output": "active_help.go",
+      "output_sha256": "502559784be28f4f1ac3ff6b6567bbc145c1f2bced2c841fb2c6639db3124ae4",
+      "error": "",
+      "duration_ms": 12
+    },
+    {
+      "sequence": 4,
+      "iteration": 2,
+      "tool_call_id": "call_00_gXrjSApJAdwjjXzjLicI9060",
+      "name": "grep",
+      "arguments": {
+        "pattern": "Usage",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017",
+        "type": "go",
+        "output_mode": "files_with_matches",
+        "head_limit": 20
+      },
+      "status": "ok",
+      "output": "doc/yaml_docs.go\ndoc/man_docs.go\ncompletions.go\ncommand_test.go\ncommand.go\ncobra_test.go\ncobra.go",
+      "output_sha256": "6f581da9fd86feedf4cfebe2a9850b93acc54bc8d0efda72ef80866bee4470e0",
+      "error": "",
+      "duration_ms": 40
+    },
+    {
+      "sequence": 5,
+      "iteration": 3,
+      "tool_call_id": "call_00_QiYRCveX19imuftWEdEd8399",
+      "name": "grep",
+      "arguments": {
+        "pattern": "func.*Command.*Name|\\.Name\\s*=|CommandPath|commandName|NameFunc",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017",
+        "type": "go",
+        "output_mode": "content",
+        "head_limit": 30,
+        "context_before": 1,
+        "context_after": 3
+      },
+      "status": "ok",
+      "output": "args.go:36\n  35| \tif !cmd.HasParent() && len(args) > 0 {\n> 36| \t\treturn fmt.Errorf(\"unknown command %q for %q%s\", args[0], cmd.CommandPath(), cmd.findSuggestions(args[0]))\n  37| \t}\n  38| \treturn nil\n  39| }\n\nargs.go:44\n  43| \tif len(args) > 0 {\n> 44| \t\treturn fmt.Errorf(\"unknown command %q for %q\", args[0], cmd.CommandPath())\n  45| \t}\n  46| \treturn nil\n  47| }\n\nargs.go:61\n  60| \t\t\tif !stringInSlice(v, validArgs) {\n> 61| \t\t\t\treturn fmt.Errorf(\"invalid argument %q for %q%s\", v, cmd.CommandPath(), cmd.findSuggestions(args[0]))\n  62| \t\t\t}\n  63| \t\t}\n  64| \t}\n\nbash_completions.go:662\n  661| \t}\n> 662| \tcommandName := cmd.CommandPath()\n  663| \tcommandName = strings.ReplaceAll(commandName, \" \", \"_\")\n  664| \tcommandName = strings.ReplaceAll(commandName, \":\", \"__\")\n  665| \n\nbash_completions.go:663\n  662| \tcommandName := cmd.CommandPath()\n> 663| \tcommandName = strings.ReplaceAll(commandName, \" \", \"_\")\n  664| \tcommandName = strings.ReplaceAll(commandName, \":\", \"__\")\n  665| \n  666| \tif cmd.Root() == cmd {\n\nbash_completions.go:664\n  663| \tcommandName = strings.ReplaceAll(commandName, \" \", \"_\")\n> 664| \tcommandName = strings.ReplaceAll(commandName, \":\", \"__\")\n  665| \n  666| \tif cmd.Root() == cmd {\n  667| \t\tWriteStringAndCheck(buf, fmt.Sprintf(\"_%s_root_command()\\n{\\n\", commandName))\n\nbash_completions.go:667\n  666| \tif cmd.Root() == cmd {\n> 667| \t\tWriteStringAndCheck(buf, fmt.Sprintf(\"_%s_root_command()\\n{\\n\", commandName))\n  668| \t} else {\n  669| \t\tWriteStringAndCheck(buf, fmt.Sprintf(\"_%s()\\n{\\n\", commandName))\n  670| \t}\n\nbash_completions.go:669\n  668| \t} else {\n> 669| \t\tWriteStringAndCheck(buf, fmt.Sprintf(\"_%s()\\n{\\n\", commandName))\n  670| \t}\n  671| \n  672| \tWriteStringAndCheck(buf, fmt.Sprintf(\"    last_command=%q\\n\", commandName))\n\nbash_completions.go:672\n  671| \n> 672| \tWriteStringAndCheck(buf, fmt.Sprintf(\"    last_command=%q\\n\", commandName))\n  673| \tWriteStringAndCheck(buf, \"\\n\")\n  674| \tWriteStringAndCheck(buf, \"    command_aliases=()\\n\")\n  675| \tWriteStringAndCheck(buf, \"\\n\")\n\ncommand.go:218\n  217| \tcommandsMaxUseLen         int\n> 218| \tcommandsMaxCommandPathLen int\n  219| \tcommandsMaxNameLen        int\n  220| \n  221| \t// TraverseChildren parses flags on all parents before executing child command.\n\ncommand.go:361\n  360| // The user should not have a cyclic dependency on commands.\n> 361| func (c *Command) SetGlobalNormalizationFunc(n func(f *flag.FlagSet, name string) flag.NormalizedName) {\n  362| \tc.Flags().SetNormalizeFunc(n)\n  363| \tc.PersistentFlags().SetNormalizeFunc(n)\n  364| \tc.globNormFunc = n\n\ncommand.go:520\n  519| \n> 520| var minCommandPathPadding = 11\n  521| \n  522| // CommandPathPadding return padding for the command path.\n  523| func (c *Command) CommandPathPadding() int {\n\ncommand.go:522\n  521| \n> 522| // CommandPathPadding return padding for the command path.\n  523| func (c *Command) CommandPathPadding() int {\n  524| \tif c.parent == nil || minCommandPathPadding > c.parent.commandsMaxCommandPathLen {\n  525| \t\treturn minCommandPathPadding\n\ncommand.go:523\n  522| // CommandPathPadding return padding for the command path.\n> 523| func (c *Command) CommandPathPadding() int {\n  524| \tif c.parent == nil || minCommandPathPadding > c.parent.commandsMaxCommandPathLen {\n  525| \t\treturn minCommandPathPadding\n  526| \t}\n\ncommand.go:524\n  523| func (c *Command) CommandPathPadding() int {\n> 524| \tif c.parent == nil || minCommandPathPadding > c.parent.commandsMaxCommandPathLen {\n  525| \t\treturn minCommandPathPadding\n  526| \t}\n  527| \treturn c.parent.commandsMaxCommandPathLen\n\ncommand.go:525\n  524| \tif c.parent == nil || minCommandPathPadding > c.parent.commandsMaxCommandPathLen {\n> 525| \t\treturn minCommandPathPadding\n  526| \t}\n  527| \treturn c.parent.commandsMaxCommandPathLen\n  528| }\n\ncommand.go:527\n  526| \t}\n> 527| \treturn c.parent.commandsMaxCommandPathLen\n  528| }\n  529| \n  530| var minNamePadding = 11\n\ncommand.go:533\n  532| // NamePadding returns padding for the name.\n> 533| func (c *Command) NamePadding() int {\n  534| \tif c.parent == nil || minNamePadding > c.parent.commandsMaxNameLen {\n  535| \t\treturn minNamePadding\n  536| \t}\n\ncommand.go:551\n  550|   {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}\n> 551|   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}\n  552| \n  553| Aliases:\n  554|   {{.NameAndAliases}}{{end}}{{if .HasExample}}\n\ncommand.go:575\n  574| Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}\n> 575|   {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}\n  576| \n  577| Use \"{{.CommandPath}} [command] --help\" for more information about a command.{{end}}\n  578| `\n\ncommand.go:577\n  576| \n> 577| Use \"{{.CommandPath}} [command] --help\" for more information about a command.{{end}}\n  578| `\n  579| }\n  580| \n\ncommand.go:767\n  766| \tfor _, cmd := range c.commands {\n> 767| \t\tif commandNameMatches(cmd.Name(), next) || cmd.HasAlias(next) {\n  768| \t\t\tcmd.commandCalledAs.name = next\n  769| \t\t\treturn cmd\n  770| \t\t}\n\ncommand.go:829\n  828| // SuggestionsFor provides suggestions for the typedName.\n> 829| func (c *Command) SuggestionsFor(typedName string) []string {\n  830| \tsuggestions := []string{}\n  831| \tfor _, cmd := range c.commands {\n  832| \t\tif cmd.IsAvailableCommand() {\n\ncommand.go:1096\n  1095| \t\t\tc.PrintErrln(c.ErrPrefix(), err.Error())\n> 1096| \t\t\tc.PrintErrf(\"Run '%v --help' for usage.\\n\", c.CommandPath())\n  1097| \t\t}\n  1098| \t\treturn c, err\n  1099| \t}\n\ncommand.go:1173\n  1172| \t\tif sub.GroupID != \"\" && !c.ContainsGroup(sub.GroupID) {\n> 1173| \t\t\tpanic(fmt.Sprintf(\"group id '%s' is not defined for subcommand '%s'\", sub.GroupID, sub.CommandPath()))\n  1174| \t\t}\n  1175| \n  1176| \t\tsub.checkCommandGroups()\n\ncommand.go:1311\n  1310| \t\t}\n> 1311| \t\tcommandPathLen := len(x.CommandPath())\n  1312| \t\tif commandPathLen > c.commandsMaxCommandPathLen {\n  1313| \t\t\tc.commandsMaxCommandPathLen = commandPathLen\n  1314| \t\t}\n\ncommand.go:1312\n  1311| \t\tcommandPathLen := len(x.CommandPath())\n> 1312| \t\tif commandPathLen > c.commandsMaxCommandPathLen {\n  1313| \t\t\tc.commandsMaxCommandPathLen = commandPathLen\n  1314| \t\t}\n  1315| \t\tnameLen := len(x.Name())\n\ncommand.go:1313\n  1312| \t\tif commandPathLen > c.commandsMaxCommandPathLen {\n> 1313| \t\t\tc.commandsMaxCommandPathLen = commandPathLen\n  1314| \t\t}\n  1315| \t\tnameLen := len(x.Name())\n  1316| \t\tif nameLen > c.commandsMaxNameLen {\n\ncommand.go:1374\n  1373| \tc.commandsMaxUseLen = 0\n> 1374| \tc.commandsMaxCommandPathLen = 0\n  1375| \tc.commandsMaxNameLen = 0\n  1376| \tfor _, command := range c.commands {\n  1377| \t\tusageLen := len(command.Use)\n\ncommand.go:1381\n  1380| \t\t}\n> 1381| \t\tcommandPathLen := len(command.CommandPath())\n  1382| \t\tif commandPathLen > c.commandsMaxCommandPathLen {\n  1383| \t\t\tc.commandsMaxCommandPathLen = commandPathLen\n  1384| \t\t}\n\n(pagination: limit=30, offset=0)",
+      "output_sha256": "5a8e9c87ba47d07363b07301d1201a8ac275b4a72bde05e03e6886ea65d8d6c4",
+      "error": "",
+      "duration_ms": 14
+    },
+    {
+      "sequence": 6,
+      "iteration": 4,
+      "tool_call_id": "call_00_VhUESUmN64EBvBkOYhjL5084",
+      "name": "grep",
+      "arguments": {
+        "head_limit": 10,
+        "output_mode": "content",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "pattern": "func \\(c \\*Command\\) Name\\(\\)",
+        "context_after": 10,
+        "context_before": 2
+      },
+      "status": "ok",
+      "output": "command.go:1490\n  1488| \n  1489| // Name returns the command's name: the first word in the use line.\n> 1490| func (c *Command) Name() string {\n  1491| \tname := c.Use\n  1492| \ti := strings.Index(name, \" \")\n  1493| \tif i >= 0 {\n  1494| \t\tname = name[:i]\n  1495| \t}\n  1496| \treturn name\n  1497| }\n  1498| \n  1499| // HasAlias determines if a given string is an alias of the command.\n  1500| func (c *Command) HasAlias(s string) bool {",
+      "output_sha256": "0d337ddc417ee29fd2ba11ac85fb458c1543d849c4de545064b1ca187cc0831b",
+      "error": "",
+      "duration_ms": 3
+    },
+    {
+      "sequence": 7,
+      "iteration": 4,
+      "tool_call_id": "call_01_OAL3bW7FwkavaYdHOLHS1378",
+      "name": "grep",
+      "arguments": {
+        "head_limit": 10,
+        "output_mode": "content",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "pattern": "func \\(c \\*Command\\) CommandPath\\(\\)",
+        "context_after": 10,
+        "context_before": 2
+      },
+      "status": "ok",
+      "output": "command.go:1423\n  1421| \n  1422| // CommandPath returns the full path to this command.\n> 1423| func (c *Command) CommandPath() string {\n  1424| \tif c.HasParent() {\n  1425| \t\treturn c.Parent().CommandPath() + \" \" + c.Name()\n  1426| \t}\n  1427| \treturn c.Name()\n  1428| }\n  1429| \n  1430| // UseLine puts out the full usage for a given command (including parents).\n  1431| func (c *Command) UseLine() string {\n  1432| \tvar useline string\n  1433| \tif c.HasParent() {",
+      "output_sha256": "ffe484caeb14db0b87f150d560aa6d7e67b1b6cc63f9793d93c7634f52707899",
+      "error": "",
+      "duration_ms": 3
+    },
+    {
+      "sequence": 8,
+      "iteration": 4,
+      "tool_call_id": "call_02_tPbY0kexMXLY6kPKVZLo6733",
+      "name": "grep",
+      "arguments": {
+        "head_limit": 10,
+        "output_mode": "content",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "pattern": "func \\(c \\*Command\\) UseLine\\(\\)",
+        "context_after": 10,
+        "context_before": 2
+      },
+      "status": "ok",
+      "output": "command.go:1431\n  1429| \n  1430| // UseLine puts out the full usage for a given command (including parents).\n> 1431| func (c *Command) UseLine() string {\n  1432| \tvar useline string\n  1433| \tif c.HasParent() {\n  1434| \t\tuseline = c.parent.CommandPath() + \" \" + c.Use\n  1435| \t} else {\n  1436| \t\tuseline = c.Use\n  1437| \t}\n  1438| \tif c.DisableFlagsInUseLine {\n  1439| \t\treturn useline\n  1440| \t}\n  1441| \tif c.HasAvailableFlags() && !strings.Contains(useline, \"[flags]\") {",
+      "output_sha256": "b16b41b445b8f4a37d4889a933bee2f5b2f8fdcb45e4192de60705c237342e4a",
+      "error": "",
+      "duration_ms": 3
+    },
+    {
+      "sequence": 9,
+      "iteration": 5,
+      "tool_call_id": "call_00_ro3vcbSe80cNPJnUPLF86150",
+      "name": "read_file",
+      "arguments": {
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "offset": 530,
+        "limit": 60
+      },
+      "status": "ok",
+      "output": "530| var minNamePadding = 11\n531| \n532| // NamePadding returns padding for the name.\n533| func (c *Command) NamePadding() int {\n534| \tif c.parent == nil || minNamePadding > c.parent.commandsMaxNameLen {\n535| \t\treturn minNamePadding\n536| \t}\n537| \treturn c.parent.commandsMaxNameLen\n538| }\n539| \n540| // UsageTemplate returns usage template for the command.\n541| func (c *Command) UsageTemplate() string {\n542| \tif c.usageTemplate != \"\" {\n543| \t\treturn c.usageTemplate\n544| \t}\n545| \n546| \tif c.HasParent() {\n547| \t\treturn c.parent.UsageTemplate()\n548| \t}\n549| \treturn `Usage:{{if .Runnable}}\n550|   {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}\n551|   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}\n552| \n553| Aliases:\n554|   {{.NameAndAliases}}{{end}}{{if .HasExample}}\n555| \n556| Examples:\n557| {{.Example}}{{end}}{{if .HasAvailableSubCommands}}{{$cmds := .Commands}}{{if eq (len .Groups) 0}}\n558| \n559| Available Commands:{{range $cmds}}{{if (or .IsAvailableCommand (eq .Name \"help\"))}}\n560|   {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{else}}{{range $group := .Groups}}\n561| \n562| {{.Title}}{{range $cmds}}{{if (and (eq .GroupID $group.ID) (or .IsAvailableCommand (eq .Name \"help\")))}}\n563|   {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if not .AllChildCommandsHaveGroup}}\n564| \n565| Additional Commands:{{range $cmds}}{{if (and (eq .GroupID \"\") (or .IsAvailableCommand (eq .Name \"help\")))}}\n566|   {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}\n567| \n568| Flags:\n569| {{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}\n570| \n571| Global Flags:\n572| {{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}\n573| \n574| Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}\n575|   {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}\n576| \n577| Use \"{{.CommandPath}} [command] --help\" for more information about a command.{{end}}\n578| `\n579| }\n580| \n581| // HelpTemplate return help template for the command.\n582| func (c *Command) HelpTemplate() string {\n583| \tif c.helpTemplate != \"\" {\n584| \t\treturn c.helpTemplate\n585| \t}\n586| \n587| \tif c.HasParent() {\n588| \t\treturn c.parent.HelpTemplate()\n589| \t}\n\n(Showing lines 530-589 of 1879. Use offset=590 to continue.)",
+      "output_sha256": "2d969e18586bdf910bb1bbd0890c746b82e9e8911b9b9e89993165a014133033",
+      "error": "",
+      "duration_ms": 6
+    },
+    {
+      "sequence": 10,
+      "iteration": 5,
+      "tool_call_id": "call_01_0cSf2jrgOzQOx4NNr0rF2059",
+      "name": "read_file",
+      "arguments": {
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "offset": 1420,
+        "limit": 80
+      },
+      "status": "ok",
+      "output": "1420| }\n1421| \n1422| // CommandPath returns the full path to this command.\n1423| func (c *Command) CommandPath() string {\n1424| \tif c.HasParent() {\n1425| \t\treturn c.Parent().CommandPath() + \" \" + c.Name()\n1426| \t}\n1427| \treturn c.Name()\n1428| }\n1429| \n1430| // UseLine puts out the full usage for a given command (including parents).\n1431| func (c *Command) UseLine() string {\n1432| \tvar useline string\n1433| \tif c.HasParent() {\n1434| \t\tuseline = c.parent.CommandPath() + \" \" + c.Use\n1435| \t} else {\n1436| \t\tuseline = c.Use\n1437| \t}\n1438| \tif c.DisableFlagsInUseLine {\n1439| \t\treturn useline\n1440| \t}\n1441| \tif c.HasAvailableFlags() && !strings.Contains(useline, \"[flags]\") {\n1442| \t\tuseline += \" [flags]\"\n1443| \t}\n1444| \treturn useline\n1445| }\n1446| \n1447| // DebugFlags used to determine which flags have been assigned to which commands\n1448| // and which persist.\n1449| // nolint:goconst\n1450| func (c *Command) DebugFlags() {\n1451| \tc.Println(\"DebugFlags called on\", c.Name())\n1452| \tvar debugflags func(*Command)\n1453| \n1454| \tdebugflags = func(x *Command) {\n1455| \t\tif x.HasFlags() || x.HasPersistentFlags() {\n1456| \t\t\tc.Println(x.Name())\n1457| \t\t}\n1458| \t\tif x.HasFlags() {\n1459| \t\t\tx.flags.VisitAll(func(f *flag.Flag) {\n1460| \t\t\t\tif x.HasPersistentFlags() && x.persistentFlag(f.Name) != nil {\n1461| \t\t\t\t\tc.Println(\"  -\"+f.Shorthand+\",\", \"--\"+f.Name, \"[\"+f.DefValue+\"]\", \"\", f.Value, \"  [LP]\")\n1462| \t\t\t\t} else {\n1463| \t\t\t\t\tc.Println(\"  -\"+f.Shorthand+\",\", \"--\"+f.Name, \"[\"+f.DefValue+\"]\", \"\", f.Value, \"  [L]\")\n1464| \t\t\t\t}\n1465| \t\t\t})\n1466| \t\t}\n1467| \t\tif x.HasPersistentFlags() {\n1468| \t\t\tx.pflags.VisitAll(func(f *flag.Flag) {\n1469| \t\t\t\tif x.HasFlags() {\n1470| \t\t\t\t\tif x.flags.Lookup(f.Name) == nil {\n1471| \t\t\t\t\t\tc.Println(\"  -\"+f.Shorthand+\",\", \"--\"+f.Name, \"[\"+f.DefValue+\"]\", \"\", f.Value, \"  [P]\")\n1472| \t\t\t\t\t}\n1473| \t\t\t\t} else {\n1474| \t\t\t\t\tc.Println(\"  -\"+f.Shorthand+\",\", \"--\"+f.Name, \"[\"+f.DefValue+\"]\", \"\", f.Value, \"  [P]\")\n1475| \t\t\t\t}\n1476| \t\t\t})\n1477| \t\t}\n1478| \t\tc.Println(x.flagErrorBuf)\n1479| \t\tif x.HasSubCommands() {\n1480| \t\t\tfor _, y := range x.commands {\n1481| \t\t\t\tdebugflags(y)\n1482| \t\t\t}\n1483| \t\t}\n1484| \t}\n1485| \n1486| \tdebugflags(c)\n1487| }\n1488| \n1489| // Name returns the command's name: the first word in the use line.\n1490| func (c *Command) Name() string {\n1491| \tname := c.Use\n1492| \ti := strings.Index(name, \" \")\n1493| \tif i >= 0 {\n1494| \t\tname = name[:i]\n1495| \t}\n1496| \treturn name\n1497| }\n1498| \n1499| // HasAlias determines if a given string is an alias of the command.\n\n(Showing lines 1420-1499 of 1879. Use offset=1500 to continue.)",
+      "output_sha256": "5e373c49093b0ef8f6fb0b7beccf1229b8ac2fd546838355b3b1eb8a57953105",
+      "error": "",
+      "duration_ms": 4
+    },
+    {
+      "sequence": 11,
+      "iteration": 6,
+      "tool_call_id": "call_00_TL59G6x4qFcG2rRH6O6c3301",
+      "name": "grep",
+      "arguments": {
+        "head_limit": 15,
+        "output_mode": "content",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "pattern": "type Command struct",
+        "context_after": 80
+      },
+      "status": "error",
+      "output": "",
+      "output_sha256": "",
+      "error": "Invalid parameters for tool 'grep': context_after must be <= 20",
+      "duration_ms": null
+    },
+    {
+      "sequence": 12,
+      "iteration": 7,
+      "tool_call_id": "call_00_rKIEe7tAUXvUIowgVBwV5076",
+      "name": "read_file",
+      "arguments": {
+        "offset": 1,
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "limit": 120
+      },
+      "status": "ok",
+      "output": "1| // Copyright 2013-2023 The Cobra Authors\n2| //\n3| // Licensed under the Apache License, Version 2.0 (the \"License\");\n4| // you may not use this file except in compliance with the License.\n5| // You may obtain a copy of the License at\n6| //\n7| //      http://www.apache.org/licenses/LICENSE-2.0\n8| //\n9| // Unless required by applicable law or agreed to in writing, software\n10| // distributed under the License is distributed on an \"AS IS\" BASIS,\n11| // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n12| // See the License for the specific language governing permissions and\n13| // limitations under the License.\n14| \n15| // Package cobra is a commander providing a simple interface to create powerful modern CLI interfaces.\n16| // In addition to providing an interface, Cobra simultaneously provides a controller to organize your application code.\n17| package cobra\n18| \n19| import (\n20| \t\"bytes\"\n21| \t\"context\"\n22| \t\"errors\"\n23| \t\"fmt\"\n24| \t\"io\"\n25| \t\"os\"\n26| \t\"path/filepath\"\n27| \t\"sort\"\n28| \t\"strings\"\n29| \n30| \tflag \"github.com/spf13/pflag\"\n31| )\n32| \n33| const FlagSetByCobraAnnotation = \"cobra_annotation_flag_set_by_cobra\"\n34| \n35| // FParseErrWhitelist configures Flag parse errors to be ignored\n36| type FParseErrWhitelist flag.ParseErrorsWhitelist\n37| \n38| // Group Structure to manage groups for commands\n39| type Group struct {\n40| \tID    string\n41| \tTitle string\n42| }\n43| \n44| // Command is just that, a command for your application.\n45| // E.g.  'go run ...' - 'run' is the command. Cobra requires\n46| // you to define the usage and description as part of your command\n47| // definition to ensure usability.\n48| type Command struct {\n49| \t// Use is the one-line usage message.\n50| \t// Recommended syntax is as follows:\n51| \t//   [ ] identifies an optional argument. Arguments that are not enclosed in brackets are required.\n52| \t//   ... indicates that you can specify multiple values for the previous argument.\n53| \t//   |   indicates mutually exclusive information. You can use the argument to the left of the separator or the\n54| \t//       argument to the right of the separator. You cannot use both arguments in a single use of the command.\n55| \t//   { } delimits a set of mutually exclusive arguments when one of the arguments is required. If the arguments are\n56| \t//       optional, they are enclosed in brackets ([ ]).\n57| \t// Example: add [-F file | -D dir]... [-f format] profile\n58| \tUse string\n59| \n60| \t// Aliases is an array of aliases that can be used instead of the first word in Use.\n61| \tAliases []string\n62| \n63| \t// SuggestFor is an array of command names for which this command will be suggested -\n64| \t// similar to aliases but only suggests.\n65| \tSuggestFor []string\n66| \n67| \t// Short is the short description shown in the 'help' output.\n68| \tShort string\n69| \n70| \t// The group id under which this subcommand is grouped in the 'help' output of its parent.\n71| \tGroupID string\n72| \n73| \t// Long is the long message shown in the 'help <this-command>' output.\n74| \tLong string\n75| \n76| \t// Example is examples of how to use the command.\n77| \tExample string\n78| \n79| \t// ValidArgs is list of all valid non-flag arguments that are accepted in shell completions\n80| \tValidArgs []string\n81| \t// ValidArgsFunction is an optional function that provides valid non-flag arguments for shell completion.\n82| \t// It is a dynamic version of using ValidArgs.\n83| \t// Only one of ValidArgs and ValidArgsFunction can be used for a command.\n84| \tValidArgsFunction func(cmd *Command, args []string, toComplete string) ([]string, ShellCompDirective)\n85| \n86| \t// Expected arguments\n87| \tArgs PositionalArgs\n88| \n89| \t// ArgAliases is List of aliases for ValidArgs.\n90| \t// These are not suggested to the user in the shell completion,\n91| \t// but accepted if entered manually.\n92| \tArgAliases []string\n93| \n94| \t// BashCompletionFunction is custom bash functions used by the legacy bash autocompletion generator.\n95| \t// For portability with other shells, it is recommended to instead use ValidArgsFunction\n96| \tBashCompletionFunction string\n97| \n98| \t// Deprecated defines, if this command is deprecated and should print this string when used.\n99| \tDeprecated string\n100| \n101| \t// Annotations are key/value pairs that can be used by applications to identify or\n102| \t// group commands.\n103| \tAnnotations map[string]string\n104| \n105| \t// Version defines the version for this command. If this value is non-empty and the command does not\n106| \t// define a \"version\" flag, a \"version\" boolean flag will be added to the command and, if specified,\n107| \t// will print content of the \"Version\" variable. A shorthand \"v\" flag will also be added if the\n108| \t// command does not define one.\n109| \tVersion string\n110| \n111| \t// The *Run functions are executed in the following order:\n112| \t//   * PersistentPreRun()\n113| \t//   * PreRun()\n114| \t//   * Run()\n115| \t//   * PostRun()\n116| \t//   * PersistentPostRun()\n117| \t// All functions get the same args, the arguments after the command name.\n118| \t// The *PreRun and *PostRun functions will only be executed if the Run function of the current\n119| \t// command has been declared.\n120| \t//\n\n(Showing lines 1-120 of 1879. Use offset=121 to continue.)",
+      "output_sha256": "65d6ef19a0dad7529ff4b1b8c2e3d725474265c1355c8857b2f633b2038ec2ad",
+      "error": "",
+      "duration_ms": 3
+    },
+    {
+      "sequence": 13,
+      "iteration": 8,
+      "tool_call_id": "call_00_BgOM18ucurDM50A6hYiQ2564",
+      "name": "grep",
+      "arguments": {
+        "head_limit": 10,
+        "output_mode": "content",
+        "path": "/private/tmp/repoops-crosslang.BRrc6W/worktrees-github-mcp-v1/cobra-issue-2017/command.go",
+        "pattern": "SetUsageFunc|SetUsageTemplate|usageFunc|usageTemplate",
+        "context_after": 5,
+        "context_before": 1
+      },
+      "status": "ok",
+      "output": "command.go:163\n  162| \n> 163| \t// usageFunc is usage func defined by user.\n  164| \tusageFunc func(*Command) error\n  165| \t// usageTemplate is usage template defined by user.\n  166| \tusageTemplate string\n  167| \t// flagErrorFunc is func defined by user and it's called when the parsing of\n  168| \t// flags returns an error.\n\ncommand.go:164\n  163| \t// usageFunc is usage func defined by user.\n> 164| \tusageFunc func(*Command) error\n  165| \t// usageTemplate is usage template defined by user.\n  166| \tusageTemplate string\n  167| \t// flagErrorFunc is func defined by user and it's called when the parsing of\n  168| \t// flags returns an error.\n  169| \tflagErrorFunc func(*Command, error) error\n\ncommand.go:165\n  164| \tusageFunc func(*Command) error\n> 165| \t// usageTemplate is usage template defined by user.\n  166| \tusageTemplate string\n  167| \t// flagErrorFunc is func defined by user and it's called when the parsing of\n  168| \t// flags returns an error.\n  169| \tflagErrorFunc func(*Command, error) error\n  170| \t// helpTemplate is help template defined by user.\n\ncommand.go:166\n  165| \t// usageTemplate is usage template defined by user.\n> 166| \tusageTemplate string\n  167| \t// flagErrorFunc is func defined by user and it's called when the parsing of\n  168| \t// flags returns an error.\n  169| \tflagErrorFunc func(*Command, error) error\n  170| \t// helpTemplate is help template defined by user.\n  171| \thelpTemplate string\n\ncommand.go:303\n  302| \n> 303| // SetUsageFunc sets usage function. Usage can be defined by application.\n  304| func (c *Command) SetUsageFunc(f func(*Command) error) {\n  305| \tc.usageFunc = f\n  306| }\n  307| \n  308| // SetUsageTemplate sets usage template. Can be defined by Application.\n\ncommand.go:304\n  303| // SetUsageFunc sets usage function. Usage can be defined by application.\n> 304| func (c *Command) SetUsageFunc(f func(*Command) error) {\n  305| \tc.usageFunc = f\n  306| }\n  307| \n  308| // SetUsageTemplate sets usage template. Can be defined by Application.\n  309| func (c *Command) SetUsageTemplate(s string) {\n\ncommand.go:305\n  304| func (c *Command) SetUsageFunc(f func(*Command) error) {\n> 305| \tc.usageFunc = f\n  306| }\n  307| \n  308| // SetUsageTemplate sets usage template. Can be defined by Application.\n  309| func (c *Command) SetUsageTemplate(s string) {\n  310| \tc.usageTemplate = s\n\ncommand.go:308\n  307| \n> 308| // SetUsageTemplate sets usage template. Can be defined by Application.\n  309| func (c *Command) SetUsageTemplate(s string) {\n  310| \tc.usageTemplate = s\n  311| }\n  312| \n  313| // SetFlagErrorFunc sets a function to generate an error when flag parsing\n\ncommand.go:309\n  308| // SetUsageTemplate sets usage template. Can be defined by Application.\n> 309| func (c *Command) SetUsageTemplate(s string) {\n  310| \tc.usageTemplate = s\n  311| }\n  312| \n  313| // SetFlagErrorFunc sets a function to generate an error when flag parsing\n  314| // fails.\n\ncommand.go:310\n  309| func (c *Command) SetUsageTemplate(s string) {\n> 310| \tc.usageTemplate = s\n  311| }\n  312| \n  313| // SetFlagErrorFunc sets a function to generate an error when flag parsing\n  314| // fails.\n  315| func (c *Command) SetFlagErrorFunc(f func(*Command, error) error) {\n\n(pagination: limit=10, offset=0)",
+      "output_sha256": "48f54841f412b3225a58dbe0f87998dd1ee4a23787e3e367f1a827176cfdeafd",
+      "error": "",
+      "duration_ms": 2
+    },
+    {
+      "sequence": 14,
+      "iteration": 9,
+      "tool_call_id": "call_00_HRxrVWRFFIsHNjvYHfgl8555",
+      "name": "mcp_github_issue_read",
+      "arguments": {
+        "method": "get_comments",
+        "owner": "spf13",
+        "repo": "cobra",
+        "issue_number": 2017
+      },
+      "status": "error",
+      "output": "(MCP tool call failed: McpError)",
+      "output_sha256": "9281211a39a57b67f68e79840119e17737acf36b045ab110190f2db98838701e",
+      "error": "(MCP tool call failed: McpError)",
+      "duration_ms": 139
+    }
+  ],
+  "final_answer": "{\n  \"category\": \"feature\",\n  \"files\": [\n    \"command.go\"\n  ],\n  \"confirmed_facts\": [\n    {\n      \"claim\": \"The Issue requests a way to explicitly set the command name used in usage output, independent of the Use field's first word\",\n      \"evidence_ids\": [\"E1\", \"E2\"]\n    },\n    {\n      \"claim\": \"In the pre-fix snapshot, the Command struct has no explicit Name field, only a Use string field\",\n      \"evidence_ids\": [\"E3\"]\n    },\n    {\n      \"claim\": \"The Name() method derives the command name as the first word of the Use field by splitting on space\",\n      \"evidence_ids\": [\"E4\"]\n    },\n    {\n      \"claim\": \"CommandPath() and UseLine() both depend on Name() to construct usage output, propagating the derived name through the command hierarchy\",\n      \"evidence_ids\": [\"E5\", \"E6\"]\n    },\n    {\n      \"claim\": \"The default UsageTemplate() uses {{.UseLine}} and {{.CommandPath}} for rendering usage text, and SetUsageTemplate exists but the Issue reports it requires too much re-implementation\",\n      \"evidence_ids\": [\"E7\"]\n    }\n  ],\n  \"hypotheses\": [\n    {\n      \"claim\": \"Adding a Name field or SetNameFunc() to Command, and modifying Name() to prefer that field over parsing Use, would resolve the kubectl plugin usage display issue\",\n      \"evidence_ids\": [\"E1\", \"E4\"]\n    },\n    {\n      \"claim\": \"The non-breaking space workaround (\\\\u00A0 in Use field) affects shell completion output, but this was not verified in the Issue\",\n      \"evidence_ids\": [\"E1\"]\n    }\n  ],\n  \"evidence\": [\n    {\n      \"evidence_id\": \"E1\",\n      \"source\": \"https://github.com/spf13/cobra/issues/2017\",\n      \"locator\": \"Issue #2017 body\",\n      \"excerpt\": \"The problem is we don't have a way to set the command name, it is guessed best on the first word of the `Use` field. `SetUsageFunc()` and `SetUsageTemplate()` are not helpful in fixing this issue since it require re-implementing too much logic and template which a user really don't want to re-implement. Maybe we need `SetNameFunc()`, or `Name` field?\"\n    },\n    {\n      \"evidence_id\": \"E2\",\n      \"source\": \"https://github.com/spf13/cobra/issues/2017\",\n      \"locator\": \"Issue #2017 body (unwanted vs wanted output)\",\n      \"excerpt\": \"When we run it we get unwanted output: ... Usage: kubectl [command] ... The wanted output: ... Usage: kubectl cobra [command]\"\n    },\n    {\n      \"evidence_id\": \"E3\",\n      \"source\": \"command.go\",\n      \"locator\": \"Lines 48-58\",\n      \"excerpt\": \"type Command struct {\\n\\t// Use is the one-line usage message.\\n\\t// Recommended syntax is as follows:\\n\\t//   [ ] identifies an optional argument. Arguments that are not enclosed in brackets are required.\\n\\t//   ... indicates that you can specify multiple values for the previous argument.\\n\\t//   |   indicates mutually exclusive information. You can use the argument to the left of the separator or the\\n\\t//       argument to the right of the separator. You cannot use both arguments in a single use of the command.\\n\\t//   { } delimits a set of mutually exclusive arguments when one of the arguments is required. If the arguments are\\n\\t//       optional, they are enclosed in brackets ([ ]).\\n\\t// Example: add [-F file | -D dir]... [-f format] profile\\n\\tUse string\"\n    },\n    {\n      \"evidence_id\": \"E4\",\n      \"source\": \"command.go\",\n      \"locator\": \"Lines 1489-1497\",\n      \"excerpt\": \"// Name returns the command's name: the first word in the use line.\\nfunc (c *Command) Name() string {\\n\\tname := c.Use\\n\\ti := strings.Index(name, \\\" \\\")\\n\\tif i >= 0 {\\n\\t\\tname = name[:i]\\n\\t}\\n\\treturn name\\n}\"\n    },\n    {\n      \"evidence_id\": \"E5\",\n      \"source\": \"command.go\",\n      \"locator\": \"Lines 1422-1428\",\n      \"excerpt\": \"// CommandPath returns the full path to this command.\\nfunc (c *Command) CommandPath() string {\\n\\tif c.HasParent() {\\n\\t\\treturn c.Parent().CommandPath() + \\\" \\\" + c.Name()\\n\\t}\\n\\treturn c.Name()\\n}\"\n    },\n    {\n      \"evidence_id\": \"E6\",\n      \"source\": \"command.go\",\n      \"locator\": \"Lines 1430-1445\",\n      \"excerpt\": \"func (c *Command) UseLine() string {\\n\\tvar useline string\\n\\tif c.HasParent() {\\n\\t\\tuseline = c.parent.CommandPath() + \\\" \\\" + c.Use\\n\\t} else {\\n\\t\\tuseline = c.Use\\n\\t}\\n\\tif c.DisableFlagsInUseLine {\\n\\t\\treturn useline\\n\\t}\\n\\tif c.HasAvailableFlags() && !strings.Contains(useline, \\\"[flags]\\\") {\\n\\t\\tuseline += \\\" [flags]\\\"\\n\\t}\\n\\treturn useline\\n}\"\n    },\n    {\n      \"evidence_id\": \"E7\",\n      \"source\": \"command.go\",\n      \"locator\": \"Lines 540-578\",\n      \"excerpt\": \"func (c *Command) UsageTemplate() string {\\n\\tif c.usageTemplate != \\\"\\\" {\\n\\t\\treturn c.usageTemplate\\n\\t}\\n\\n\\tif c.HasParent() {\\n\\t\\treturn c.parent.UsageTemplate()\\n\\t}\\n\\treturn `Usage:{{if .Runnable}}\\n  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}\\n  {{.CommandPath}} [command]{{end}}...Use \\\"{{.CommandPath}} [command] --help\\\" for more information about a command.{{end}}\\n`\"\n    }\n  ],\n  \"missing_information\": [\n    \"PR that resolved this Issue and the specific implementation approach (Name field vs SetNameFunc)\",\n    \"Whether the non-breaking space workaround affects shell completion as the Issue author suspected\",\n    \"Whether the kubectl plugin use case also affects other parts of the help output beyond the usage line\"\n  ],\n  \"recommended_actions\": [\n    \"Examine the merged PR that closed this Issue to see which approach (Name field vs SetNameFunc) was implemented\",\n    \"Check if corresponding changes were made to CommandPath(), UseLine(), and UsageTemplate() to support the new name customization\",\n    \"Verify changes against shell completion code paths (completions.go, bash_completions.go) that also use CommandPath() and Name()\"\n  ],\n  \"approval_required\": false\n}",
+  "parsed_answer": {
+    "category": "feature",
+    "files": [
+      "command.go"
+    ],
+    "confirmed_facts": [
+      {
+        "claim": "The Issue requests a way to explicitly set the command name used in usage output, independent of the Use field's first word",
+        "evidence_ids": [
+          "E1",
+          "E2"
+        ]
+      },
+      {
+        "claim": "In the pre-fix snapshot, the Command struct has no explicit Name field, only a Use string field",
+        "evidence_ids": [
+          "E3"
+        ]
+      },
+      {
+        "claim": "The Name() method derives the command name as the first word of the Use field by splitting on space",
+        "evidence_ids": [
+          "E4"
+        ]
+      },
+      {
+        "claim": "CommandPath() and UseLine() both depend on Name() to construct usage output, propagating the derived name through the command hierarchy",
+        "evidence_ids": [
+          "E5",
+          "E6"
+        ]
+      },
+      {
+        "claim": "The default UsageTemplate() uses {{.UseLine}} and {{.CommandPath}} for rendering usage text, and SetUsageTemplate exists but the Issue reports it requires too much re-implementation",
+        "evidence_ids": [
+          "E7"
+        ]
+      }
+    ],
+    "hypotheses": [
+      {
+        "claim": "Adding a Name field or SetNameFunc() to Command, and modifying Name() to prefer that field over parsing Use, would resolve the kubectl plugin usage display issue",
+        "evidence_ids": [
+          "E1",
+          "E4"
+        ]
+      },
+      {
+        "claim": "The non-breaking space workaround (\\u00A0 in Use field) affects shell completion output, but this was not verified in the Issue",
+        "evidence_ids": [
+          "E1"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "evidence_id": "E1",
+        "source": "https://github.com/spf13/cobra/issues/2017",
+        "locator": "Issue #2017 body",
+        "excerpt": "The problem is we don't have a way to set the command name, it is guessed best on the first word of the `Use` field. `SetUsageFunc()` and `SetUsageTemplate()` are not helpful in fixing this issue since it require re-implementing too much logic and template which a user really don't want to re-implement. Maybe we need `SetNameFunc()`, or `Name` field?"
+      },
+      {
+        "evidence_id": "E2",
+        "source": "https://github.com/spf13/cobra/issues/2017",
+        "locator": "Issue #2017 body (unwanted vs wanted output)",
+        "excerpt": "When we run it we get unwanted output: ... Usage: kubectl [command] ... The wanted output: ... Usage: kubectl cobra [command]"
+      },
+      {
+        "evidence_id": "E3",
+        "source": "command.go",
+        "locator": "Lines 48-58",
+        "excerpt": "type Command struct {\n\t// Use is the one-line usage message.\n\t// Recommended syntax is as follows:\n\t//   [ ] identifies an optional argument. Arguments that are not enclosed in brackets are required.\n\t//   ... indicates that you can specify multiple values for the previous argument.\n\t//   |   indicates mutually exclusive information. You can use the argument to the left of the separator or the\n\t//       argument to the right of the separator. You cannot use both arguments in a single use of the command.\n\t//   { } delimits a set of mutually exclusive arguments when one of the arguments is required. If the arguments are\n\t//       optional, they are enclosed in brackets ([ ]).\n\t// Example: add [-F file | -D dir]... [-f format] profile\n\tUse string"
+      },
+      {
+        "evidence_id": "E4",
+        "source": "command.go",
+        "locator": "Lines 1489-1497",
+        "excerpt": "// Name returns the command's name: the first word in the use line.\nfunc (c *Command) Name() string {\n\tname := c.Use\n\ti := strings.Index(name, \" \")\n\tif i >= 0 {\n\t\tname = name[:i]\n\t}\n\treturn name\n}"
+      },
+      {
+        "evidence_id": "E5",
+        "source": "command.go",
+        "locator": "Lines 1422-1428",
+        "excerpt": "// CommandPath returns the full path to this command.\nfunc (c *Command) CommandPath() string {\n\tif c.HasParent() {\n\t\treturn c.Parent().CommandPath() + \" \" + c.Name()\n\t}\n\treturn c.Name()\n}"
+      },
+      {
+        "evidence_id": "E6",
+        "source": "command.go",
+        "locator": "Lines 1430-1445",
+        "excerpt": "func (c *Command) UseLine() string {\n\tvar useline string\n\tif c.HasParent() {\n\t\tuseline = c.parent.CommandPath() + \" \" + c.Use\n\t} else {\n\t\tuseline = c.Use\n\t}\n\tif c.DisableFlagsInUseLine {\n\t\treturn useline\n\t}\n\tif c.HasAvailableFlags() && !strings.Contains(useline, \"[flags]\") {\n\t\tuseline += \" [flags]\"\n\t}\n\treturn useline\n}"
+      },
+      {
+        "evidence_id": "E7",
+        "source": "command.go",
+        "locator": "Lines 540-578",
+        "excerpt": "func (c *Command) UsageTemplate() string {\n\tif c.usageTemplate != \"\" {\n\t\treturn c.usageTemplate\n\t}\n\n\tif c.HasParent() {\n\t\treturn c.parent.UsageTemplate()\n\t}\n\treturn `Usage:{{if .Runnable}}\n  {{.UseLine}}{{end}}{{if .HasAvailableSubCommands}}\n  {{.CommandPath}} [command]{{end}}...Use \"{{.CommandPath}} [command] --help\" for more information about a command.{{end}}\n`"
+      }
+    ],
+    "missing_information": [
+      "PR that resolved this Issue and the specific implementation approach (Name field vs SetNameFunc)",
+      "Whether the non-breaking space workaround affects shell completion as the Issue author suspected",
+      "Whether the kubectl plugin use case also affects other parts of the help output beyond the usage line"
+    ],
+    "recommended_actions": [
+      "Examine the merged PR that closed this Issue to see which approach (Name field vs SetNameFunc) was implemented",
+      "Check if corresponding changes were made to CommandPath(), UseLine(), and UsageTemplate() to support the new name customization",
+      "Verify changes against shell completion code paths (completions.go, bash_completions.go) that also use CommandPath() and Name()"
+    ],
+    "approval_required": false
+  },
+  "parse_error": "",
+  "usage": {
+    "prompt_tokens": 109347,
+    "completion_tokens": 4611,
+    "total_tokens": 113958,
+    "provider_tokens": 113958,
+    "cache_read_input_tokens": 83072,
+    "cached_tokens": 83072
+  },
+  "stop_reason": "max_iterations",
+  "run_error": ""
+}

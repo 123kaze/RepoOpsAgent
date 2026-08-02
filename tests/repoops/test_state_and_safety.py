@@ -93,3 +93,16 @@ def test_draft_can_only_be_claimed_for_execution_once(tmp_path) -> None:
     assert claimed.status == "executing"
     with pytest.raises(RepoOpsStateError, match="already executing"):
         store.claim_execution("0123456789ab")
+
+
+def test_pending_drafts_are_scoped_to_creating_session(tmp_path) -> None:
+    store = DraftStore(tmp_path)
+    store.save(_draft())
+    other = _draft().model_copy(
+        update={"draft_id": "abcdef012345", "created_session_key": "session-2"}
+    )
+    store.save(other)
+
+    assert [draft.draft_id for draft in store.list_pending("session-1")] == [
+        "0123456789ab"
+    ]

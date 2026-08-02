@@ -15,6 +15,44 @@ _MAX_TOOL_RESULT_CHARS = AgentDefaults().max_tool_result_chars
 
 
 @pytest.mark.asyncio
+async def test_runner_hook_can_inject_ephemeral_model_messages_without_persisting():
+    from nanobot.agent.hook import AgentHook, AgentHookContext
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    captured_messages: list[list[dict[str, object]]] = []
+
+    async def chat_with_retry(**kwargs):
+        captured_messages.append(list(kwargs["messages"]))
+        return LLMResponse(content="done", tool_calls=[], usage={})
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+
+    class EphemeralContextHook(AgentHook):
+        async def before_iteration(self, context: AgentHookContext) -> None:
+            assert context.model_messages is not None
+            context.model_messages.append(
+                {"role": "system", "content": "<ephemeral>status</ephemeral>"}
+            )
+
+    runner = AgentRunner()
+    result = await runner.run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "hello"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+        hook=EphemeralContextHook(),
+    ))
+
+    assert captured_messages[0][-1]["content"] == "<ephemeral>status</ephemeral>"
+    assert all("<ephemeral>" not in str(message) for message in result.messages)
+
+
+@pytest.mark.asyncio
 async def test_runner_calls_hooks_in_order():
     from nanobot.agent.hook import AgentHook, AgentHookContext
     from nanobot.agent.runner import AgentRunner

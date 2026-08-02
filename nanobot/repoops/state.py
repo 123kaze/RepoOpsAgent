@@ -151,6 +151,21 @@ class DraftStore:
                 raise RepoOpsStateError(f"RepoOps draft {draft_id!r} was not found")
             return _read_model(path, GitHubDraft)
 
+    def list_pending(self, session_key: str | None = None) -> list[GitHubDraft]:
+        """Return pending drafts, optionally limited to their creating session."""
+        with self._lock:
+            if not self.root.exists():
+                return []
+            pending: list[GitHubDraft] = []
+            for path in sorted(self.root.glob("*.json")):
+                draft = _read_model(path, GitHubDraft)
+                if draft.status is not DraftStatus.PENDING:
+                    continue
+                if session_key is not None and draft.created_session_key != session_key:
+                    continue
+                pending.append(draft)
+            return pending
+
     def claim_execution(self, draft_id: str) -> GitHubDraft:
         """Atomically move a pending draft to executing before network I/O."""
         with self._lock:

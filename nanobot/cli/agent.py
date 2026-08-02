@@ -11,7 +11,7 @@ import typer
 from rich.console import Console
 
 from nanobot import __logo__
-from nanobot.agent.hooks import create_file_edit_activity_hook
+from nanobot.agent.hooks import default_agent_hook_factories
 from nanobot.agent.loop import AgentLoop
 from nanobot.bus.outbound_events import (
     StreamDeltaEvent,
@@ -94,7 +94,7 @@ def agent(
             provider=provider,
             cron_service=cron,
             image_generation_provider_configs=image_gen_provider_configs(runtime_config),
-            hook_factories=[create_file_edit_activity_hook],
+            hook_factories=default_agent_hook_factories(runtime_config),
         )
     except ValueError as exc:
         _print_agent_start_error(exc)

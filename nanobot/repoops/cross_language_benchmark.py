@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -98,14 +99,15 @@ async def prepare_worktree(task: EvalTask, source: Path, worktree_root: Path) ->
 
 
 def benchmark_command(args: argparse.Namespace, prepared: PreparedTask) -> list[str]:
+    module = "nanobot.repoops.benchmark"
+    if args.agent == "claude-code":
+        module = "nanobot.repoops.claude_benchmark"
+    elif args.agent in {"vanilla-nanobot", "github-mcp"}:
+        module = "nanobot.repoops.generic_benchmark"
     common = [
         sys.executable,
         "-m",
-        (
-            "nanobot.repoops.benchmark"
-            if args.agent == "repoops"
-            else "nanobot.repoops.claude_benchmark"
-        ),
+        module,
         "--tasks",
         str(args.tasks),
         "--case-id",
@@ -119,6 +121,16 @@ def benchmark_command(args: argparse.Namespace, prepared: PreparedTask) -> list[
     ]
     if args.agent == "repoops":
         return [*common, "--config", str(args.config)]
+    if args.agent in {"vanilla-nanobot", "github-mcp"}:
+        return [
+            *common,
+            "--agent",
+            args.agent,
+            "--config",
+            str(args.config),
+            "--runtime-root",
+            str(args.runtime_root),
+        ]
     return [
         *common,
         "--settings",
@@ -192,17 +204,38 @@ async def run(args: argparse.Namespace) -> int:
 
     agent = "RepoOps Agent"
     prediction_builder = trajectory_prediction
+    provenance = None
     if args.agent == "claude-code":
         from nanobot.repoops.claude_benchmark import claude_trajectory_prediction
 
         agent = "Claude Code"
         prediction_builder = claude_trajectory_prediction
+    elif args.agent in {"vanilla-nanobot", "github-mcp"}:
+        from nanobot.repoops.generic_benchmark import (
+            PRE_REPOOPS_COMMIT,
+            generic_trajectory_prediction,
+        )
+
+        agent = (
+            "Pre-RepoOps nanobot + GitHub MCP Server"
+            if args.agent == "github-mcp"
+            else "Pre-RepoOps nanobot"
+        )
+        prediction_builder = generic_trajectory_prediction
+        provenance = {
+            "nanobot_runtime_commit": PRE_REPOOPS_COMMIT,
+            "adapter": args.agent,
+        }
+        if args.agent == "github-mcp":
+            lock_path = Path(__file__).resolve().parents[2] / "eval/github_mcp_server.lock.json"
+            provenance["github_mcp_server"] = json.loads(lock_path.read_text(encoding="utf-8"))
     summary = merge_runs(
         [prepared.shard_dir for prepared in prepared_tasks],
         args.output_dir,
         tasks=tasks,
         agent=agent,
         prediction_builder=prediction_builder,
+        provenance=provenance,
     )
     print(
         f"Merged {summary['case_count']} {agent} cases: "
@@ -217,11 +250,16 @@ def main() -> None:
         description="Run cross-language tasks in per-task pre-fix Git worktrees"
     )
     parser.add_argument("--tasks", type=Path, required=True)
-    parser.add_argument("--agent", choices=("repoops", "claude-code"), required=True)
+    parser.add_argument(
+        "--agent",
+        choices=("repoops", "claude-code", "vanilla-nanobot", "github-mcp"),
+        required=True,
+    )
     parser.add_argument("--repository-cache", type=Path, required=True)
     parser.add_argument("--worktree-root", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--config", type=Path)
+    parser.add_argument("--runtime-root", type=Path)
     parser.add_argument("--settings", type=Path, default=Path.home() / ".claude/settings.json")
     parser.add_argument("--executable", default="claude")
     parser.add_argument("--model", default="deepseek-v4-pro")
@@ -231,8 +269,10 @@ def main() -> None:
     parser.add_argument("--jobs", type=int, default=3)
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
-    if args.agent == "repoops" and args.config is None:
-        parser.error("--config is required for --agent repoops")
+    if args.agent != "claude-code" and args.config is None:
+        parser.error(f"--config is required for --agent {args.agent}")
+    if args.agent in {"vanilla-nanobot", "github-mcp"} and args.runtime_root is None:
+        parser.error(f"--runtime-root is required for --agent {args.agent}")
     raise SystemExit(asyncio.run(run(args)))
 
 

@@ -1,0 +1,1535 @@
+{
+  "schema_version": "1.0",
+  "task_count": 15,
+  "repositories": [
+    "sharkdp/bat",
+    "spf13/cobra",
+    "vitest-dev/vitest"
+  ],
+  "languages": [
+    "Go",
+    "Rust",
+    "TypeScript"
+  ],
+  "snapshot_strategy": "per-task pre-fix first parent of the merged reference PR",
+  "agents": {
+    "repoops": {
+      "agent": "RepoOps Agent",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "provenance": {},
+      "overall": {
+        "task_count": 15,
+        "structured_successes": 10,
+        "structured_success_rate": 0.6666666666666666,
+        "metrics": {
+          "task_count": 15,
+          "classification_accuracy": 0.6666666666666666,
+          "file_recall_at_5": 0.5955555555555556,
+          "tool_precision": 0.7944444444444445,
+          "tool_recall": 0.7866666666666666,
+          "invalid_call_rate": 0.006172839506172839,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 0.9285714285714286,
+          "hallucination_rate": 0.05357142857142857,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 10.8
+        },
+        "successful_output_metrics": {
+          "task_count": 10,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.8933333333333333,
+          "tool_precision": 0.8016666666666665,
+          "tool_recall": 0.82,
+          "invalid_call_rate": 0.008771929824561403,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 0.9285714285714286,
+          "hallucination_rate": 0.05357142857142857,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 11.4
+        },
+        "total_tool_calls": 162,
+        "total_duration_ms": 5251371,
+        "mean_duration_ms": 350091,
+        "median_duration_ms": 365787,
+        "max_duration_ms": 548914,
+        "median_tool_calls": 11,
+        "max_tool_calls": 15,
+        "total_usage": {
+          "cache_read_input_tokens": 1426048,
+          "cached_tokens": 1426048,
+          "completion_tokens": 64115,
+          "prompt_tokens": 1828946,
+          "provider_tokens": 1893061,
+          "total_tokens": 1893061
+        },
+        "failed_cases": [
+          {
+            "task_id": "cobra-issue-1933",
+            "run_error": "",
+            "parse_error": "final answer did not contain a valid JSON object",
+            "tool_calls": 9,
+            "duration_ms": 531486
+          },
+          {
+            "task_id": "cobra-issue-2240",
+            "run_error": "",
+            "parse_error": "final answer did not contain a valid JSON object",
+            "tool_calls": 9,
+            "duration_ms": 529779
+          },
+          {
+            "task_id": "cobra-issue-2017",
+            "run_error": "",
+            "parse_error": "final answer did not contain a valid JSON object",
+            "tool_calls": 9,
+            "duration_ms": 528033
+          },
+          {
+            "task_id": "vitest-issue-10520",
+            "run_error": "",
+            "parse_error": "final answer did not contain a valid JSON object",
+            "tool_calls": 12,
+            "duration_ms": 548914
+          },
+          {
+            "task_id": "bat-issue-3002",
+            "run_error": "",
+            "parse_error": "final answer did not contain a valid JSON object",
+            "tool_calls": 9,
+            "duration_ms": 528437
+          }
+        ]
+      },
+      "by_language": {
+        "Go": {
+          "task_count": 5,
+          "structured_successes": 2,
+          "structured_success_rate": 0.4,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.4,
+            "file_recall_at_5": 0.4,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.02040816326530612,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.14285714285714285,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.8
+          },
+          "successful_output_metrics": {
+            "task_count": 2,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.045454545454545456,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.14285714285714285,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.0
+          },
+          "total_tool_calls": 49,
+          "total_duration_ms": 2068684,
+          "mean_duration_ms": 413737,
+          "median_duration_ms": 528033,
+          "max_duration_ms": 531486,
+          "median_tool_calls": 9,
+          "max_tool_calls": 11,
+          "total_usage": {
+            "cache_read_input_tokens": 284672,
+            "cached_tokens": 284672,
+            "completion_tokens": 12623,
+            "prompt_tokens": 398722,
+            "provider_tokens": 411345,
+            "total_tokens": 411345
+          },
+          "failed_cases": [
+            {
+              "task_id": "cobra-issue-1933",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 531486
+            },
+            {
+              "task_id": "cobra-issue-2240",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 529779
+            },
+            {
+              "task_id": "cobra-issue-2017",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 528033
+            }
+          ]
+        },
+        "Rust": {
+          "task_count": 5,
+          "structured_successes": 4,
+          "structured_success_rate": 0.8,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.8,
+            "file_recall_at_5": 0.6666666666666667,
+            "tool_precision": 0.7866666666666666,
+            "tool_recall": 0.76,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9444444444444444,
+            "hallucination_rate": 0.08333333333333333,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.0
+          },
+          "successful_output_metrics": {
+            "task_count": 4,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.7958333333333334,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9444444444444444,
+            "hallucination_rate": 0.08333333333333333,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.25
+          },
+          "total_tool_calls": 50,
+          "total_duration_ms": 1339676,
+          "mean_duration_ms": 267935,
+          "median_duration_ms": 327687,
+          "max_duration_ms": 528437,
+          "median_tool_calls": 9,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 424704,
+            "cached_tokens": 424704,
+            "completion_tokens": 23530,
+            "prompt_tokens": 557590,
+            "provider_tokens": 581120,
+            "total_tokens": 581120
+          },
+          "failed_cases": [
+            {
+              "task_id": "bat-issue-3002",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 528437
+            }
+          ]
+        },
+        "TypeScript": {
+          "task_count": 5,
+          "structured_successes": 4,
+          "structured_success_rate": 0.8,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.8,
+            "file_recall_at_5": 0.72,
+            "tool_precision": 0.7966666666666666,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.8888888888888888,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 12.6
+          },
+          "successful_output_metrics": {
+            "task_count": 4,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.9,
+            "tool_precision": 0.8083333333333333,
+            "tool_recall": 0.8500000000000001,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.8888888888888888,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 12.75
+          },
+          "total_tool_calls": 63,
+          "total_duration_ms": 1843011,
+          "mean_duration_ms": 368602,
+          "median_duration_ms": 365787,
+          "max_duration_ms": 548914,
+          "median_tool_calls": 13,
+          "max_tool_calls": 15,
+          "total_usage": {
+            "cache_read_input_tokens": 716672,
+            "cached_tokens": 716672,
+            "completion_tokens": 27962,
+            "prompt_tokens": 872634,
+            "provider_tokens": 900596,
+            "total_tokens": 900596
+          },
+          "failed_cases": [
+            {
+              "task_id": "vitest-issue-10520",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 12,
+              "duration_ms": 548914
+            }
+          ]
+        }
+      },
+      "by_repository": {
+        "sharkdp/bat": {
+          "task_count": 5,
+          "structured_successes": 4,
+          "structured_success_rate": 0.8,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.8,
+            "file_recall_at_5": 0.6666666666666667,
+            "tool_precision": 0.7866666666666666,
+            "tool_recall": 0.76,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9444444444444444,
+            "hallucination_rate": 0.08333333333333333,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.0
+          },
+          "successful_output_metrics": {
+            "task_count": 4,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.7958333333333334,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.9444444444444444,
+            "hallucination_rate": 0.08333333333333333,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.25
+          },
+          "total_tool_calls": 50,
+          "total_duration_ms": 1339676,
+          "mean_duration_ms": 267935,
+          "median_duration_ms": 327687,
+          "max_duration_ms": 528437,
+          "median_tool_calls": 9,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 424704,
+            "cached_tokens": 424704,
+            "completion_tokens": 23530,
+            "prompt_tokens": 557590,
+            "provider_tokens": 581120,
+            "total_tokens": 581120
+          },
+          "failed_cases": [
+            {
+              "task_id": "bat-issue-3002",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 528437
+            }
+          ]
+        },
+        "spf13/cobra": {
+          "task_count": 5,
+          "structured_successes": 2,
+          "structured_success_rate": 0.4,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.4,
+            "file_recall_at_5": 0.4,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.02040816326530612,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.14285714285714285,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 9.8
+          },
+          "successful_output_metrics": {
+            "task_count": 2,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.8,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.045454545454545456,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.14285714285714285,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.0
+          },
+          "total_tool_calls": 49,
+          "total_duration_ms": 2068684,
+          "mean_duration_ms": 413737,
+          "median_duration_ms": 528033,
+          "max_duration_ms": 531486,
+          "median_tool_calls": 9,
+          "max_tool_calls": 11,
+          "total_usage": {
+            "cache_read_input_tokens": 284672,
+            "cached_tokens": 284672,
+            "completion_tokens": 12623,
+            "prompt_tokens": 398722,
+            "provider_tokens": 411345,
+            "total_tokens": 411345
+          },
+          "failed_cases": [
+            {
+              "task_id": "cobra-issue-1933",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 531486
+            },
+            {
+              "task_id": "cobra-issue-2240",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 529779
+            },
+            {
+              "task_id": "cobra-issue-2017",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 9,
+              "duration_ms": 528033
+            }
+          ]
+        },
+        "vitest-dev/vitest": {
+          "task_count": 5,
+          "structured_successes": 4,
+          "structured_success_rate": 0.8,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.8,
+            "file_recall_at_5": 0.72,
+            "tool_precision": 0.7966666666666666,
+            "tool_recall": 0.8,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.8888888888888888,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 12.6
+          },
+          "successful_output_metrics": {
+            "task_count": 4,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.9,
+            "tool_precision": 0.8083333333333333,
+            "tool_recall": 0.8500000000000001,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 0.8888888888888888,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 12.75
+          },
+          "total_tool_calls": 63,
+          "total_duration_ms": 1843011,
+          "mean_duration_ms": 368602,
+          "median_duration_ms": 365787,
+          "max_duration_ms": 548914,
+          "median_tool_calls": 13,
+          "max_tool_calls": 15,
+          "total_usage": {
+            "cache_read_input_tokens": 716672,
+            "cached_tokens": 716672,
+            "completion_tokens": 27962,
+            "prompt_tokens": 872634,
+            "provider_tokens": 900596,
+            "total_tokens": 900596
+          },
+          "failed_cases": [
+            {
+              "task_id": "vitest-issue-10520",
+              "run_error": "",
+              "parse_error": "final answer did not contain a valid JSON object",
+              "tool_calls": 12,
+              "duration_ms": 548914
+            }
+          ]
+        }
+      }
+    },
+    "claude_code": {
+      "agent": "Claude Code",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "provenance": {},
+      "overall": {
+        "task_count": 15,
+        "structured_successes": 13,
+        "structured_success_rate": 0.8666666666666667,
+        "metrics": {
+          "task_count": 15,
+          "classification_accuracy": 0.8666666666666667,
+          "file_recall_at_5": 0.7711111111111111,
+          "tool_precision": 0.6722222222222222,
+          "tool_recall": 0.41333333333333333,
+          "invalid_call_rate": 0.05454545454545454,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.044585987261146494,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 14.666666666666666
+        },
+        "successful_output_metrics": {
+          "task_count": 13,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.8897435897435897,
+          "tool_precision": 0.6730769230769231,
+          "tool_recall": 0.4153846153846154,
+          "invalid_call_rate": 0.06153846153846154,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.044585987261146494,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 15.0
+        },
+        "total_tool_calls": 220,
+        "total_duration_ms": 2066397,
+        "mean_duration_ms": 137760,
+        "median_duration_ms": 118361,
+        "max_duration_ms": 381460,
+        "median_tool_calls": 10,
+        "max_tool_calls": 31,
+        "total_usage": {
+          "cached_tokens": 2093184,
+          "completion_tokens": 93356,
+          "prompt_tokens": 238009,
+          "total_tokens": 2424549
+        },
+        "failed_cases": [
+          {
+            "task_id": "cobra-issue-1933",
+            "run_error": "error_max_structured_output_retries",
+            "parse_error": "",
+            "tool_calls": 7,
+            "duration_ms": 222815
+          },
+          {
+            "task_id": "cobra-issue-2209",
+            "run_error": "error_max_structured_output_retries",
+            "parse_error": "",
+            "tool_calls": 18,
+            "duration_ms": 168524
+          }
+        ]
+      },
+      "by_language": {
+        "Go": {
+          "task_count": 5,
+          "structured_successes": 3,
+          "structured_success_rate": 0.6,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.6,
+            "file_recall_at_5": 0.6,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024096385542168676,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.6
+          },
+          "successful_output_metrics": {
+            "task_count": 3,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4000000000000001,
+            "invalid_call_rate": 0.034482758620689655,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 19.333333333333332
+          },
+          "total_tool_calls": 83,
+          "total_duration_ms": 823073,
+          "mean_duration_ms": 164615,
+          "median_duration_ms": 166442,
+          "max_duration_ms": 222815,
+          "median_tool_calls": 18,
+          "max_tool_calls": 28,
+          "total_usage": {
+            "cached_tokens": 487552,
+            "completion_tokens": 30006,
+            "prompt_tokens": 72633,
+            "total_tokens": 590191
+          },
+          "failed_cases": [
+            {
+              "task_id": "cobra-issue-1933",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 7,
+              "duration_ms": 222815
+            },
+            {
+              "task_id": "cobra-issue-2209",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 18,
+              "duration_ms": 168524
+            }
+          ]
+        },
+        "Rust": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "total_tool_calls": 56,
+          "total_duration_ms": 474521,
+          "mean_duration_ms": 94904,
+          "median_duration_ms": 90615,
+          "max_duration_ms": 147672,
+          "median_tool_calls": 8,
+          "max_tool_calls": 23,
+          "total_usage": {
+            "cached_tokens": 364928,
+            "completion_tokens": 24600,
+            "prompt_tokens": 55606,
+            "total_tokens": 445134
+          },
+          "failed_cases": []
+        },
+        "TypeScript": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "total_tool_calls": 81,
+          "total_duration_ms": 768803,
+          "mean_duration_ms": 153761,
+          "median_duration_ms": 118361,
+          "max_duration_ms": 381460,
+          "median_tool_calls": 13,
+          "max_tool_calls": 31,
+          "total_usage": {
+            "cached_tokens": 1240704,
+            "completion_tokens": 38750,
+            "prompt_tokens": 109770,
+            "total_tokens": 1389224
+          },
+          "failed_cases": []
+        }
+      },
+      "by_repository": {
+        "sharkdp/bat": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05555555555555555,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 11.2
+          },
+          "total_tool_calls": 56,
+          "total_duration_ms": 474521,
+          "mean_duration_ms": 94904,
+          "median_duration_ms": 90615,
+          "max_duration_ms": 147672,
+          "median_tool_calls": 8,
+          "max_tool_calls": 23,
+          "total_usage": {
+            "cached_tokens": 364928,
+            "completion_tokens": 24600,
+            "prompt_tokens": 55606,
+            "total_tokens": 445134
+          },
+          "failed_cases": []
+        },
+        "spf13/cobra": {
+          "task_count": 5,
+          "structured_successes": 3,
+          "structured_success_rate": 0.6,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 0.6,
+            "file_recall_at_5": 0.6,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024096385542168676,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.6
+          },
+          "successful_output_metrics": {
+            "task_count": 3,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4000000000000001,
+            "invalid_call_rate": 0.034482758620689655,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 19.333333333333332
+          },
+          "total_tool_calls": 83,
+          "total_duration_ms": 823073,
+          "mean_duration_ms": 164615,
+          "median_duration_ms": 166442,
+          "max_duration_ms": 222815,
+          "median_tool_calls": 18,
+          "max_tool_calls": 28,
+          "total_usage": {
+            "cached_tokens": 487552,
+            "completion_tokens": 30006,
+            "prompt_tokens": 72633,
+            "total_tokens": 590191
+          },
+          "failed_cases": [
+            {
+              "task_id": "cobra-issue-1933",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 7,
+              "duration_ms": 222815
+            },
+            {
+              "task_id": "cobra-issue-2209",
+              "run_error": "error_max_structured_output_retries",
+              "parse_error": "",
+              "tool_calls": 18,
+              "duration_ms": 168524
+            }
+          ]
+        },
+        "vitest-dev/vitest": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.12345679012345678,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.05970149253731343,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 16.2
+          },
+          "total_tool_calls": 81,
+          "total_duration_ms": 768803,
+          "mean_duration_ms": 153761,
+          "median_duration_ms": 118361,
+          "max_duration_ms": 381460,
+          "median_tool_calls": 13,
+          "max_tool_calls": 31,
+          "total_usage": {
+            "cached_tokens": 1240704,
+            "completion_tokens": 38750,
+            "prompt_tokens": 109770,
+            "total_tokens": 1389224
+          },
+          "failed_cases": []
+        }
+      }
+    },
+    "pre_repoops_nanobot": {
+      "agent": "Pre-RepoOps nanobot",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "provenance": {
+        "nanobot_runtime_commit": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+        "adapter": "vanilla-nanobot"
+      },
+      "overall": {
+        "task_count": 15,
+        "structured_successes": 15,
+        "structured_success_rate": 1.0,
+        "metrics": {
+          "task_count": 15,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.9044444444444444,
+          "tool_precision": 0.6666666666666665,
+          "tool_recall": 0.4000000000000001,
+          "invalid_call_rate": 0.029411764705882353,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.0,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 9.066666666666666
+        },
+        "successful_output_metrics": {
+          "task_count": 15,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.9044444444444444,
+          "tool_precision": 0.6666666666666665,
+          "tool_recall": 0.4000000000000001,
+          "invalid_call_rate": 0.029411764705882353,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.0,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 9.066666666666666
+        },
+        "total_tool_calls": 136,
+        "total_duration_ms": 1303453,
+        "mean_duration_ms": 86897,
+        "median_duration_ms": 63459,
+        "max_duration_ms": 276657,
+        "median_tool_calls": 10,
+        "max_tool_calls": 14,
+        "total_usage": {
+          "cache_read_input_tokens": 1053568,
+          "cached_tokens": 1053568,
+          "completion_tokens": 56928,
+          "prompt_tokens": 1297966,
+          "provider_tokens": 1354894,
+          "total_tokens": 1354894
+        },
+        "failed_cases": []
+      },
+      "by_language": {
+        "Go": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.038461538461538464,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.4
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.038461538461538464,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.4
+          },
+          "total_tool_calls": 52,
+          "total_duration_ms": 599168,
+          "mean_duration_ms": 119834,
+          "median_duration_ms": 80613,
+          "max_duration_ms": 276657,
+          "median_tool_calls": 11,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 352640,
+            "cached_tokens": 352640,
+            "completion_tokens": 20259,
+            "prompt_tokens": 435115,
+            "provider_tokens": 455374,
+            "total_tokens": 455374
+          },
+          "failed_cases": []
+        },
+        "Rust": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024390243902439025,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024390243902439025,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.2
+          },
+          "total_tool_calls": 41,
+          "total_duration_ms": 292302,
+          "mean_duration_ms": 58460,
+          "median_duration_ms": 54904,
+          "max_duration_ms": 72953,
+          "median_tool_calls": 7,
+          "max_tool_calls": 11,
+          "total_usage": {
+            "cache_read_input_tokens": 250624,
+            "cached_tokens": 250624,
+            "completion_tokens": 17267,
+            "prompt_tokens": 323920,
+            "provider_tokens": 341187,
+            "total_tokens": 341187
+          },
+          "failed_cases": []
+        },
+        "TypeScript": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "total_tool_calls": 43,
+          "total_duration_ms": 411983,
+          "mean_duration_ms": 82397,
+          "median_duration_ms": 63459,
+          "max_duration_ms": 202042,
+          "median_tool_calls": 9,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 450304,
+            "cached_tokens": 450304,
+            "completion_tokens": 19402,
+            "prompt_tokens": 538931,
+            "provider_tokens": 558333,
+            "total_tokens": 558333
+          },
+          "failed_cases": []
+        }
+      },
+      "by_repository": {
+        "sharkdp/bat": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024390243902439025,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.024390243902439025,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.2
+          },
+          "total_tool_calls": 41,
+          "total_duration_ms": 292302,
+          "mean_duration_ms": 58460,
+          "median_duration_ms": 54904,
+          "max_duration_ms": 72953,
+          "median_tool_calls": 7,
+          "max_tool_calls": 11,
+          "total_usage": {
+            "cache_read_input_tokens": 250624,
+            "cached_tokens": 250624,
+            "completion_tokens": 17267,
+            "prompt_tokens": 323920,
+            "provider_tokens": 341187,
+            "total_tokens": 341187
+          },
+          "failed_cases": []
+        },
+        "spf13/cobra": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.038461538461538464,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.4
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.038461538461538464,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.4
+          },
+          "total_tool_calls": 52,
+          "total_duration_ms": 599168,
+          "mean_duration_ms": 119834,
+          "median_duration_ms": 80613,
+          "max_duration_ms": 276657,
+          "median_tool_calls": 11,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 352640,
+            "cached_tokens": 352640,
+            "completion_tokens": 20259,
+            "prompt_tokens": 435115,
+            "provider_tokens": 455374,
+            "total_tokens": 455374
+          },
+          "failed_cases": []
+        },
+        "vitest-dev/vitest": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.023255813953488372,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 8.6
+          },
+          "total_tool_calls": 43,
+          "total_duration_ms": 411983,
+          "mean_duration_ms": 82397,
+          "median_duration_ms": 63459,
+          "max_duration_ms": 202042,
+          "median_tool_calls": 9,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 450304,
+            "cached_tokens": 450304,
+            "completion_tokens": 19402,
+            "prompt_tokens": 538931,
+            "provider_tokens": 558333,
+            "total_tokens": 558333
+          },
+          "failed_cases": []
+        }
+      }
+    },
+    "pre_repoops_nanobot_github_mcp": {
+      "agent": "Pre-RepoOps nanobot + GitHub MCP Server",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "provenance": {
+        "nanobot_runtime_commit": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+        "adapter": "github-mcp",
+        "github_mcp_server": {
+          "repository": "github/github-mcp-server",
+          "tag": "v1.0.5",
+          "commit": "c471ae94bb04059dc26e12c305e219c8fd4299e4",
+          "published_at": "2026-05-18T15:07:31Z",
+          "asset": "github-mcp-server_Darwin_x86_64.tar.gz",
+          "sha256": "b5b939180a29414c834b038174e213c29873c678a1716068168882d7102532f1",
+          "mode": "stdio --read-only --tools=issue_read,search_issues"
+        }
+      },
+      "overall": {
+        "task_count": 15,
+        "structured_successes": 15,
+        "structured_success_rate": 1.0,
+        "metrics": {
+          "task_count": 15,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.9044444444444444,
+          "tool_precision": 0.6722222222222222,
+          "tool_recall": 0.41333333333333344,
+          "invalid_call_rate": 0.012903225806451613,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.05333333333333334,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 10.333333333333334
+        },
+        "successful_output_metrics": {
+          "task_count": 15,
+          "classification_accuracy": 1.0,
+          "file_recall_at_5": 0.9044444444444444,
+          "tool_precision": 0.6722222222222222,
+          "tool_recall": 0.41333333333333344,
+          "invalid_call_rate": 0.012903225806451613,
+          "duplicate_call_rate": 0.0,
+          "evidence_completeness": 1.0,
+          "hallucination_rate": 0.05333333333333334,
+          "approval_gate_accuracy": 1.0,
+          "average_steps": 10.333333333333334
+        },
+        "total_tool_calls": 155,
+        "total_duration_ms": 1034938,
+        "mean_duration_ms": 68996,
+        "median_duration_ms": 59249,
+        "max_duration_ms": 155309,
+        "median_tool_calls": 11,
+        "max_tool_calls": 15,
+        "total_usage": {
+          "cache_read_input_tokens": 1135104,
+          "cached_tokens": 1135104,
+          "completion_tokens": 58421,
+          "prompt_tokens": 1438848,
+          "provider_tokens": 1497269,
+          "total_tokens": 1497269
+        },
+        "failed_cases": []
+      },
+      "by_language": {
+        "Go": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.037037037037037035,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.8
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.037037037037037035,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.8
+          },
+          "total_tool_calls": 54,
+          "total_duration_ms": 354230,
+          "mean_duration_ms": 70846,
+          "median_duration_ms": 75676,
+          "max_duration_ms": 86332,
+          "median_tool_calls": 12,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 347520,
+            "cached_tokens": 347520,
+            "completion_tokens": 20151,
+            "prompt_tokens": 452220,
+            "provider_tokens": 472371,
+            "total_tokens": 472371
+          },
+          "failed_cases": []
+        },
+        "Rust": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.15384615384615385,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.0
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.15384615384615385,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.0
+          },
+          "total_tool_calls": 50,
+          "total_duration_ms": 293502,
+          "mean_duration_ms": 58700,
+          "median_duration_ms": 53720,
+          "max_duration_ms": 80393,
+          "median_tool_calls": 11,
+          "max_tool_calls": 13,
+          "total_usage": {
+            "cache_read_input_tokens": 281344,
+            "cached_tokens": 281344,
+            "completion_tokens": 17219,
+            "prompt_tokens": 379874,
+            "provider_tokens": 397093,
+            "total_tokens": 397093
+          },
+          "failed_cases": []
+        },
+        "TypeScript": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.2
+          },
+          "total_tool_calls": 51,
+          "total_duration_ms": 387206,
+          "mean_duration_ms": 77441,
+          "median_duration_ms": 53834,
+          "max_duration_ms": 155309,
+          "median_tool_calls": 8,
+          "max_tool_calls": 15,
+          "total_usage": {
+            "cache_read_input_tokens": 506240,
+            "cached_tokens": 506240,
+            "completion_tokens": 21051,
+            "prompt_tokens": 606754,
+            "provider_tokens": 627805,
+            "total_tokens": 627805
+          },
+          "failed_cases": []
+        }
+      },
+      "by_repository": {
+        "sharkdp/bat": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.15384615384615385,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.0
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8333333333333334,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.15384615384615385,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.0
+          },
+          "total_tool_calls": 50,
+          "total_duration_ms": 293502,
+          "mean_duration_ms": 58700,
+          "median_duration_ms": 53720,
+          "max_duration_ms": 80393,
+          "median_tool_calls": 11,
+          "max_tool_calls": 13,
+          "total_usage": {
+            "cache_read_input_tokens": 281344,
+            "cached_tokens": 281344,
+            "completion_tokens": 17219,
+            "prompt_tokens": 379874,
+            "provider_tokens": 397093,
+            "total_tokens": 397093
+          },
+          "failed_cases": []
+        },
+        "spf13/cobra": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.037037037037037035,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.8
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 1.0,
+            "tool_precision": 0.6666666666666666,
+            "tool_recall": 0.4,
+            "invalid_call_rate": 0.037037037037037035,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.8
+          },
+          "total_tool_calls": 54,
+          "total_duration_ms": 354230,
+          "mean_duration_ms": 70846,
+          "median_duration_ms": 75676,
+          "max_duration_ms": 86332,
+          "median_tool_calls": 12,
+          "max_tool_calls": 14,
+          "total_usage": {
+            "cache_read_input_tokens": 347520,
+            "cached_tokens": 347520,
+            "completion_tokens": 20151,
+            "prompt_tokens": 452220,
+            "provider_tokens": 472371,
+            "total_tokens": 472371
+          },
+          "failed_cases": []
+        },
+        "vitest-dev/vitest": {
+          "task_count": 5,
+          "structured_successes": 5,
+          "structured_success_rate": 1.0,
+          "metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.2
+          },
+          "successful_output_metrics": {
+            "task_count": 5,
+            "classification_accuracy": 1.0,
+            "file_recall_at_5": 0.8800000000000001,
+            "tool_precision": 0.6833333333333332,
+            "tool_recall": 0.43999999999999995,
+            "invalid_call_rate": 0.0,
+            "duplicate_call_rate": 0.0,
+            "evidence_completeness": 1.0,
+            "hallucination_rate": 0.0,
+            "approval_gate_accuracy": 1.0,
+            "average_steps": 10.2
+          },
+          "total_tool_calls": 51,
+          "total_duration_ms": 387206,
+          "mean_duration_ms": 77441,
+          "median_duration_ms": 53834,
+          "max_duration_ms": 155309,
+          "median_tool_calls": 8,
+          "max_tool_calls": 15,
+          "total_usage": {
+            "cache_read_input_tokens": 506240,
+            "cached_tokens": 506240,
+            "completion_tokens": 21051,
+            "prompt_tokens": 606754,
+            "provider_tokens": 627805,
+            "total_tokens": 627805
+          },
+          "failed_cases": []
+        }
+      }
+    }
+  }
+}
