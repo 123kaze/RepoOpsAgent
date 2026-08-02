@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T10:50:39.018229+00:00",
+  "agent": "Pre-RepoOps nanobot",
+  "runtime_commit": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 1,
+  "successful_cases": 1,
+  "total_tool_calls": 9,
+  "total_duration_ms": 69722,
+  "total_usage": {
+    "prompt_tokens": 101059,
+    "completion_tokens": 3652,
+    "total_tokens": 104711,
+    "provider_tokens": 104711,
+    "cache_read_input_tokens": 87552,
+    "cached_tokens": 87552
+  },
+  "metrics": {
+    "task_count": 1,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 1.0,
+    "tool_precision": 0.6666666666666666,
+    "tool_recall": 0.4,
+    "invalid_call_rate": 0.0,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 9.0
+  },
+  "cases": [
+    {
+      "case_id": "vitest-issue-10459",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 69722,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ]
+}

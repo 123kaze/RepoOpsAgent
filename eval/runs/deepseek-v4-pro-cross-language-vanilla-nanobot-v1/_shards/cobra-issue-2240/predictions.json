@@ -1,0 +1,73 @@
+[
+  {
+    "task_id": "cobra-issue-2240",
+    "category": "bug",
+    "files": [
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "f7a7b17712a40691"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bab13722d095db2f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "cec3488132eb3628"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a9c105c62e8d61a5"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e4c5162a8947850a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f55dcc781d2c726a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "0a753e2d6c6df309"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a48c2c7cf4b991e4"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6d1546d60ec0da1e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "20b80bb918419cd7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4eb3a3f403a8c165"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "10b68267f24d7df8"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f0a45e9dc1a2cb4e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "839bd65c1195b9f6"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 11,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

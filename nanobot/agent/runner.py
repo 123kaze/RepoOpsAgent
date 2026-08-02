@@ -476,15 +476,18 @@ class AgentRunner:
             # those synthetic edits must not shift the append boundary used
             # later when the caller saves only the new turn. A governance
             # failure must stop the run instead of sending an ungoverned copy.
-            messages_for_model = self.context_governor.prepare_for_model(
-                governance_config,
-                messages,
-                compacted_tool_call_ids,
+            messages_for_model = list(
+                self.context_governor.prepare_for_model(
+                    governance_config,
+                    messages,
+                    compacted_tool_call_ids,
+                )
             )
             context = AgentHookContext(
                 iteration=iteration,
                 messages=messages,
                 session_key=spec.session_key,
+                model_messages=messages_for_model,
             )
             await hook.before_iteration(context)
             provider_context = conversation_state.prepare_request(

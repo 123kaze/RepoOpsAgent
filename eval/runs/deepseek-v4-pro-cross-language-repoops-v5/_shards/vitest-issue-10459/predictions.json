@@ -1,0 +1,59 @@
+[
+  {
+    "task_id": "vitest-issue-10459",
+    "category": "feature",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/vitest/src/node/types/coverage.ts",
+      "test/coverage-test/test/threshold-auto-update.unit.test.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "6d12818645e3991f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "447392d126597175"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "1a9aaec9a57d1066"
+      },
+      {
+        "name": "repoops_search_issues",
+        "arguments_key": "67a30315f1337252"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "c07ff871d0c2054d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "65491f7c7b38447a"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "947825a407734b03"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9fdbb3f231383ab5"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "252e82579e49b6d6"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "eab4e3f872105594"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 4,
+    "cited_claims": 4,
+    "citations": 6,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

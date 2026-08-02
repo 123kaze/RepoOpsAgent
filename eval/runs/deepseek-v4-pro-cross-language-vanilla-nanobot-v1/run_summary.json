@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-01T10:58:10.072507+00:00",
+  "agent": "Pre-RepoOps nanobot",
+  "models": [
+    "deepseek-v4-pro"
+  ],
+  "case_count": 15,
+  "successful_cases": 15,
+  "total_tool_calls": 136,
+  "total_duration_ms": 1303453,
+  "total_usage": {
+    "cache_read_input_tokens": 1053568,
+    "cached_tokens": 1053568,
+    "completion_tokens": 56928,
+    "prompt_tokens": 1297966,
+    "provider_tokens": 1354894,
+    "total_tokens": 1354894
+  },
+  "cases": [
+    {
+      "case_id": "bat-issue-3002",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 6,
+      "duration_ms": 72953,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3663",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 47273,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3679",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 63818,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3803",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 7,
+      "duration_ms": 53354,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "bat-issue-3825",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 54904,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-1933",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 5,
+      "duration_ms": 51091,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2017",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 11,
+      "duration_ms": 80613,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2209",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 51912,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2240",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 14,
+      "duration_ms": 276657,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "cobra-issue-2257",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 12,
+      "duration_ms": 138895,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10289",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 14,
+      "duration_ms": 202042,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10307",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 4,
+      "duration_ms": 43793,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10459",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 9,
+      "duration_ms": 69722,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-10520",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 6,
+      "duration_ms": 32967,
+      "run_error": "",
+      "parse_error": ""
+    },
+    {
+      "case_id": "vitest-issue-7352",
+      "task_type": "issue_analysis",
+      "model": "deepseek-v4-pro",
+      "tool_calls": 10,
+      "duration_ms": 63459,
+      "run_error": "",
+      "parse_error": ""
+    }
+  ],
+  "shard_count": 15,
+  "provenance": {
+    "nanobot_runtime_commit": "6a1a45d07a6de420ba87c419ae30fcb4af76d4d0",
+    "adapter": "vanilla-nanobot"
+  },
+  "metrics": {
+    "task_count": 15,
+    "classification_accuracy": 1.0,
+    "file_recall_at_5": 0.9044444444444444,
+    "tool_precision": 0.6666666666666665,
+    "tool_recall": 0.4000000000000001,
+    "invalid_call_rate": 0.029411764705882353,
+    "duplicate_call_rate": 0.0,
+    "evidence_completeness": 1.0,
+    "hallucination_rate": 0.0,
+    "approval_gate_accuracy": 1.0,
+    "average_steps": 9.066666666666666
+  }
+}

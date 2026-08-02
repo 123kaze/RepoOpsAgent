@@ -1,0 +1,63 @@
+[
+  {
+    "task_id": "vitest-issue-10520",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "8b850d55bae66d7f"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "caa010fe57392753"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "bed7a6075f72f07d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0c515631bfd14a40"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "dd1000acee133079"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "9fc252389770b570"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "ab48cd55c30e43ca"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "32297e7291b288e1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d40ff964f9e80d56"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dd474c2b1ea4664e"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e1cd24ea838c81cb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "d82126650268776d"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

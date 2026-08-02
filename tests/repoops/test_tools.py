@@ -258,6 +258,36 @@ async def test_task_state_tool_persists_evidence_and_hypothesis(tmp_path) -> Non
 
 
 @pytest.mark.asyncio
+async def test_task_state_tool_moves_completed_actions_out_of_open_todo(tmp_path) -> None:
+    registry = _registry(tmp_path)
+    base = {
+        "repository": "acme/widget",
+        "task_type": "issue_analysis",
+        "number": 8,
+    }
+    await registry.execute(
+        "repoops_update_task_state",
+        {**base, "next_actions": ["read logs", "verify timeout"]},
+    )
+
+    await registry.execute(
+        "repoops_update_task_state",
+        {
+            **base,
+            "completed_actions": ["read logs"],
+            "next_actions": ["read logs", "write conclusion"],
+        },
+    )
+
+    state = RepoTaskStore(tmp_path).load(
+        "acme/widget", RepoTaskType.ISSUE_ANALYSIS, 8
+    )
+    assert state is not None
+    assert state.completed_actions == ["read logs"]
+    assert state.next_actions == ["verify timeout", "write conclusion"]
+
+
+@pytest.mark.asyncio
 async def test_draft_needs_later_exact_user_approval(tmp_path) -> None:
     registry = _registry(tmp_path)
     create_context = RequestContext(

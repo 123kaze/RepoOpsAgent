@@ -123,6 +123,10 @@ class RepoOpsToolConfig(Base):
     max_output_chars: int = Field(default=60_000, ge=2_000, le=200_000)
     pinned_read_ref: str = Field(default="", max_length=200)
     read_pinned_ref_from_workspace: bool = False
+    status_bar_enabled: bool = True
+    status_bar_tool_budget: int = Field(default=10, ge=1, le=200)
+    status_bar_repeat_limit: int = Field(default=3, ge=2, le=10)
+    status_bar_no_progress_limit: int = Field(default=3, ge=2, le=10)
 
 
 @dataclass
@@ -831,6 +835,15 @@ class RepoOpsUpdateTaskStateTool(_RepoOpsTool):
                 "items": {"type": "string"},
                 "maxItems": 100,
             },
+            "completed_actions": {
+                "type": "array",
+                "items": {"type": "string"},
+                "maxItems": 100,
+                "description": (
+                    "Exact next_actions strings completed in this turn. Completed items are "
+                    "removed from the open TODO list."
+                ),
+            },
             "requires_human_approval": {"type": "boolean"},
         },
         required=["repository", "task_type", "number"],
@@ -848,6 +861,7 @@ class RepoOpsUpdateTaskStateTool(_RepoOpsTool):
         hypotheses: list[dict[str, Any]] | None = None,
         evidence: list[dict[str, Any]] | None = None,
         next_actions: list[str] | None = None,
+        completed_actions: list[str] | None = None,
         requires_human_approval: bool = False,
     ) -> str:
         try:
@@ -871,7 +885,19 @@ class RepoOpsUpdateTaskStateTool(_RepoOpsTool):
                     if item.evidence_id != parsed_evidence.evidence_id
                 ]
                 state.evidence.append(parsed_evidence)
-            _append_unique_strings(state.next_actions, next_actions or [])
+            completed = [value.strip() for value in completed_actions or [] if value.strip()]
+            if completed:
+                completed_set = set(completed)
+                state.next_actions = [
+                    action for action in state.next_actions if action not in completed_set
+                ]
+                _append_unique_strings(state.completed_actions, completed)
+            open_actions = [
+                action
+                for action in next_actions or []
+                if action.strip() not in set(state.completed_actions)
+            ]
+            _append_unique_strings(state.next_actions, open_actions)
             state.requires_human_approval = (
                 state.requires_human_approval or requires_human_approval
             )

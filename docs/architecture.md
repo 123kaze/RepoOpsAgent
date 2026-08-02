@@ -16,6 +16,9 @@ flowchart LR
     T --> Q[Workspace retrieval<br/>symbol · BM25 · trigram]
     T --> S[Task state<br/>facts · hypotheses · evidence]
     T --> A[Approval gate<br/>draft → later-turn approval]
+    S --> H[Status Hook<br/>budget · repeat · evidence delta]
+    A --> H
+    H -. model-only status .-> R
 
     G --> N[SSRF-guarded<br/>GitHub REST API]
     S --> D[(workspace/.repoops)]
@@ -56,6 +59,7 @@ sequenceDiagram
 | `nanobot/repoops/client.py` | GitHub REST、SSRF、Actions 日志跳转和大小限制 |
 | `nanobot/repoops/models.py` | 任务、证据、假设、工具记录和草稿模型 |
 | `nanobot/repoops/state.py` | 工作区内原子状态持久化 |
+| `nanobot/agent/hooks/repoops_status.py` | 每轮代码计算、只注入模型副本的状态栏 |
 | `nanobot/repoops/safety.py` | 仓库 allowlist 与两回合审批 |
 | `nanobot/repoops/retrieval.py` | Python 符号分块、BM25、trigram 和精确符号重排 |
 | `nanobot/repoops/benchmark.py` | 启动真实 Agent、隔离会话并保存可观察轨迹 |
@@ -91,6 +95,19 @@ Skill 是注入 Agent 上下文的工作流说明；它不新增工具权限、�
 替换。benchmark 每次 invocation 生成唯一 session namespace 和
 `.repoops/benchmark/<id>` state directory，防止历史答案污染下一次测量；顶层
 `.repoops` 被 workspace indexer 排除，因此评测状态不会参与后续代码检索。
+
+## Agent Status Bar
+
+Runner 在上下文治理后创建独立的 `model_messages` 列表，Hook 可以只修改该轮模型输入。
+RepoOps Hook 据此注入一个 `<agent_status>` runtime block；原始 `messages` 不变，因此
+状态不会进入 session、checkpoint 或下一轮历史。它使用临时 user role，避免部分
+Anthropic-compatible Provider 用最后一条 system message 覆盖原系统提示。
+
+状态栏由工具生命周期事件和 `RepoTaskStore` / `DraftStore` 确定性生成，包含迭代、
+工具预算、规范化参数指纹、错误、持久证据、最近三次证据增量、TODO 和审批状态。
+`next_actions` 是唯一的开放 TODO 来源，`completed_actions` 保存已完成项，不另建一套
+模型自述计划。相同指纹达到 3 次、连续 3 次无新增证据、剩余预算不超过 2 次时会
+要求改策略或收尾；待审批时要求停止写入。审批本身仍由工具状态机硬阻断。
 
 ## 检索
 

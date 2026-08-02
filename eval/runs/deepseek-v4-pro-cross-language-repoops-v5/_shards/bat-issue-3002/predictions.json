@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "bat-issue-3002",
+    "category": "__invalid_output__",
+    "files": [],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "611332ae936f72b8"
+      },
+      {
+        "name": "repoops_get_task_state",
+        "arguments_key": "33a944b8f6e27299"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c66210f19f623221"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e4346f22a8a00195"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "35f7cd0bf5655489"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "80577378ccfaac1d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3d9f1d1c1eb79b53"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "56b3407c9ad9bbd7"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b5526fbf69e9a95f"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 0,
+    "cited_claims": 0,
+    "citations": 0,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

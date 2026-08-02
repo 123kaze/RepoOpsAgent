@@ -425,6 +425,13 @@ async def run_case(
             _build_prompt(case),
             session_key=f"sdk:repoops-benchmark:{session_namespace}:{case.case_id}",
             ephemeral=True,
+            attributes={
+                "repoops_status_tool_budget": {
+                    "issue_analysis": 10,
+                    "pr_review": 10,
+                    "ci_diagnosis": 8,
+                }.get(case.task_type, 10)
+            },
             hooks=[trace_hook],
         )
 

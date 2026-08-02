@@ -30,7 +30,11 @@
       "enable": true,
       "allowedRepositories": ["spf13/cobra", "vitest-dev/vitest", "sharkdp/bat"],
       "token": "${REPOOPS_GITHUB_TOKEN}",
-      "maxOutputChars": 16000
+      "maxOutputChars": 16000,
+      "statusBarEnabled": true,
+      "statusBarToolBudget": 10,
+      "statusBarRepeatLimit": 3,
+      "statusBarNoProgressLimit": 3
     }
   }
 }

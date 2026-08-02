@@ -1,0 +1,39 @@
+[
+  {
+    "task_id": "cobra-issue-1933",
+    "category": "bug",
+    "files": [
+      "fish_completions.go",
+      "fish_completions_test.go",
+      "active_help.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "da1eb25e8612a1b1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e4f58f9ba08689a2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "406e5ed8b96a35e0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "30b2c9bb2ead1796"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d9a03581d8be90b1"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 12,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

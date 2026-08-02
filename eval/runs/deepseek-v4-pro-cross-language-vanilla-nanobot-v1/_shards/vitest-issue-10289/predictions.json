@@ -1,0 +1,77 @@
+[
+  {
+    "task_id": "vitest-issue-10289",
+    "category": "bug",
+    "files": [
+      "packages/vitest/src/node/coverage.ts",
+      "packages/vitest/src/defaults.ts",
+      "packages/vitest/src/node/config/resolveConfig.ts",
+      "packages/coverage-istanbul/src/provider.ts",
+      "packages/coverage-v8/src/provider.ts"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "0379512f33a59873"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "4e7af3f7264c2e07"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "b1226fd3e7737639"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "dac261f0652d3d2d"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "4c10e964bb2ef033"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "c184c1c97d77e3e2"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "34eeb752f557c444"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "3dea45889b20a283"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "2a288e34081e5bfc"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "84f05689edcf93f3"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "1f8f9d4b07a63206"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f941a6e241508641"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "3da3d99163d29444"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "229453498d39ac22"
+      }
+    ],
+    "invalid_tool_calls": 1,
+    "evidence_claims": 6,
+    "cited_claims": 6,
+    "citations": 7,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

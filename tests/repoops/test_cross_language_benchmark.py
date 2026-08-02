@@ -37,6 +37,7 @@ def _args(agent: str) -> Namespace:
         model="deepseek-v4-pro",
         effort="max",
         max_budget_usd=2.0,
+        runtime_root=Path("runtime"),
     )
 
 
@@ -64,3 +65,14 @@ def test_claude_command_uses_same_task_and_worktree(tmp_path: Path) -> None:
     assert command[command.index("--case-id") + 1] == "cobra-issue-1"
     assert command[command.index("--model") + 1] == "deepseek-v4-pro"
     assert command[command.index("--settings") + 1] == "settings.json"
+
+
+@pytest.mark.parametrize("agent", ["vanilla-nanobot", "github-mcp"])
+def test_generic_baseline_command_uses_pre_repoops_runtime(tmp_path: Path, agent: str) -> None:
+    prepared = PreparedTask(_task(), tmp_path / "workspace", tmp_path / "shard")
+    command = benchmark_command(_args(agent), prepared)
+
+    assert "nanobot.repoops.generic_benchmark" in command
+    assert command[command.index("--agent") + 1] == agent
+    assert command[command.index("--runtime-root") + 1] == "runtime"
+    assert command[command.index("--config") + 1] == "config.json"

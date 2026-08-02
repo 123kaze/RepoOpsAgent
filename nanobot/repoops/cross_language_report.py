@@ -1,4 +1,4 @@
-"""Build grouped metrics for the RepoOps/Claude cross-language benchmark."""
+"""Build grouped metrics for the cross-language agent benchmark."""
 
 from __future__ import annotations
 
@@ -120,6 +120,7 @@ def summarize_run(tasks: list[EvalTask], run_dir: Path) -> dict[str, Any]:
     return {
         "agent": summary.get("agent", ""),
         "models": summary.get("models", []),
+        "provenance": summary.get("provenance", {}),
         "overall": _group_summary(tasks, predictions, trajectories),
         "by_language": by_language,
         "by_repository": by_repository,
@@ -130,17 +131,25 @@ def build_report(
     tasks: list[EvalTask],
     repoops_run_dir: Path,
     claude_run_dir: Path,
+    *,
+    vanilla_run_dir: Path | None = None,
+    github_mcp_run_dir: Path | None = None,
 ) -> dict[str, Any]:
+    agents = {
+        "repoops": summarize_run(tasks, repoops_run_dir),
+        "claude_code": summarize_run(tasks, claude_run_dir),
+    }
+    if vanilla_run_dir is not None:
+        agents["pre_repoops_nanobot"] = summarize_run(tasks, vanilla_run_dir)
+    if github_mcp_run_dir is not None:
+        agents["pre_repoops_nanobot_github_mcp"] = summarize_run(tasks, github_mcp_run_dir)
     return {
         "schema_version": "1.0",
         "task_count": len(tasks),
         "repositories": sorted({task.repository for task in tasks}),
         "languages": sorted({task.language for task in tasks}),
         "snapshot_strategy": "per-task pre-fix first parent of the merged reference PR",
-        "agents": {
-            "repoops": summarize_run(tasks, repoops_run_dir),
-            "claude_code": summarize_run(tasks, claude_run_dir),
-        },
+        "agents": agents,
     }
 
 
@@ -149,12 +158,16 @@ def main() -> None:
     parser.add_argument("--tasks", type=Path, required=True)
     parser.add_argument("--repoops-run-dir", type=Path, required=True)
     parser.add_argument("--claude-run-dir", type=Path, required=True)
+    parser.add_argument("--vanilla-run-dir", type=Path)
+    parser.add_argument("--github-mcp-run-dir", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     report = build_report(
         load_tasks(args.tasks),
         args.repoops_run_dir,
         args.claude_run_dir,
+        vanilla_run_dir=args.vanilla_run_dir,
+        github_mcp_run_dir=args.github_mcp_run_dir,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

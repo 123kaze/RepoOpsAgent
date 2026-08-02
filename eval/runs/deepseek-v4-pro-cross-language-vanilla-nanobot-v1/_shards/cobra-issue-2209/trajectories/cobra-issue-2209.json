@@ -1,0 +1,296 @@
+{
+  "schema_version": "1.0",
+  "case_id": "cobra-issue-2209",
+  "task_type": "issue_analysis",
+  "repository": "spf13/cobra",
+  "number": 2209,
+  "model": "deepseek-v4-pro",
+  "started_at": "2026-08-01T10:45:56.289073+00:00",
+  "completed_at": "2026-08-01T10:46:48.202884+00:00",
+  "duration_ms": 51912,
+  "source_url": "https://github.com/spf13/cobra/issues/2209",
+  "snapshot_sha": "c8289c10302063b9a2e26357e7e0f0bb599f29ce",
+  "prompt": "你是只读的 GitHub Issue 分析 Agent。分析真实历史 Issue，判断分类，定位固定代码快照\n中最相关的实现文件，并严格区分证据支持的事实与尚待验证的假设。\n\n任务：分析 Issue #2209，判断分类，定位最相关的实现文件，并用 Issue 与 pre-fix 代码证据区分事实和需求假设。\nIssue 标题：Feature request: Set a default completion function\n仓库：spf13/cobra\nIssue：#2209\n本地代码快照：c8289c10302063b9a2e26357e7e0f0bb599f29ce\n工作目录已经固定在该 pre-fix commit。\n\n使用 `$github` Skill。已注册的只读调查工具只有 `exec`、`grep`、`find_files`、\n`list_dir` 和 `read_file`。`exec` 被硬性 allowlist 限制，只能执行一次\n`gh issue view 2209 --repo spf13/cobra --json number,title,body,state,labels,comments,url`\n或必要时一次只读 Issue 搜索；代码必须使用本地 grep/find/read 工具调查。\n\n效率约束：调查工具总计最多 10 次、最多 6 个工具批次。先获取 Issue，再做最多两次\n本地搜索；最多读取 3 个精确文件范围。若 feature 目标名称在 pre-fix 快照不存在，选择\n类型和作用域相近的现有选项追踪“声明/CLI → 序列化 → 配置解析 → 运行时消费”，不要\n反复搜索缺失名称。信息不足时写入 missing_information，不要继续泛搜。\n\n完成调查后只输出一个 JSON 对象，不要使用 Markdown 代码块：\n{\n  \"category\": \"bug|feature|documentation|question|configuration|performance|security|insufficient-information\",\n  \"files\": [\"最多 5 个仓库相对路径，按相关度排序\"],\n  \"confirmed_facts\": [{\"claim\": \"证据直接支持的事实\", \"evidence_ids\": [\"E1\"]}],\n  \"hypotheses\": [{\"claim\": \"仍需验证的假设\", \"evidence_ids\": [\"E2\"]}],\n  \"evidence\": [{\n    \"evidence_id\": \"E1\",\n    \"source\": \"工具输出中出现的原始 Issue URL 或仓库相对路径\",\n    \"locator\": \"Issue 标识或行号范围\",\n    \"excerpt\": \"从工具结果逐字复制的连续短片段\"\n  }],\n  \"missing_information\": [\"尚未验证的信息\"],\n  \"recommended_actions\": [\"下一步\"],\n  \"approval_required\": false\n}\n分类边界：bug 是已有预期行为失效；feature 是请求新增当前快照尚不存在的能力、配置项\n或 API；configuration 只表示已有配置的使用、迁移或调优问题。不要因为网络失败或根因\n未确认而把标题已经明确的 bug/feature 降级为 insufficient-information。files 和\nevidence.source 只能使用工具结果实际出现的路径；excerpt 不得改写或用省略号拼接。\n不得查看或推断评测标准答案。这是只读评测，不得修改工作区或 GitHub。",
+  "tool_trace": [
+    {
+      "sequence": 1,
+      "iteration": 0,
+      "tool_call_id": "call_00_B3oB8p2hIjEyJrWr7FeU2211",
+      "name": "exec",
+      "arguments": {
+        "command": "gh issue view 2209 --repo spf13/cobra --json number,title,body,state,labels,comments,url",
+        "timeout": 30
+      },
+      "status": "ok",
+      "output": "{\"body\":\"In my experience, not many flags actually require completion of files.\\r\\n\\r\\nSome have dynamic completions, but a great deal of them take free-form string parameters where no completion can be offered.\\r\\nUnfortunately, the default completion for a flag with no completion function in Cobra is file completion.\\r\\nThis forces me to register a `cobra.NoFileCompletions` for each flag of that category.\\r\\n\\r\\nAs an example, completion for `docker run` has 56 flags where no meaningful FlagCompletionFunc exists.\\r\\nIn a first attempt, I registered 56 handlers with `cmd.RegisterFlagCompletionFunc(\\\"flag-name\\\", cobra.NoFileCompletions)` just to silence their file completion.\\r\\nFollowing a hint of @thaJeztah, I replaced them with a programmatically installed default handler, see [here](https://github.com/docker/cli/commit/06260e68f3686a0368284a8ce9b910e056bb523b#diff-50fe347eb4bdafebc190aa42b2caa34b089a538cd444b8a151a763372e93c0cf).\\r\\n\\r\\nI would very much welcome a solution in Cobra, where I can set a default handler on command level, something like\\r\\n\\r\\n```go\\r\\ncmd.CompletionOptions.DefaultCompHandler = cobra.NoFileCompletions\\r\\n```\\r\\n\\r\\nWith this feature, I'd only have to define the completion functions for flags that actually have meaningful completions.\\r\\n\\r\\n/cc @thaJeztah\",\"comments\":[{\"id\":\"IC_kwDOAL_eiM6Y1VtR\",\"author\":{\"login\":\"marckhouzam\"},\"authorAssociation\":\"COLLABORATOR\",\"body\":\"I agree. I regret making file completion the default behaviour; in retrospect, no completion should have been the default. But now we are stuck with this default behaviour. Adding an option to change the default completion sounds like a good idea. \",\"createdAt\":\"2024-12-28T00:41:46Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[],\"url\":\"https://github.com/spf13/cobra/issues/2209#issuecomment-2564119377\",\"viewerDidAuthor\":false},{\"id\":\"IC_kwDOAL_eiM6Y2KYY\",\"author\":{\"login\":\"thaJeztah\"},\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"Thanks! And thanks for opening @albers - were you planning to work  on this?\\r\\n\\r\\nI just  recalled I had that other issue with custom flags that can be set multiple times, but were not detected for completion (multiple times); I just pushed a PR with some changes In had stashed locally;\\r\\n\\r\\n- https://github.com/spf13/cobra/pull/2210\",\"createdAt\":\"2024-12-28T14:14:42Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[],\"url\":\"https://github.com/spf13/cobra/issues/2209#issuecomment-2564335128\",\"viewerDidAuthor\":false},{\"id\":\"IC_kwDOAL_eiM6Y-MbV\",\"author\":{\"login\":\"albers\"},\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"@thaJeztah I will give it a try.\",\"createdAt\":\"2024-12-31T13:06:02Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[],\"url\":\"https://github.com/spf13/cobra/issues/2209#issuecomment-2566440661\",\"viewerDidAuthor\":false},{\"id\":\"IC_kwDOAL_eiM6Y-MvC\",\"author\":{\"login\":\"albers\"},\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"@marckhouzam File completion was an obvious choice though, as it is exactly what bash completion resorts to in case no completion is defined.\",\"createdAt\":\"2024-12-31T13:07:36Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[{\"content\":\"HEART\",\"users\":{\"totalCount\":1}}],\"url\":\"https://github.com/spf13/cobra/issues/2209#issuecomment-2566441922\",\"viewerDidAuthor\":false}],\"labels\":[],\"number\":2209,\"state\":\"CLOSED\",\"title\":\"Feature request: Set a default completion function\",\"url\":\"https://github.com/spf13/cobra/issues/2209\"}\n\n\nExit code: 0",
+      "output_sha256": "138fa61296b025f2f20b91c94836dba6cbd3f5093d4b40c8bc37128b15177b5f",
+      "error": "",
+      "duration_ms": 1032
+    },
+    {
+      "sequence": 2,
+      "iteration": 1,
+      "tool_call_id": "call_00_dibCCRZYTepebS1U4hob3398",
+      "name": "find_files",
+      "arguments": {
+        "glob": "*complet*"
+      },
+      "status": "ok",
+      "output": "bash_completions.go\nbash_completionsV2.go\nbash_completionsV2_test.go\nbash_completions_test.go\ncompletions.go\ncompletions_test.go\nfish_completions.go\nfish_completions_test.go\npowershell_completions.go\npowershell_completions_test.go\nshell_completions.go\nzsh_completions.go\nzsh_completions_test.go",
+      "output_sha256": "25535f6fb5c18a23c6582693e3b58a17cfd1ecea744889a67f08d246b8338b67",
+      "error": "",
+      "duration_ms": 19
+    },
+    {
+      "sequence": 3,
+      "iteration": 1,
+      "tool_call_id": "call_01_a11rOkNJ27xkujZ81Uv02168",
+      "name": "grep",
+      "arguments": {
+        "pattern": "NoFileCompletions",
+        "output_mode": "files_with_matches"
+      },
+      "status": "ok",
+      "output": "sessions/c2RrOnByZS1yZXBvb3BzOnZhbmlsbGEtbmFub2JvdDpjb2JyYS1pc3N1ZS0yMjA5.jsonl\ncompletions.go\n\n(skipped 1 binary/unreadable files)",
+      "output_sha256": "ec320d18c5532a26dae69733d74f233419d6eacbe27762ee696e1229c36217ff",
+      "error": "",
+      "duration_ms": 106
+    },
+    {
+      "sequence": 4,
+      "iteration": 1,
+      "tool_call_id": "call_02_bTVs7imiAPArPHukbz7c7547",
+      "name": "grep",
+      "arguments": {
+        "pattern": "CompletionOptions",
+        "output_mode": "files_with_matches"
+      },
+      "status": "ok",
+      "output": "sessions/c2RrOnByZS1yZXBvb3BzOnZhbmlsbGEtbmFub2JvdDpjb2JyYS1pc3N1ZS0yMjA5.jsonl\nsite/content/completions/_index.md\ncompletions_test.go\ncompletions.go\ncommand_test.go\ncommand.go\n\n(skipped 1 binary/unreadable files)",
+      "output_sha256": "10eb90b8d955d908dc88ea068e0ab8b17032ea23ea5af24e17a60316209bb43a",
+      "error": "",
+      "duration_ms": 60
+    },
+    {
+      "sequence": 5,
+      "iteration": 2,
+      "tool_call_id": "call_00_o75NZO2FVaujFlmL8gnN5163",
+      "name": "grep",
+      "arguments": {
+        "pattern": "NoFileCompletions|CompletionOptions|CompletionOptions",
+        "path": "completions.go",
+        "output_mode": "content",
+        "context_before": 3,
+        "context_after": 5
+      },
+      "status": "ok",
+      "output": "completions.go:106\n  103| \tcompCmdNoDescFlagDefault = false\n  104| )\n  105| \n> 106| // CompletionOptions are the options to control shell completion\n  107| type CompletionOptions struct {\n  108| \t// DisableDefaultCmd prevents Cobra from creating a default 'completion' command\n  109| \tDisableDefaultCmd bool\n  110| \t// DisableNoDescFlag prevents Cobra from creating the '--no-descriptions' flag\n  111| \t// for shells that support completion descriptions\n\ncompletions.go:107\n  104| )\n  105| \n  106| // CompletionOptions are the options to control shell completion\n> 107| type CompletionOptions struct {\n  108| \t// DisableDefaultCmd prevents Cobra from creating a default 'completion' command\n  109| \tDisableDefaultCmd bool\n  110| \t// DisableNoDescFlag prevents Cobra from creating the '--no-descriptions' flag\n  111| \t// for shells that support completion descriptions\n  112| \tDisableNoDescFlag bool\n\ncompletions.go:139\n  136| \treturn choice + \"\\t\" + description\n  137| }\n  138| \n> 139| // NoFileCompletions can be used to disable file completion for commands that should\n  140| // not trigger file completions.\n  141| //\n  142| // This method satisfies [CompletionFunc].\n  143| // It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\n  144| func NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n\ncompletions.go:144\n  141| //\n  142| // This method satisfies [CompletionFunc].\n  143| // It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\n> 144| func NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n  145| \treturn nil, ShellCompDirectiveNoFileComp\n  146| }\n  147| \n  148| // FixedCompletions can be used to create a completion function which always\n  149| // returns the same results.\n\ncompletions.go:161\n  158| \n  159| // RegisterFlagCompletionFunc should be called to register a function to provide completion for a flag.\n  160| //\n> 161| // You can use pre-defined completion functions such as [FixedCompletions] or [NoFileCompletions],\n  162| // or you can define your own.\n  163| func (c *Command) RegisterFlagCompletionFunc(flagName string, f CompletionFunc) error {\n  164| \tflag := c.Flag(flagName)\n  165| \tif flag == nil {\n  166| \t\treturn fmt.Errorf(\"RegisterFlagCompletionFunc: flag '%s' does not exist\", flagName)\n\ncompletions.go:731\n  728| // 2- c has no subcommands (to avoid creating one),\n  729| // 3- c already has a 'completion' command provided by the program.\n  730| func (c *Command) InitDefaultCompletionCmd(args ...string) {\n> 731| \tif c.CompletionOptions.DisableDefaultCmd {\n  732| \t\treturn\n  733| \t}\n  734| \n  735| \tfor _, cmd := range c.commands {\n  736| \t\tif cmd.Name() == compCmdName || cmd.HasAlias(compCmdName) {\n\ncompletions.go:742\n  739| \t\t}\n  740| \t}\n  741| \n> 742| \thaveNoDescFlag := !c.CompletionOptions.DisableNoDescFlag && !c.CompletionOptions.DisableDescriptions\n  743| \n  744| \t// Special case to know if there are sub-commands or not.\n  745| \thasSubCommands := false\n  746| \tfor _, cmd := range c.commands {\n  747| \t\tif cmd.Name() != ShellCompRequestCmd && cmd.Name() != helpCommandName {\n\ncompletions.go:761\n  758| See each sub-command's help for details on how to use the generated script.\n  759| `, c.Root().Name()),\n  760| \t\tArgs:              NoArgs,\n> 761| \t\tValidArgsFunction: NoFileCompletions,\n  762| \t\tHidden:            c.CompletionOptions.HiddenDefaultCmd,\n  763| \t\tGroupID:           c.completionCommandGroupID,\n  764| \t}\n  765| \tc.AddCommand(completionCmd)\n  766| \n\ncompletions.go:762\n  759| `, c.Root().Name()),\n  760| \t\tArgs:              NoArgs,\n  761| \t\tValidArgsFunction: NoFileCompletions,\n> 762| \t\tHidden:            c.CompletionOptions.HiddenDefaultCmd,\n  763| \t\tGroupID:           c.completionCommandGroupID,\n  764| \t}\n  765| \tc.AddCommand(completionCmd)\n  766| \n  767| \tif !hasSubCommands {\n\ncompletions.go:784\n  781| \t}\n  782| \n  783| \tout := c.OutOrStdout()\n> 784| \tnoDesc := c.CompletionOptions.DisableDescriptions\n  785| \tshortDesc := \"Generate the autocompletion script for %s\"\n  786| \tbash := &Command{\n  787| \t\tUse:   \"bash\",\n  788| \t\tShort: fmt.Sprintf(shortDesc, \"bash\"),\n  789| \t\tLong: fmt.Sprintf(`Generate the autocompletion script for the bash shell.\n\ncompletions.go:812\n  809| `, c.Root().Name()),\n  810| \t\tArgs:                  NoArgs,\n  811| \t\tDisableFlagsInUseLine: true,\n> 812| \t\tValidArgsFunction:     NoFileCompletions,\n  813| \t\tRunE: func(cmd *Command, args []string) error {\n  814| \t\t\treturn cmd.Root().GenBashCompletionV2(out, !noDesc)\n  815| \t\t},\n  816| \t}\n  817| \tif haveNoDescFlag {\n\ncompletions.go:848\n  845| You will need to start a new shell for this setup to take effect.\n  846| `, c.Root().Name()),\n  847| \t\tArgs:              NoArgs,\n> 848| \t\tValidArgsFunction: NoFileCompletions,\n  849| \t\tRunE: func(cmd *Command, args []string) error {\n  850| \t\t\tif noDesc {\n  851| \t\t\t\treturn cmd.Root().GenZshCompletionNoDesc(out)\n  852| \t\t\t}\n  853| \t\t\treturn cmd.Root().GenZshCompletion(out)\n\ncompletions.go:876\n  873| You will need to start a new shell for this setup to take effect.\n  874| `, c.Root().Name()),\n  875| \t\tArgs:              NoArgs,\n> 876| \t\tValidArgsFunction: NoFileCompletions,\n  877| \t\tRunE: func(cmd *Command, args []string) error {\n  878| \t\t\treturn cmd.Root().GenFishCompletion(out, !noDesc)\n  879| \t\t},\n  880| \t}\n  881| \tif haveNoDescFlag {\n\ncompletions.go:898\n  895| to your powershell profile.\n  896| `, c.Root().Name()),\n  897| \t\tArgs:              NoArgs,\n> 898| \t\tValidArgsFunction: NoFileCompletions,\n  899| \t\tRunE: func(cmd *Command, args []string) error {\n  900| \t\t\tif noDesc {\n  901| \t\t\t\treturn cmd.Root().GenPowerShellCompletion(out)\n  902| \t\t\t}\n  903| \t\t\treturn cmd.Root().GenPowerShellCompletionWithDesc(out)",
+      "output_sha256": "918fb10d55c7bdc622dd99f8699bc28f41b06e18638faa0c927bcf3a604d8a0d",
+      "error": "",
+      "duration_ms": 3
+    },
+    {
+      "sequence": 6,
+      "iteration": 2,
+      "tool_call_id": "call_01_Q1JSmHxJ6YpbEH0U1mtQ2472",
+      "name": "grep",
+      "arguments": {
+        "pattern": "CompletionOptions",
+        "path": "command.go",
+        "output_mode": "content",
+        "context_before": 3,
+        "context_after": 10
+      },
+      "status": "ok",
+      "output": "command.go:207\n  204| \t// FParseErrWhitelist flag parse errors to be ignored\n  205| \tFParseErrWhitelist FParseErrWhitelist\n  206| \n> 207| \t// CompletionOptions is a set of options to control the handling of shell completion\n  208| \tCompletionOptions CompletionOptions\n  209| \n  210| \t// commandsAreSorted defines, if command slice are sorted or not.\n  211| \tcommandsAreSorted bool\n  212| \t// commandCalledAs is the name or alias value used to call this command.\n  213| \tcommandCalledAs struct {\n  214| \t\tname   string\n  215| \t\tcalled bool\n  216| \t}\n  217| \n\ncommand.go:208\n  205| \tFParseErrWhitelist FParseErrWhitelist\n  206| \n  207| \t// CompletionOptions is a set of options to control the handling of shell completion\n> 208| \tCompletionOptions CompletionOptions\n  209| \n  210| \t// commandsAreSorted defines, if command slice are sorted or not.\n  211| \tcommandsAreSorted bool\n  212| \t// commandCalledAs is the name or alias value used to call this command.\n  213| \tcommandCalledAs struct {\n  214| \t\tname   string\n  215| \t\tcalled bool\n  216| \t}\n  217| \n  218| \tctx context.Context",
+      "output_sha256": "e3de9df6ebcd1e9f85994c531cca3f79c85591719e68bf978d946ba4d1b57d2a",
+      "error": "",
+      "duration_ms": 2
+    },
+    {
+      "sequence": 7,
+      "iteration": 3,
+      "tool_call_id": "call_00_RlFrbX0pay32WhzTkgCr2861",
+      "name": "read_file",
+      "arguments": {
+        "path": "completions.go",
+        "offset": 106,
+        "limit": 40
+      },
+      "status": "ok",
+      "output": "106| // CompletionOptions are the options to control shell completion\n107| type CompletionOptions struct {\n108| \t// DisableDefaultCmd prevents Cobra from creating a default 'completion' command\n109| \tDisableDefaultCmd bool\n110| \t// DisableNoDescFlag prevents Cobra from creating the '--no-descriptions' flag\n111| \t// for shells that support completion descriptions\n112| \tDisableNoDescFlag bool\n113| \t// DisableDescriptions turns off all completion descriptions for shells\n114| \t// that support them\n115| \tDisableDescriptions bool\n116| \t// HiddenDefaultCmd makes the default 'completion' command hidden\n117| \tHiddenDefaultCmd bool\n118| }\n119| \n120| // Completion is a string that can be used for completions\n121| //\n122| // two formats are supported:\n123| //   - the completion choice\n124| //   - the completion choice with a textual description (separated by a TAB).\n125| //\n126| // [CompletionWithDesc] can be used to create a completion string with a textual description.\n127| //\n128| // Note: Go type alias is used to provide a more descriptive name in the documentation, but any string can be used.\n129| type Completion = string\n130| \n131| // CompletionFunc is a function that provides completion results.\n132| type CompletionFunc = func(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective)\n133| \n134| // CompletionWithDesc returns a [Completion] with a description by using the TAB delimited format.\n135| func CompletionWithDesc(choice string, description string) Completion {\n136| \treturn choice + \"\\t\" + description\n137| }\n138| \n139| // NoFileCompletions can be used to disable file completion for commands that should\n140| // not trigger file completions.\n141| //\n142| // This method satisfies [CompletionFunc].\n143| // It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\n144| func NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n145| \treturn nil, ShellCompDirectiveNoFileComp\n\n(Showing lines 106-145 of 1005. Use offset=146 to continue.)",
+      "output_sha256": "6aec0e7b25a7e929361aafd19465f6eb4a70fd3dd609d490c7c58ec405ac8520",
+      "error": "",
+      "duration_ms": 9
+    },
+    {
+      "sequence": 8,
+      "iteration": 3,
+      "tool_call_id": "call_01_8WO1tx7anKKpHOPLUKYN3590",
+      "name": "grep",
+      "arguments": {
+        "pattern": "fileComp|FileComp|defaultComp|DefaultComp|flagComp",
+        "output_mode": "content",
+        "context_before": 2,
+        "context_after": 4,
+        "path": "completions.go"
+      },
+      "status": "ok",
+      "output": "completions.go:37\n  35| )\n  36| \n> 37| // Global map of flag completion functions. Make sure to use flagCompletionMutex before you try to read and write from it.\n  38| var flagCompletionFunctions = map[*pflag.Flag]CompletionFunc{}\n  39| \n  40| // lock for reading and writing from flagCompletionFunctions\n  41| var flagCompletionMutex = &sync.RWMutex{}\n\ncompletions.go:38\n  36| \n  37| // Global map of flag completion functions. Make sure to use flagCompletionMutex before you try to read and write from it.\n> 38| var flagCompletionFunctions = map[*pflag.Flag]CompletionFunc{}\n  39| \n  40| // lock for reading and writing from flagCompletionFunctions\n  41| var flagCompletionMutex = &sync.RWMutex{}\n  42| \n\ncompletions.go:40\n  38| var flagCompletionFunctions = map[*pflag.Flag]CompletionFunc{}\n  39| \n> 40| // lock for reading and writing from flagCompletionFunctions\n  41| var flagCompletionMutex = &sync.RWMutex{}\n  42| \n  43| // ShellCompDirective is a bit map representing the different behaviors the shell\n  44| // can be instructed to have once completions have been provided.\n\ncompletions.go:41\n  39| \n  40| // lock for reading and writing from flagCompletionFunctions\n> 41| var flagCompletionMutex = &sync.RWMutex{}\n  42| \n  43| // ShellCompDirective is a bit map representing the different behaviors the shell\n  44| // can be instructed to have once completions have been provided.\n  45| type ShellCompDirective int\n\ncompletions.go:47\n  45| type ShellCompDirective int\n  46| \n> 47| type flagCompError struct {\n  48| \tsubCommand string\n  49| \tflagName   string\n  50| }\n  51| \n\ncompletions.go:52\n  50| }\n  51| \n> 52| func (e *flagCompError) Error() string {\n  53| \treturn \"Subcommand '\" + e.subCommand + \"' does not support flag '\" + e.flagName + \"'\"\n  54| }\n  55| \n  56| const (\n\ncompletions.go:64\n  62| \tShellCompDirectiveNoSpace\n  63| \n> 64| \t// ShellCompDirectiveNoFileComp indicates that the shell should not provide\n  65| \t// file completion even when no completion is provided.\n  66| \tShellCompDirectiveNoFileComp\n  67| \n  68| \t// ShellCompDirectiveFilterFileExt indicates that the provided completions\n\ncompletions.go:66\n  64| \t// ShellCompDirectiveNoFileComp indicates that the shell should not provide\n  65| \t// file completion even when no completion is provided.\n> 66| \tShellCompDirectiveNoFileComp\n  67| \n  68| \t// ShellCompDirectiveFilterFileExt indicates that the provided completions\n  69| \t// should be used as file extension filters.\n  70| \t// For flags, using Command.MarkFlagFilename() and Command.MarkPersistentFlagFilename()\n\ncompletions.go:139\n  137| }\n  138| \n> 139| // NoFileCompletions can be used to disable file completion for commands that should\n  140| // not trigger file completions.\n  141| //\n  142| // This method satisfies [CompletionFunc].\n  143| // It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\n\ncompletions.go:144\n  142| // This method satisfies [CompletionFunc].\n  143| // It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\n> 144| func NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n  145| \treturn nil, ShellCompDirectiveNoFileComp\n  146| }\n  147| \n  148| // FixedCompletions can be used to create a completion function which always\n\ncompletions.go:145\n  143| // It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\n  144| func NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n> 145| \treturn nil, ShellCompDirectiveNoFileComp\n  146| }\n  147| \n  148| // FixedCompletions can be used to create a completion function which always\n  149| // returns the same results.\n\ncompletions.go:161\n  159| // RegisterFlagCompletionFunc should be called to register a function to provide completion for a flag.\n  160| //\n> 161| // You can use pre-defined completion functions such as [FixedCompletions] or [NoFileCompletions],\n  162| // or you can define your own.\n  163| func (c *Command) RegisterFlagCompletionFunc(flagName string, f CompletionFunc) error {\n  164| \tflag := c.Flag(flagName)\n  165| \tif flag == nil {\n\ncompletions.go:168\n  166| \t\treturn fmt.Errorf(\"RegisterFlagCompletionFunc: flag '%s' does not exist\", flagName)\n  167| \t}\n> 168| \tflagCompletionMutex.Lock()\n  169| \tdefer flagCompletionMutex.Unlock()\n  170| \n  171| \tif _, exists := flagCompletionFunctions[flag]; exists {\n  172| \t\treturn fmt.Errorf(\"RegisterFlagCompletionFunc: flag '%s' already registered\", flagName)\n\ncompletions.go:169\n  167| \t}\n  168| \tflagCompletionMutex.Lock()\n> 169| \tdefer flagCompletionMutex.Unlock()\n  170| \n  171| \tif _, exists := flagCompletionFunctions[flag]; exists {\n  172| \t\treturn fmt.Errorf(\"RegisterFlagCompletionFunc: flag '%s' already registered\", flagName)\n  173| \t}\n\ncompletions.go:171\n  169| \tdefer flagCompletionMutex.Unlock()\n  170| \n> 171| \tif _, exists := flagCompletionFunctions[flag]; exists {\n  172| \t\treturn fmt.Errorf(\"RegisterFlagCompletionFunc: flag '%s' already registered\", flagName)\n  173| \t}\n  174| \tflagCompletionFunctions[flag] = f\n  175| \treturn nil\n\ncompletions.go:174\n  172| \t\treturn fmt.Errorf(\"RegisterFlagCompletionFunc: flag '%s' already registered\", flagName)\n  173| \t}\n> 174| \tflagCompletionFunctions[flag] = f\n  175| \treturn nil\n  176| }\n  177| \n  178| // GetFlagCompletionFunc returns the completion function for the given flag of the command, if available.\n\ncompletions.go:185\n  183| \t}\n  184| \n> 185| \tflagCompletionMutex.RLock()\n  186| \tdefer flagCompletionMutex.RUnlock()\n  187| \n  188| \tcompletionFunc, exists := flagCompletionFunctions[flag]\n  189| \treturn completionFunc, exists\n\ncompletions.go:186\n  184| \n  185| \tflagCompletionMutex.RLock()\n> 186| \tdefer flagCompletionMutex.RUnlock()\n  187| \n  188| \tcompletionFunc, exists := flagCompletionFunctions[flag]\n  189| \treturn completionFunc, exists\n  190| }\n\ncompletions.go:188\n  186| \tdefer flagCompletionMutex.RUnlock()\n  187| \n> 188| \tcompletionFunc, exists := flagCompletionFunctions[flag]\n  189| \treturn completionFunc, exists\n  190| }\n  191| \n  192| // Returns a string listing the different directive enabled in the specified parameter\n\ncompletions.go:201\n  199| \t\tdirectives = append(directives, \"ShellCompDirectiveNoSpace\")\n  200| \t}\n> 201| \tif d&ShellCompDirectiveNoFileComp != 0 {\n  202| \t\tdirectives = append(directives, \"ShellCompDirectiveNoFileComp\")\n  203| \t}\n  204| \tif d&ShellCompDirectiveFilterFileExt != 0 {\n  205| \t\tdirectives = append(directives, \"ShellCompDirectiveFilterFileExt\")\n\ncompletions.go:202\n  200| \t}\n  201| \tif d&ShellCompDirectiveNoFileComp != 0 {\n> 202| \t\tdirectives = append(directives, \"ShellCompDirectiveNoFileComp\")\n  203| \t}\n  204| \tif d&ShellCompDirectiveFilterFileExt != 0 {\n  205| \t\tdirectives = append(directives, \"ShellCompDirectiveFilterFileExt\")\n  206| \t}\n\ncompletions.go:361\n  359| \t// if -- was already set or interspersed is false and there is already one arg then\n  360| \t// the extra added -- is counted as arg.\n> 361| \tflagCompletion := true\n  362| \t_ = finalCmd.ParseFlags(append(finalArgs, \"--\"))\n  363| \tnewArgCount := finalCmd.Flags().NArg()\n  364| \n  365| \t// Parse the flags early so we can check if required flags are set\n\ncompletions.go:373\n  371| \tif newArgCount > realArgCount {\n  372| \t\t// don't do flag completion (see above)\n> 373| \t\tflagCompletion = false\n  374| \t}\n  375| \t// Error while attempting to parse flags\n  376| \tif flagErr != nil {\n  377| \t\t// If error type is flagCompError and we don't want flagCompletion we should ignore the error\n\ncompletions.go:377\n  375| \t// Error while attempting to parse flags\n  376| \tif flagErr != nil {\n> 377| \t\t// If error type is flagCompError and we don't want flagCompletion we should ignore the error\n  378| \t\tif _, ok := flagErr.(*flagCompError); !ok || flagCompletion {\n  379| \t\t\treturn finalCmd, []Completion{}, ShellCompDirectiveDefault, flagErr\n  380| \t\t}\n  381| \t}\n\ncompletions.go:378\n  376| \tif flagErr != nil {\n  377| \t\t// If error type is flagCompError and we don't want flagCompletion we should ignore the error\n> 378| \t\tif _, ok := flagErr.(*flagCompError); !ok || flagCompletion {\n  379| \t\t\treturn finalCmd, []Completion{}, ShellCompDirectiveDefault, flagErr\n  380| \t\t}\n  381| \t}\n  382| \n\ncompletions.go:386\n  384| \t// there should be no further completions.\n  385| \tif helpOrVersionFlagPresent(finalCmd) {\n> 386| \t\treturn finalCmd, []Completion{}, ShellCompDirectiveNoFileComp, nil\n  387| \t}\n  388| \n  389| \t// We only remove the flags from the arguments if DisableFlagParsing is not set.\n  390| \t// This is important for commands which have requested to do their own flag completion.\n\ncompletions.go:395\n  393| \t}\n  394| \n> 395| \tif flag != nil && flagCompletion {\n  396| \t\t// Check if we are completing a flag value subject to annotations\n  397| \t\tif validExts, present := flag.Annotations[BashCompFilenameExt]; present {\n  398| \t\t\tif len(validExts) != 0 {\n  399| \t\t\t\t// File completion filtered by extensions\n\ncompletions.go:431\n  429| \t// a '-' we know it is a flag.  We cannot use isFlagArg() here as it requires\n  430| \t// the flag name to be complete\n> 431| \tif flag == nil && len(toComplete) > 0 && toComplete[0] == '-' && !strings.Contains(toComplete, \"=\") && flagCompletion {\n  432| \t\t// First check for required flags\n  433| \t\tcompletions = completeRequireFlags(finalCmd, toComplete)\n  434| \n  435| \t\t// If we have not found any required flags, only then can we show regular flags\n\ncompletions.go:467\n  465| \t\t}\n  466| \n> 467| \t\tdirective = ShellCompDirectiveNoFileComp\n  468| \t\tif len(completions) == 1 && strings.HasSuffix(completions[0], \"=\") {\n  469| \t\t\t// If there is a single completion, the shell usually adds a space\n  470| \t\t\t// after the completion.  We don't want that if the flag ends with an =\n  471| \t\t\tdirective = ShellCompDirectiveNoSpace\n\ncompletions.go:507\n  505| \t\t\t\t\t\t\tcompletions = append(completions, CompletionWithDesc(subCmd.Name(), subCmd.Short))\n  506| \t\t\t\t\t\t}\n> 507| \t\t\t\t\t\tdirective = ShellCompDirectiveNoFileComp\n  508| \t\t\t\t\t}\n  509| \t\t\t\t}\n  510| \t\t\t}\n  511| \n\ncompletions.go:525\n  523| \t\t\t\t\t\t}\n  524| \t\t\t\t\t}\n> 525| \t\t\t\t\tdirective = ShellCompDirectiveNoFileComp\n  526| \n  527| \t\t\t\t\t// If no completions were found within commands or ValidArgs,\n  528| \t\t\t\t\t// see if there are any ArgAliases that should be completed.\n  529| \t\t\t\t\tif len(completions) == 0 {\n\ncompletions.go:551\n  549| \t// Find the completion function for the flag or command\n  550| \tvar completionFn CompletionFunc\n> 551| \tif flag != nil && flagCompletion {\n  552| \t\tflagCompletionMutex.RLock()\n  553| \t\tcompletionFn = flagCompletionFunctions[flag]\n  554| \t\tflagCompletionMutex.RUnlock()\n  555| \t} else {\n\ncompletions.go:552\n  550| \tvar completionFn CompletionFunc\n  551| \tif flag != nil && flagCompletion {\n> 552| \t\tflagCompletionMutex.RLock()\n  553| \t\tcompletionFn = flagCompletionFunctions[flag]\n  554| \t\tflagCompletionMutex.RUnlock()\n  555| \t} else {\n  556| \t\tcompletionFn = finalCmd.ValidArgsFunction\n\ncompletions.go:553\n  551| \tif flag != nil && flagCompletion {\n  552| \t\tflagCompletionMutex.RLock()\n> 553| \t\tcompletionFn = flagCompletionFunctions[flag]\n  554| \t\tflagCompletionMutex.RUnlock()\n  555| \t} else {\n  556| \t\tcompletionFn = finalCmd.ValidArgsFunction\n  557| \t}\n\ncompletions.go:554\n  552| \t\tflagCompletionMutex.RLock()\n  553| \t\tcompletionFn = flagCompletionFunctions[flag]\n> 554| \t\tflagCompletionMutex.RUnlock()\n  555| \t} else {\n  556| \t\tcompletionFn = finalCmd.ValidArgsFunction\n  557| \t}\n  558| \tif completionFn != nil {\n\ncompletions.go:709\n  707| \tif flag == nil {\n  708| \t\t// Flag not supported by this command, the interspersed option might be set so return the original args\n> 709| \t\treturn nil, args, orgLastArg, &flagCompError{subCommand: finalCmd.Name(), flagName: flagName}\n  710| \t}\n  711| \n  712| \tif !flagWithEqual {\n  713| \t\tif len(flag.NoOptDefVal) != 0 {\n\ncompletions.go:725\n  723| }\n  724| \n> 725| // InitDefaultCompletionCmd adds a default 'completion' command to c.\n  726| // This function will do nothing if any of the following is true:\n  727| // 1- the feature has been explicitly disabled by the program,\n  728| // 2- c has no subcommands (to avoid creating one),\n  729| // 3- c already has a 'completion' command provided by the program.\n\ncompletions.go:730\n  728| // 2- c has no subcommands (to avoid creating one),\n  729| // 3- c already has a 'completion' command provided by the program.\n> 730| func (c *Command) InitDefaultCompletionCmd(args ...string) {\n  731| \tif c.CompletionOptions.DisableDefaultCmd {\n  732| \t\treturn\n  733| \t}\n  734| \n\ncompletions.go:761\n  759| `, c.Root().Name()),\n  760| \t\tArgs:              NoArgs,\n> 761| \t\tValidArgsFunction: NoFileCompletions,\n  762| \t\tHidden:            c.CompletionOptions.HiddenDefaultCmd,\n  763| \t\tGroupID:           c.completionCommandGroupID,\n  764| \t}\n  765| \tc.AddCommand(completionCmd)\n\ncompletions.go:812\n  810| \t\tArgs:                  NoArgs,\n  811| \t\tDisableFlagsInUseLine: true,\n> 812| \t\tValidArgsFunction:     NoFileCompletions,\n  813| \t\tRunE: func(cmd *Command, args []string) error {\n  814| \t\t\treturn cmd.Root().GenBashCompletionV2(out, !noDesc)\n  815| \t\t},\n  816| \t}\n\ncompletions.go:848\n  846| `, c.Root().Name()),\n  847| \t\tArgs:              NoArgs,\n> 848| \t\tValidArgsFunction: NoFileCompletions,\n  849| \t\tRunE: func(cmd *Command, args []string) error {\n  850| \t\t\tif noDesc {\n  851| \t\t\t\treturn cmd.Root().GenZshCompletionNoDesc(out)\n  852| \t\t\t}\n\ncompletions.go:876\n  874| `, c.Root().Name()),\n  875| \t\tArgs:              NoArgs,\n> 876| \t\tValidArgsFunction: NoFileCompletions,\n  877| \t\tRunE: func(cmd *Command, args []string) error {\n  878| \t\t\treturn cmd.Root().GenFishCompletion(out, !noDesc)\n  879| \t\t},\n  880| \t}\n\ncompletions.go:898\n  896| `, c.Root().Name()),\n  897| \t\tArgs:              NoArgs,\n> 898| \t\tValidArgsFunction: NoFileCompletions,\n  899| \t\tRunE: func(cmd *Command, args []string) error {\n  900| \t\t\tif noDesc {\n  901| \t\t\t\treturn cmd.Root().GenPowerShellCompletion(out)\n  902| \t\t\t}",
+      "output_sha256": "081d1324d5bbaa090c5797db74c1ac6b5609b27c3f08cee3b0636dfec5c7cc92",
+      "error": "",
+      "duration_ms": 3
+    },
+    {
+      "sequence": 9,
+      "iteration": 4,
+      "tool_call_id": "call_00_j0fGYHTnqZPDsf4apT2C4018",
+      "name": "read_file",
+      "arguments": {
+        "offset": 545,
+        "limit": 40,
+        "path": "completions.go"
+      },
+      "status": "ok",
+      "output": "545| \t\t\t// This is for commands that have subcommands but also specify a ValidArgsFunction.\n546| \t\t}\n547| \t}\n548| \n549| \t// Find the completion function for the flag or command\n550| \tvar completionFn CompletionFunc\n551| \tif flag != nil && flagCompletion {\n552| \t\tflagCompletionMutex.RLock()\n553| \t\tcompletionFn = flagCompletionFunctions[flag]\n554| \t\tflagCompletionMutex.RUnlock()\n555| \t} else {\n556| \t\tcompletionFn = finalCmd.ValidArgsFunction\n557| \t}\n558| \tif completionFn != nil {\n559| \t\t// Go custom completion defined for this flag or command.\n560| \t\t// Call the registered completion function to get the completions.\n561| \t\tvar comps []Completion\n562| \t\tcomps, directive = completionFn(finalCmd, finalArgs, toComplete)\n563| \t\tcompletions = append(completions, comps...)\n564| \t}\n565| \n566| \treturn finalCmd, completions, directive, nil\n567| }\n568| \n569| func helpOrVersionFlagPresent(cmd *Command) bool {\n570| \tif versionFlag := cmd.Flags().Lookup(\"version\"); versionFlag != nil &&\n571| \t\tlen(versionFlag.Annotations[FlagSetByCobraAnnotation]) > 0 && versionFlag.Changed {\n572| \t\treturn true\n573| \t}\n574| \tif helpFlag := cmd.Flags().Lookup(helpFlagName); helpFlag != nil &&\n575| \t\tlen(helpFlag.Annotations[FlagSetByCobraAnnotation]) > 0 && helpFlag.Changed {\n576| \t\treturn true\n577| \t}\n578| \treturn false\n579| }\n580| \n581| func getFlagNameCompletions(flag *pflag.Flag, toComplete string) []Completion {\n582| \tif nonCompletableFlag(flag) {\n583| \t\treturn []Completion{}\n584| \t}\n\n(Showing lines 545-584 of 1005. Use offset=585 to continue.)",
+      "output_sha256": "fd73e60a980187a0ddd8f7b44eb39132c28101cedf72f1f47f054b83352a5f31",
+      "error": "",
+      "duration_ms": 2
+    },
+    {
+      "sequence": 10,
+      "iteration": 4,
+      "tool_call_id": "call_01_CUM5EouY4VT7p212bIqP3035",
+      "name": "read_file",
+      "arguments": {
+        "offset": 392,
+        "limit": 25,
+        "path": "completions.go"
+      },
+      "status": "ok",
+      "output": "392| \t\tfinalArgs = finalCmd.Flags().Args()\n393| \t}\n394| \n395| \tif flag != nil && flagCompletion {\n396| \t\t// Check if we are completing a flag value subject to annotations\n397| \t\tif validExts, present := flag.Annotations[BashCompFilenameExt]; present {\n398| \t\t\tif len(validExts) != 0 {\n399| \t\t\t\t// File completion filtered by extensions\n400| \t\t\t\treturn finalCmd, validExts, ShellCompDirectiveFilterFileExt, nil\n401| \t\t\t}\n402| \n403| \t\t\t// The annotation requests simple file completion.  There is no reason to do\n404| \t\t\t// that since it is the default behavior anyway.  Let's ignore this annotation\n405| \t\t\t// in case the program also registered a completion function for this flag.\n406| \t\t\t// Even though it is a mistake on the program's side, let's be nice when we can.\n407| \t\t}\n408| \n409| \t\tif subDir, present := flag.Annotations[BashCompSubdirsInDir]; present {\n410| \t\t\tif len(subDir) == 1 {\n411| \t\t\t\t// Directory completion from within a directory\n412| \t\t\t\treturn finalCmd, subDir, ShellCompDirectiveFilterDirs, nil\n413| \t\t\t}\n414| \t\t\t// Directory completion\n415| \t\t\treturn finalCmd, []Completion{}, ShellCompDirectiveFilterDirs, nil\n416| \t\t}\n\n(Showing lines 392-416 of 1005. Use offset=417 to continue.)",
+      "output_sha256": "bab7c57951bca2b816f12998edba5b56cdecbda0d0faa1b8bbc9d7fed904b8d2",
+      "error": "",
+      "duration_ms": 2
+    }
+  ],
+  "final_answer": "```json\n{\n  \"category\": \"feature\",\n  \"files\": [\n    \"completions.go\",\n    \"command.go\",\n    \"completions_test.go\"\n  ],\n  \"confirmed_facts\": [\n    {\n      \"claim\": \"Issue #2209 requests a new CompletionOptions field (suggested name: DefaultCompHandler) to set a default completion function at the command level, so flags without a registered completion function use that default instead of file completion.\",\n      \"evidence_ids\": [\"E1\", \"E2\"]\n    },\n    {\n      \"claim\": \"The CompletionOptions struct in the pre-fix snapshot has only four fields — DisableDefaultCmd, DisableNoDescFlag, DisableDescriptions, HiddenDefaultCmd — and no DefaultCompHandler or equivalent default-completion-function field exists.\",\n      \"evidence_ids\": [\"E2\"]\n    },\n    {\n      \"claim\": \"NoFileCompletions already exists as a predefined CompletionFunc that returns (nil, ShellCompDirectiveNoFileComp), but it must be registered per-flag via RegisterFlagCompletionFunc; there is no mechanism to set it as a global or command-level default.\",\n      \"evidence_ids\": [\"E3\", \"E4\"]\n    },\n    {\n      \"claim\": \"File completion is the hardcoded default behavior when no completion function is registered for a flag, as confirmed by the comment on line 403-404: 'The annotation requests simple file completion. There is no reason to do that since it is the default behavior anyway.'\",\n      \"evidence_ids\": [\"E5\"]\n    },\n    {\n      \"claim\": \"The collaborator @marckhouzam agreed with the request, stating 'I regret making file completion the default behaviour; in retrospect, no completion should have been the default. But now we are stuck with this default behaviour. Adding an option to change the default completion sounds like a good idea.'\",\n      \"evidence_ids\": [\"E6\"]\n    }\n  ],\n  \"hypotheses\": [\n    {\n      \"claim\": \"The new field would likely be added to the CompletionOptions struct in completions.go and consumed in the completion orchestration logic around line 549-564 where completionFn is resolved for a flag.\",\n      \"evidence_ids\": [\"E2\", \"E4\"]\n    },\n    {\n      \"claim\": \"The implementation would need to modify the flag-completion fallback path so that when flagCompletionFunctions has no entry for a flag, the new DefaultCompHandler is used instead of falling through to ShellCompDirectiveDefault (which triggers file completion).\",\n      \"evidence_ids\": [\"E4\", \"E5\"]\n    }\n  ],\n  \"evidence\": [\n    {\n      \"evidence_id\": \"E1\",\n      \"source\": \"https://github.com/spf13/cobra/issues/2209\",\n      \"locator\": \"Issue body\",\n      \"excerpt\": \"I would very much welcome a solution in Cobra, where I can set a default handler on command level, something like\\n\\n```go\\ncmd.CompletionOptions.DefaultCompHandler = cobra.NoFileCompletions\\n```\\n\\nWith this feature, I'd only have to define the completion functions for flags that actually have meaningful completions.\"\n    },\n    {\n      \"evidence_id\": \"E2\",\n      \"source\": \"completions.go\",\n      \"locator\": \"lines 106-118\",\n      \"excerpt\": \"// CompletionOptions are the options to control shell completion\\ntype CompletionOptions struct {\\n\\t// DisableDefaultCmd prevents Cobra from creating a default 'completion' command\\n\\tDisableDefaultCmd bool\\n\\t// DisableNoDescFlag prevents Cobra from creating the '--no-descriptions' flag\\n\\t// for shells that support completion descriptions\\n\\tDisableNoDescFlag bool\\n\\t// DisableDescriptions turns off all completion descriptions for shells\\n\\t// that support them\\n\\tDisableDescriptions bool\\n\\t// HiddenDefaultCmd makes the default 'completion' command hidden\\n\\tHiddenDefaultCmd bool\\n}\"\n    },\n    {\n      \"evidence_id\": \"E3\",\n      \"source\": \"completions.go\",\n      \"locator\": \"lines 139-146\",\n      \"excerpt\": \"// NoFileCompletions can be used to disable file completion for commands that should\\n// not trigger file completions.\\n//\\n// This method satisfies [CompletionFunc].\\n// It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\\nfunc NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\\n\\treturn nil, ShellCompDirectiveNoFileComp\\n}\"\n    },\n    {\n      \"evidence_id\": \"E4\",\n      \"source\": \"completions.go\",\n      \"locator\": \"lines 549-566\",\n      \"excerpt\": \"\\t// Find the completion function for the flag or command\\n\\tvar completionFn CompletionFunc\\n\\tif flag != nil && flagCompletion {\\n\\t\\tflagCompletionMutex.RLock()\\n\\t\\tcompletionFn = flagCompletionFunctions[flag]\\n\\t\\tflagCompletionMutex.RUnlock()\\n\\t} else {\\n\\t\\tcompletionFn = finalCmd.ValidArgsFunction\\n\\t}\\n\\tif completionFn != nil {\\n\\t\\t// Go custom completion defined for this flag or command.\\n\\t\\t// Call the registered completion function to get the completions.\\n\\t\\tvar comps []Completion\\n\\t\\tcomps, directive = completionFn(finalCmd, finalArgs, toComplete)\\n\\t\\tcompletions = append(completions, comps...)\\n\\t}\\n\\n\\treturn finalCmd, completions, directive, nil\"\n    },\n    {\n      \"evidence_id\": \"E5\",\n      \"source\": \"completions.go\",\n      \"locator\": \"lines 403-406\",\n      \"excerpt\": \"\\t\\t// The annotation requests simple file completion.  There is no reason to do\\n\\t\\t// that since it is the default behavior anyway.  Let's ignore this annotation\\n\\t\\t// in case the program also registered a completion function for this flag.\\n\\t\\t// Even though it is a mistake on the program's side, let's be nice when we can.\"\n    },\n    {\n      \"evidence_id\": \"E6\",\n      \"source\": \"https://github.com/spf13/cobra/issues/2209#issuecomment-2564119377\",\n      \"locator\": \"Comment by marckhouzam (collaborator)\",\n      \"excerpt\": \"I agree. I regret making file completion the default behaviour; in retrospect, no completion should have been the default. But now we are stuck with this default behaviour. Adding an option to change the default completion sounds like a good idea.\"\n    }\n  ],\n  \"missing_information\": [\n    \"Whether a PR was actually merged for this issue and what the final API shape was (field name, type, exact placement in CompletionOptions)\",\n    \"Whether the implementation modifies the fallback path at line 558 or inserts a new default-before-fallback check elsewhere in completions.go\",\n    \"Whether any changes to command.go were needed beyond the struct field (e.g., initialization of the new field)\"\n  ],\n  \"recommended_actions\": [\n    \"Inspect the merged PR diff to confirm the final field name and placement in CompletionOptions\",\n    \"Check how the default completion handler is consumed in the flag-completion fallback path (around completions.go line 549-564)\",\n    \"Verify test coverage in completions_test.go for the new default-completion behavior\"\n  ],\n  \"approval_required\": false\n}\n```",
+  "parsed_answer": {
+    "category": "feature",
+    "files": [
+      "completions.go",
+      "command.go",
+      "completions_test.go"
+    ],
+    "confirmed_facts": [
+      {
+        "claim": "Issue #2209 requests a new CompletionOptions field (suggested name: DefaultCompHandler) to set a default completion function at the command level, so flags without a registered completion function use that default instead of file completion.",
+        "evidence_ids": [
+          "E1",
+          "E2"
+        ]
+      },
+      {
+        "claim": "The CompletionOptions struct in the pre-fix snapshot has only four fields — DisableDefaultCmd, DisableNoDescFlag, DisableDescriptions, HiddenDefaultCmd — and no DefaultCompHandler or equivalent default-completion-function field exists.",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "claim": "NoFileCompletions already exists as a predefined CompletionFunc that returns (nil, ShellCompDirectiveNoFileComp), but it must be registered per-flag via RegisterFlagCompletionFunc; there is no mechanism to set it as a global or command-level default.",
+        "evidence_ids": [
+          "E3",
+          "E4"
+        ]
+      },
+      {
+        "claim": "File completion is the hardcoded default behavior when no completion function is registered for a flag, as confirmed by the comment on line 403-404: 'The annotation requests simple file completion. There is no reason to do that since it is the default behavior anyway.'",
+        "evidence_ids": [
+          "E5"
+        ]
+      },
+      {
+        "claim": "The collaborator @marckhouzam agreed with the request, stating 'I regret making file completion the default behaviour; in retrospect, no completion should have been the default. But now we are stuck with this default behaviour. Adding an option to change the default completion sounds like a good idea.'",
+        "evidence_ids": [
+          "E6"
+        ]
+      }
+    ],
+    "hypotheses": [
+      {
+        "claim": "The new field would likely be added to the CompletionOptions struct in completions.go and consumed in the completion orchestration logic around line 549-564 where completionFn is resolved for a flag.",
+        "evidence_ids": [
+          "E2",
+          "E4"
+        ]
+      },
+      {
+        "claim": "The implementation would need to modify the flag-completion fallback path so that when flagCompletionFunctions has no entry for a flag, the new DefaultCompHandler is used instead of falling through to ShellCompDirectiveDefault (which triggers file completion).",
+        "evidence_ids": [
+          "E4",
+          "E5"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "evidence_id": "E1",
+        "source": "https://github.com/spf13/cobra/issues/2209",
+        "locator": "Issue body",
+        "excerpt": "I would very much welcome a solution in Cobra, where I can set a default handler on command level, something like\n\n```go\ncmd.CompletionOptions.DefaultCompHandler = cobra.NoFileCompletions\n```\n\nWith this feature, I'd only have to define the completion functions for flags that actually have meaningful completions."
+      },
+      {
+        "evidence_id": "E2",
+        "source": "completions.go",
+        "locator": "lines 106-118",
+        "excerpt": "// CompletionOptions are the options to control shell completion\ntype CompletionOptions struct {\n\t// DisableDefaultCmd prevents Cobra from creating a default 'completion' command\n\tDisableDefaultCmd bool\n\t// DisableNoDescFlag prevents Cobra from creating the '--no-descriptions' flag\n\t// for shells that support completion descriptions\n\tDisableNoDescFlag bool\n\t// DisableDescriptions turns off all completion descriptions for shells\n\t// that support them\n\tDisableDescriptions bool\n\t// HiddenDefaultCmd makes the default 'completion' command hidden\n\tHiddenDefaultCmd bool\n}"
+      },
+      {
+        "evidence_id": "E3",
+        "source": "completions.go",
+        "locator": "lines 139-146",
+        "excerpt": "// NoFileCompletions can be used to disable file completion for commands that should\n// not trigger file completions.\n//\n// This method satisfies [CompletionFunc].\n// It can be used with [Command.RegisterFlagCompletionFunc] and for [Command.ValidArgsFunction].\nfunc NoFileCompletions(cmd *Command, args []string, toComplete string) ([]Completion, ShellCompDirective) {\n\treturn nil, ShellCompDirectiveNoFileComp\n}"
+      },
+      {
+        "evidence_id": "E4",
+        "source": "completions.go",
+        "locator": "lines 549-566",
+        "excerpt": "\t// Find the completion function for the flag or command\n\tvar completionFn CompletionFunc\n\tif flag != nil && flagCompletion {\n\t\tflagCompletionMutex.RLock()\n\t\tcompletionFn = flagCompletionFunctions[flag]\n\t\tflagCompletionMutex.RUnlock()\n\t} else {\n\t\tcompletionFn = finalCmd.ValidArgsFunction\n\t}\n\tif completionFn != nil {\n\t\t// Go custom completion defined for this flag or command.\n\t\t// Call the registered completion function to get the completions.\n\t\tvar comps []Completion\n\t\tcomps, directive = completionFn(finalCmd, finalArgs, toComplete)\n\t\tcompletions = append(completions, comps...)\n\t}\n\n\treturn finalCmd, completions, directive, nil"
+      },
+      {
+        "evidence_id": "E5",
+        "source": "completions.go",
+        "locator": "lines 403-406",
+        "excerpt": "\t\t// The annotation requests simple file completion.  There is no reason to do\n\t\t// that since it is the default behavior anyway.  Let's ignore this annotation\n\t\t// in case the program also registered a completion function for this flag.\n\t\t// Even though it is a mistake on the program's side, let's be nice when we can."
+      },
+      {
+        "evidence_id": "E6",
+        "source": "https://github.com/spf13/cobra/issues/2209#issuecomment-2564119377",
+        "locator": "Comment by marckhouzam (collaborator)",
+        "excerpt": "I agree. I regret making file completion the default behaviour; in retrospect, no completion should have been the default. But now we are stuck with this default behaviour. Adding an option to change the default completion sounds like a good idea."
+      }
+    ],
+    "missing_information": [
+      "Whether a PR was actually merged for this issue and what the final API shape was (field name, type, exact placement in CompletionOptions)",
+      "Whether the implementation modifies the fallback path at line 558 or inserts a new default-before-fallback check elsewhere in completions.go",
+      "Whether any changes to command.go were needed beyond the struct field (e.g., initialization of the new field)"
+    ],
+    "recommended_actions": [
+      "Inspect the merged PR diff to confirm the final field name and placement in CompletionOptions",
+      "Check how the default completion handler is consumed in the flag-completion fallback path (around completions.go line 549-564)",
+      "Verify test coverage in completions_test.go for the new default-completion behavior"
+    ],
+    "approval_required": false
+  },
+  "parse_error": "",
+  "usage": {
+    "prompt_tokens": 55920,
+    "completion_tokens": 3313,
+    "total_tokens": 59233,
+    "provider_tokens": 59233,
+    "cache_read_input_tokens": 41600,
+    "cached_tokens": 41600
+  },
+  "stop_reason": "completed",
+  "run_error": ""
+}

@@ -4,7 +4,8 @@
 > 用结构化状态区分事实与假设，并用两回合人工审批保护所有 GitHub 写操作。
 
 RepoOps 不是“让大模型读一下仓库”的聊天包装。它包含 15 个可执行工具、GitHub
-安全客户端、符号优先代码检索、持久化证据模型、审批状态机，以及真正启动
+安全客户端、符号优先代码检索、持久化证据模型、代码维护的 Agent Status Bar、
+审批状态机，以及真正启动
 RepoOps Agent + DeepSeek V4 Pro 的可复现 benchmark harness。
 
 ## 它解决什么问题
@@ -39,6 +40,9 @@ flowchart LR
     T --> Q[Workspace RAG<br/>symbol · BM25 · trigram]
     T --> S[Task state<br/>facts · hypotheses · evidence]
     T --> A[Approval gate<br/>draft → later turn]
+    S --> B[Agent Status Bar<br/>budget · repeat · progress]
+    A --> B
+    B -. ephemeral model context .-> R
 
     G --> H[SSRF-guarded GitHub REST]
     S --> D[(workspace/.repoops)]
@@ -48,9 +52,10 @@ flowchart LR
     E --> X[(tool trajectories · metrics)]
 ```
 
-RepoOps 没有修改 nanobot 的 Agent loop 来硬编码领域分支。模型—工具循环、Provider、
-Session、Gateway 和 WebUI 继续由 nanobot 提供；领域能力位于工具、状态、安全、
-Skill 和评测层。详细设计见 [架构文档](docs/architecture.md)。
+RepoOps 没有在 nanobot 的 Agent loop 中硬编码 Issue/PR/CI 分支。模型—工具循环、
+Provider、Session、Gateway 和 WebUI 继续由 nanobot 提供；Runner 只增加了一个通用的
+`model_messages` 临时上下文扩展点，RepoOps 状态栏作为 Hook 实现。它每轮进入模型
+副本，但不写入 session 或 trajectory。详细设计见 [架构文档](docs/architecture.md)。
 
 ## 这和“写一个 Skill”有什么区别
 
@@ -59,7 +64,7 @@ Skill 和评测层。详细设计见 [架构文档](docs/architecture.md)。
 | 本质 | 注入上下文的工作流说明 | 可运行的 Agent 系统 |
 | 新增能力 | 不新增底层能力 | 15 个带 schema 的 GitHub/RAG/状态工具 |
 | 安全 | 依赖模型遵守说明 | allowlist、SSRF、参数校验、审批状态机 |
-| 状态 | 通常只影响当前上下文 | 原子持久化 facts/hypotheses/evidence/tool trace |
+| 状态 | 通常只影响当前上下文 | 原子持久化任务状态 + 代码维护的逐轮 Status Bar |
 | 评测 | 没有统一要求 | 真实历史数据、固定快照、完整轨迹、10 项指标 |
 | 删除后的影响 | 工作流提示消失 | 删除 Skill 后工具和安全边界仍存在 |
 
@@ -71,11 +76,16 @@ Skill 和评测层。详细设计见 [架构文档](docs/architecture.md)。
 
 简历中可以直接写成：
 
-> 基于 nanobot 二次开发 RepoOps Agent，实现 15 个 GitHub/RAG/状态工具、SSRF
-> 防护与跨轮人工审批状态机；构建 Python、Go、TypeScript、Rust 四仓库真实历史
+> 基于 nanobot 二次开发 RepoOps Agent，实现 15 个 GitHub/RAG/状态工具、逐轮
+> Agent Status Bar、SSRF 防护与跨轮人工审批状态机；构建 Python、Go、TypeScript、Rust 四仓库真实历史
 > Issue 评测集并用 DeepSeek V4 Pro 实跑；在 15 条逐任务 pre-fix 跨语言对照中达到
-> 100.0% 分类、93.1% File Recall@5 和 15/15 结构化成功，同主模型 Claude Code 为
+> 单次 100.0% 分类、93.1% File Recall@5 和 15/15 结构化成功，同主模型 Claude Code 为
 > 86.7%、77.1% 和 13/15；调查调用减少 37.7%，并保存完整轨迹与无效 run 审计。
+
+这条简历表述对应锁定的 RepoOps v4 run。新增消融显示，RepoOps 引入前的原生 nanobot
+在同组任务上也达到 15/15、100.0% 和 90.4%；同日 RepoOps 重复 run 则只有 10/15
+结构化成功。因此 93.1% 可以作为一次可复现 run 的结果，不能表述成稳定生产准确率；
+完整边界见[原生 nanobot 与 GitHub MCP 对照报告](RepoOps项目文档/原生Nanobot与GitHub-MCP对照评测报告.md)。
 
 ## 快速开始
 
@@ -149,6 +159,12 @@ $repoops-ci-diagnosis 诊断 PR #5160 的 Actions run 30435121783
 该轮由 `deepseek-v4-pro` 自主调用 8 次 `repoops_*` 工具，包括 Issue、task state、
 相似 Issue、本地代码、精确文件和状态更新；runner 保存参数、结果、hash、耗时、
 最终 JSON 与 token usage，但不保存隐藏 chain-of-thought。
+
+每次模型调用前还会临时注入一段由代码计算的 `<agent_status>`：迭代、10/10/8
+工具预算、相同参数指纹、错误、证据增量、`next_actions` TODO 和审批状态。相同调用
+达到 3 次、连续 3 次无新证据、剩余预算不超过 2 次或存在待审批草稿时，状态栏给出
+明确决策约束。它不是第二个 LLM 摘要，也不会追加进持久历史。设计、威胁边界与测试见
+[Agent 状态栏设计与验证报告](RepoOps项目文档/Agent状态栏设计与验证报告.md)。
 
 ## 真实 Benchmark
 
@@ -234,24 +250,30 @@ DSML 工具语法。File Recall 的部分漏召回来自 PR 时点的 `cli/comma
 各选 5 条真实历史 Issue。每条任务都使用关闭 PR 第一父提交对应的独立 pre-fix
 worktree，并让 RepoOps 与 Claude Code 使用同一 `deepseek-v4-pro` 主模型实跑：
 
-| 跨语言指标 | RepoOps Agent | Claude Code |
-|---|---:|---:|
-| Structured Success | **15/15（100.0%）** | 13/15（86.7%） |
-| Classification Accuracy | **100.0%** | 86.7% |
-| File Recall@5 | **93.1%** | 77.1% |
-| 调查工具调用 | **137** | 220 |
-| Runner-reported tokens | **1,881,777** | 2,424,549 |
-| 平均单题耗时 | **125.8 秒** | 137.8 秒 |
+| 系统 / run | 结构化成功 | 分类 | File Recall@5 | 调用 | Tokens |
+|---|---:|---:|---:|---:|---:|
+| RepoOps v4（锁定完整 run） | **15/15** | **100.0%** | **93.1%** | 137 | 1,881,777 |
+| RepoOps 前原生 nanobot | **15/15** | **100.0%** | 90.4% | **136** | **1,354,894** |
+| 原生 nanobot + GitHub MCP v1.0.5 | **15/15** | **100.0%** | 90.4% | 155 | 1,497,269 |
+| Claude Code v1 | 13/15 | 86.7% | 77.1% | 220 | 2,424,549 |
+| RepoOps v5（同日重复 run） | 10/15 | 66.7% | 59.6% | 162 | 1,893,061 |
 
-RepoOps 的调用少 37.7%、tokens 少 22.4%、累计耗时少 8.7%，15 条均结构化成功，
-引用幻觉率为 0。该结果说明本轮领域检索与收尾可靠性优于 Claude Code，但样本仍只有
-三个仓库各 5 条、只运行一次，不能外推为通用代码 Agent 排名。审计还淘汰了两轮
+相对 Claude Code，RepoOps v4 的调用少 37.7%、tokens 少 22.4%，并且 15 条均
+结构化成功。相对 RepoOps 前的 nanobot，File Recall@5 只高 2.7 个百分点，分类和
+成功率相同，tokens 反而多 38.9%；召回收益全部来自一条 5 文件 TypeScript feature。
+同日 v5 的 5 条 `tool_budget_exhausted` 收尾失败又说明单次 100% 不稳定。这个更完整的
+结果支持“领域工具改善复杂多文件链路与安全/证据工程”，不支持“底座原本不会做”或
+“稳定生产准确率 100%”。样本仍只有三个仓库各 5 条、每个配置一次全量采样。
+
+审计还淘汰了两轮
 污染结果：首次试跑的远程
 精确读取可能泄漏到 post-fix `HEAD`；第二轮虽钉住 SHA，却复用了旧 task state。
 修复为工具层强制 SHA、重新绑定独立 state store，并加入工具参数恢复、检索去重与
 稀有查询词覆盖后，才生成上述正式 v4 结果。
 完整任务、分语言与逐题结果见
-[跨语言多仓库对照评测报告](RepoOps项目文档/跨语言多仓库对照评测报告.md)。
+[跨语言多仓库对照评测报告](RepoOps项目文档/跨语言多仓库对照评测报告.md)，原生
+nanobot / GitHub MCP 的版本锁、测试方法、消融与重复性结论见
+[原生 nanobot 与 GitHub MCP 对照评测报告](RepoOps项目文档/原生Nanobot与GitHub-MCP对照评测报告.md)。
 
 数据来源、标签策略和指标边界另见
 [真实历史任务集说明](RepoOps项目文档/真实历史任务集说明.md) 与
@@ -316,7 +338,8 @@ npm run lint
 ```
 
 当前工程验证覆盖 RepoOps 工具、GitHub HTTP/SSRF、Actions 日志、检索、状态原子
-写入、审批绕过、benchmark 解析/评分，以及 nanobot 全量 Python/WebUI 回归。精确
+写入、审批绕过、状态栏临时注入/重复调用/无进展/预算规则、benchmark 解析/评分，
+以及 nanobot 全量 Python/WebUI 回归。精确
 命令和结果见 [项目评估报告](RepoOps项目文档/项目评估报告.md)。
 
 ## 面试时主动讲清楚的边界
@@ -331,11 +354,14 @@ npm run lint
   可复现和源码不外传。
 - 模型可能过度检索。未加预算的首轮用了 25 步；加入显式预算并隔离会话/状态后，
   同题降到 8 步。两条轨迹都保留，作为真实 bad case 和优化证据。
+- Status Bar 是代码生成的运行时决策信号，不是代码级工具调度器；重复/无进展/预算
+  规则能显式提醒模型，但模型仍可能不遵守。两回合审批仍由工具状态机硬性执行。
 
 ## 目录
 
 ```text
 nanobot/agent/tools/repoops.py     15 个 RepoOps tools
+nanobot/agent/hooks/repoops_status.py  逐轮临时状态与操作规则
 nanobot/repoops/                  client / state / safety / RAG / eval
 nanobot/skills/repoops*/          总策略、Issue、PR、CI workflows
 eval/                             真实任务、ground truth、配置、runs
@@ -348,6 +374,7 @@ docs/                             架构与配置
 - [中文文档索引](RepoOps项目文档/文档索引.md)
 - [开发实现报告](RepoOps项目文档/开发实现报告.md)
 - [项目评估报告](RepoOps项目文档/项目评估报告.md)
+- [Agent 状态栏设计与验证报告](RepoOps项目文档/Agent状态栏设计与验证报告.md)
 - [RepoOps 与 Claude Code 对照评测](RepoOps项目文档/RepoOps与Claude-Code对照评测报告.md)
 - [跨语言多仓库对照评测](RepoOps项目文档/跨语言多仓库对照评测报告.md)
 - [失败案例与风险清单](RepoOps项目文档/失败案例与风险清单.md)

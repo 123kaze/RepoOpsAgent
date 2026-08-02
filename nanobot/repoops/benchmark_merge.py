@@ -42,6 +42,7 @@ def merge_runs(
     tasks: list[EvalTask] | None = None,
     agent: str = "RepoOps Agent",
     prediction_builder: PredictionBuilder = trajectory_prediction,
+    provenance: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     trajectories: list[Trajectory] = []
     seen_ids: set[str] = set()
@@ -91,6 +92,8 @@ def merge_runs(
         ],
         "shard_count": len(input_dirs),
     }
+    if provenance:
+        summary["provenance"] = provenance
 
     if tasks is not None:
         tasks_by_id = {task.task_id: task for task in tasks}

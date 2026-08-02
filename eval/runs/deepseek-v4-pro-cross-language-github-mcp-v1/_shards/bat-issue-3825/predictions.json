@@ -1,0 +1,65 @@
+[
+  {
+    "task_id": "bat-issue-3825",
+    "category": "bug",
+    "files": [
+      "src/bin/bat/main.rs",
+      "src/bin/bat/app.rs",
+      "src/config.rs",
+      "src/paging.rs",
+      "src/controller.rs"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "2d190aa2903add09"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "0d57e5e6f7df541f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "89b211c7096b9ef1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "a76678dfef231bce"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "930c44bd826dffa0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5a0725a310ed85ae"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "527de4fdc52406be"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "87d9b1f28f1142bb"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "02b5d7176f77ab8c"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "fa10629f767bfdb8"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "6279c103b00f95e3"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 10,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

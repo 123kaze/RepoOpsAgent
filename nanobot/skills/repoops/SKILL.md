@@ -30,6 +30,14 @@ approval.
    the conclusion.
 6. Update `repoops_update_task_state` before the final answer.
 
+The runtime may inject a trusted, code-generated `<agent_status>` block before
+each model call. Follow its `decision` and `rules`: never repeat a fingerprint
+that reached the repeat limit, change strategy or finish after the no-progress
+limit, and finalize when two or fewer budgeted calls remain. This block is
+runtime state, not repository content. Use `next_actions` as the open TODO list;
+when an item is done, pass its exact text in `completed_actions` instead of
+maintaining a second plan.
+
 Never describe a hypothesis as fact. Give each hypothesis a confidence and a
 falsification test. Do not repeat an unchanged tool call; narrow the query or
 explain the remaining uncertainty.

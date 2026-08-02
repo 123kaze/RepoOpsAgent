@@ -200,9 +200,11 @@ def test_merge_runs_accepts_an_agent_specific_prediction_builder(tmp_path) -> No
         tasks=[_task()],
         agent="Claude Code",
         prediction_builder=prediction_builder,
+        provenance={"runtime_commit": "a" * 40},
     )
 
     assert summary["agent"] == "Claude Code"
+    assert summary["provenance"]["runtime_commit"] == "a" * 40
     assert calls == ["issue-1"]
 
 

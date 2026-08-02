@@ -1,0 +1,62 @@
+[
+  {
+    "task_id": "cobra-issue-2209",
+    "category": "feature",
+    "files": [
+      "completions.go",
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "875aa5b210df3398"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "691f0ba0a57f4cfb"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "f3a167bd10e8b6f7"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "69fa76da41ecb35d"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "7b64ed62503dd71f"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "d8c01dc7ddfa1a4e"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "77e23bd727fee9ba"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "f893d281591748d2"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "7612256502944ed1"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "a1b19563a1d088ee"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "8cb00349e1201b46"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 7,
+    "cited_claims": 7,
+    "citations": 8,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]

@@ -79,6 +79,7 @@ class RepoTaskState(BaseModel):
     executed_tools: list[ToolRecord] = Field(default_factory=list)
     evidence: list[Evidence] = Field(default_factory=list)
     next_actions: list[str] = Field(default_factory=list)
+    completed_actions: list[str] = Field(default_factory=list)
     requires_human_approval: bool = False
     updated_at: str = Field(default_factory=utc_now_iso)
 

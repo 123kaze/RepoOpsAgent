@@ -1,0 +1,61 @@
+[
+  {
+    "task_id": "cobra-issue-2017",
+    "category": "feature",
+    "files": [
+      "command.go"
+    ],
+    "tool_calls": [
+      {
+        "name": "repoops_get_issue",
+        "arguments_key": "1449ed5ecf3a050a"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "56e8231953c2eb79"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "6721fb87338f41e1"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "74fbcefdc5d217b0"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "5afc28a619f3a139"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "93f1c394a9815dcc"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "e217a683a6f5fdcd"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "b507b39faac2ca2b"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "e10036d3bfa31773"
+      },
+      {
+        "name": "repoops_read_file",
+        "arguments_key": "bb093fa8fadb9b18"
+      },
+      {
+        "name": "repoops_search_workspace",
+        "arguments_key": "9b88f98296d7afcd"
+      }
+    ],
+    "invalid_tool_calls": 0,
+    "evidence_claims": 8,
+    "cited_claims": 8,
+    "citations": 15,
+    "hallucinated_citations": 0,
+    "approval_required": false
+  }
+]
