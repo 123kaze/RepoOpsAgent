@@ -90,6 +90,11 @@ Anthropic-compatible Provider 会把多条 system 消息折叠成最后一条；
 runtime block 可以保留原系统提示，同时仍受原系统策略约束。连续 user/tool 结构由
 现有 Provider normalizer 合并。
 
+状态消息还带有 `context_meta.isMeta=true`、`kind=agent_status` 和
+`persistence=model_only`。System Prompt、工具 definitions、Memory/Recent History
+快照、Archive 和 Skill 的完整分层见
+[KV 缓存友好上下文架构设计与验证报告](KV缓存友好上下文架构设计与验证报告.md)。
+
 ## 安全边界
 
 - 状态栏是辅助控制，不是授权来源；GitHub 写操作仍必须通过 allowlist 和两回合
@@ -138,7 +143,8 @@ uv run --no-sync pytest \
    忽略它。
 2. “唯一工具结果 hash”是可复现的进展代理，不等于人工确认的新事实；持久 evidence
    count 才是正式证据数。
-3. 动态状态会增加少量输入 token，并改变 provider cache 前缀；本轮尚未做真实模型
-   的 token 消融。
+3. 动态状态会增加少量输入 token，并使状态自身位置之后无法复用旧缓存；它不会修改
+   会话冻结的 system/tools 或此前轨迹。本轮尚未做真实 Provider 的 cache token/延迟
+   消融。
 4. Runner 的通用改动只有模型消息列表复制和 Hook 字段，不包含 RepoOps 领域逻辑；
    但它仍属于核心路径，后续需继续用全量回归保护。

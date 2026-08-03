@@ -71,6 +71,25 @@ API rate limit 在认证后更稳定。任何 GitHub 写操作都要求 token �
 状态栏不会保存到历史。预算和熔断字段是模型决策约束，不会替代 Runner 的迭代上限；
 GitHub 写入安全也不依赖它，仍由草稿—审批—执行状态机硬性保证。
 
+## 会话上下文快照
+
+以下行为目前由运行时固定，不需要额外配置：
+
+| 层 | 上限/生命周期 |
+|---|---|
+| System Prompt | 会话第一次调用冻结，直到 `/new` 或 fork 后的新会话 |
+| Tool Definitions | 与 System 同时冻结；工具拓扑改变后应新建会话 |
+| Skill 索引 | System 内最多 2,000 token；完整正文首次生效时按需追加 |
+| `MEMORY.md` 快照 | 最多 2,000 token，会话内不刷新 |
+| Recent History 快照 | 最多 8,000 token、50 条，会话内不刷新 |
+| Archive ledger | 最多 8 条或 8,000 token，到阈值才批量裁剪 |
+| Status Bar | 每轮约百 token 的 model-only user-role 元消息，不持久化 |
+
+大工具结果仍受 Agent 的 `maxToolResultChars` 限制。超过限制且当前 profile 有 Artifact
+读取工具时，完整结果写入 `<workspace>/.nanobot/tool-results/`，返回 URI、hash 和
+预览；RepoOps 使用 `repoops_read_artifact` 回读。目录不能配置到 workspace 外，避免
+把任意本地文件变成 RepoOps 可读能力。
+
 `allowedRepositories` 是 capability boundary，不是提示词。模型即使调用 shell、
 web 或构造其他 URL，也不应获得 RepoOps 之外的仓库权限。正式 benchmark 会进一步
 移除所有非 `repoops_*` 工具，测量的就是项目自身能力。

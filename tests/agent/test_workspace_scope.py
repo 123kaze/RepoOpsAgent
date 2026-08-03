@@ -140,10 +140,11 @@ async def test_filesystem_tool_uses_current_restricted_workspace_scope(tmp_path:
 
 
 @pytest.mark.asyncio
-async def test_restricted_project_can_read_agent_skills_and_exact_history(tmp_path: Path) -> None:
+async def test_restricted_project_can_read_skills_memory_and_exact_history(tmp_path: Path) -> None:
     agent_workspace = tmp_path / "agent"
     project = tmp_path / "project"
     skill_file = agent_workspace / "skills" / "custom" / "SKILL.md"
+    memory_file = agent_workspace / "memory" / "MEMORY.md"
     history_file = agent_workspace / "memory" / "history.jsonl"
     private_memory_file = agent_workspace / "memory" / "private.txt"
     private_file = agent_workspace / "private.txt"
@@ -152,6 +153,7 @@ async def test_restricted_project_can_read_agent_skills_and_exact_history(tmp_pa
     history_file.parent.mkdir(parents=True)
     project.mkdir()
     skill_file.write_text("global skill", encoding="utf-8")
+    memory_file.write_text("bounded memory details", encoding="utf-8")
     history_file.write_text('{"content":"global history"}\n', encoding="utf-8")
     private_memory_file.write_text("private memory", encoding="utf-8")
     private_file.write_text("private", encoding="utf-8")
@@ -174,6 +176,7 @@ async def test_restricted_project_can_read_agent_skills_and_exact_history(tmp_pa
     try:
         project_result = await read_tool.execute(path="project.txt")
         skill_result = await read_tool.execute(path=str(skill_file))
+        memory_result = await read_tool.execute(path=str(memory_file))
         history_result = await grep_tool.execute(
             pattern="global history",
             path=str(history_file),
@@ -183,18 +186,22 @@ async def test_restricted_project_can_read_agent_skills_and_exact_history(tmp_pa
         private_result = await read_tool.execute(path=str(private_file))
         write_result = await write_tool.execute(path=str(skill_file), content="changed")
         history_write_result = await write_tool.execute(path=str(history_file), content="changed")
+        memory_write_result = await write_tool.execute(path=str(memory_file), content="changed")
     finally:
         reset_workspace_scope(token)
 
     assert "project" in project_result
     assert "global skill" in skill_result
+    assert "bounded memory details" in memory_result
     assert "global history" in history_result
     assert "outside allowed directory" in private_memory_result
     assert "outside allowed directory" in private_result
     assert "outside allowed directory" in write_result
     assert "outside allowed directory" in history_write_result
+    assert "outside allowed directory" in memory_write_result
     assert skill_file.read_text(encoding="utf-8") == "global skill"
     assert history_file.read_text(encoding="utf-8") == '{"content":"global history"}\n'
+    assert memory_file.read_text(encoding="utf-8") == "bounded memory details"
 
 
 @pytest.mark.asyncio

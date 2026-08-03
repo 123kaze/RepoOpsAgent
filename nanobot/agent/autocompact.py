@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Callable, Coroutine, cast
 
 from loguru import logger
 
+from nanobot.agent.context_meta import is_archived_context_message
 from nanobot.session.manager import Session, SessionManager
 
 if TYPE_CHECKING:
@@ -129,6 +130,14 @@ class AutoCompact:
         if key in self._archiving or self._is_expired(session.updated_at):
             logger.info("Auto-compact: reloading session {} (archiving={})", key, key in self._archiving)
             session = self.sessions.get_or_create(key)
+        # New sessions replay persisted summaries as user-role meta messages.
+        # Keep the legacy return path only for pre-migration session files.
+        if any(
+            is_archived_context_message(message)
+            for message in session.messages[session.last_consolidated:]
+        ):
+            self._summaries.pop(key, None)
+            return session, None
         # Hot path: summary from in-memory dict (process hasn't restarted).
         entry = self._summaries.pop(key, None)
         if entry:

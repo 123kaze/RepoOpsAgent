@@ -12,6 +12,7 @@ import time
 import weakref
 from collections.abc import Coroutine, Iterable, Mapping
 from contextlib import AbstractContextManager, ExitStack, nullcontext, suppress
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from functools import partial
@@ -25,6 +26,12 @@ from nanobot.agent import model_presets as preset_helpers
 from nanobot.agent.autocompact import AutoCompact
 from nanobot.agent.automation_turns import publish_next_deferred_turn
 from nanobot.agent.context import ContextBuilder
+from nanobot.agent.context_meta import (
+    CONTEXT_META_MESSAGE_KEY,
+    LOADED_SKILL_SNAPSHOTS_META,
+    archived_context_entries,
+    is_archived_context_message,
+)
 from nanobot.agent.cron_turns import CronTurnCoordinator
 from nanobot.agent.hook import AgentHook, AgentTurnHookFactory
 from nanobot.agent.memory import Consolidator
@@ -130,6 +137,7 @@ class TurnContext:
     provider_state: ProviderConversationState | None = field(default=None, repr=False)
     request_context: RequestContext | None = None
     runtime_context_blocks: list[RuntimeContextBlock] = field(default_factory=list)
+    runtime_meta_messages: list[dict[str, Any]] = field(default_factory=list)
     attributes: dict[str, Any] = field(default_factory=dict)
 
     final_content: str | None = None
@@ -712,7 +720,95 @@ class AgentLoop:
         """Build the initial message list for the LLM turn."""
         assert ctx.session is not None
         scope = self.workspace_scopes.for_message(ctx.msg, ctx.session.metadata)
-        return self.context.build_messages(
+        tool_definitions = (ctx.tools or self.tools).get_definitions()
+        if ctx.ephemeral:
+            context_snapshot = self.context.create_session_context_snapshot(
+                channel=ctx.delivery.route.channel,
+                workspace=scope.project_path,
+                include_memory_recent_history=False,
+                session_key=ctx.session.key,
+                unified_session=self._unified_session,
+                tool_definitions=tool_definitions,
+            )
+        else:
+            context_snapshot, created = self.context.ensure_session_context_snapshot(
+                ctx.session.metadata,
+                channel=ctx.delivery.route.channel,
+                workspace=scope.project_path,
+                include_memory_recent_history=True,
+                session_key=ctx.session.key,
+                unified_session=self._unified_session,
+                tool_definitions=tool_definitions,
+            )
+            if created:
+                # A resumable provider state was built against a different
+                # static prefix. Force one full replay when creating or
+                # repairing the snapshot so Memory/tools cannot be omitted.
+                ctx.session.provider_state = None
+                ctx.provider_state = None
+                self.sessions.save(ctx.session)
+        loaded_raw = ctx.session.metadata.get(LOADED_SKILL_SNAPSHOTS_META)
+        recorded_skills: set[str] = set()
+        if isinstance(loaded_raw, list):
+            recorded_skills.update(
+                name for name in cast(list[object], loaded_raw) if isinstance(name, str)
+            )
+        loaded_skills = set(recorded_skills)
+        # Reconstruct the ledger from copied/recovered history as well. Forks
+        # intentionally get a fresh session snapshot, but an already-appended
+        # skill reminder must not be duplicated in the new trajectory.
+        for message in ctx.history:
+            hidden = message.get(HIDDEN_HISTORY_META)
+            if not isinstance(hidden, Mapping):
+                continue
+            hidden_data = cast(Mapping[str, Any], hidden)
+            if hidden_data.get("kind") != "active_skills":
+                continue
+            names = hidden_data.get("skill_names")
+            if isinstance(names, list):
+                loaded_skills.update(
+                    name for name in cast(list[object], names) if isinstance(name, str)
+                )
+        ctx.runtime_meta_messages = (
+            []
+            if ctx.session_key.startswith("dream:")
+            else self.context.build_active_skill_messages(
+                ctx.msg.content,
+                current_role="user" if ctx.kind is TurnKind.USER else "assistant",
+                exclude_skill_names=sorted(loaded_skills),
+            )
+        )
+        if not ctx.ephemeral and ctx.runtime_meta_messages:
+            for message in ctx.runtime_meta_messages:
+                persisted = deepcopy(message)
+                internal = cast(dict[str, Any], persisted.get("_meta") or {})
+                context_meta = cast(
+                    dict[str, Any],
+                    internal.get(CONTEXT_META_MESSAGE_KEY) or {},
+                )
+                raw_skill_names = context_meta.get("skill_names")
+                skill_names = (
+                    [
+                        name
+                        for name in cast(list[object], raw_skill_names)
+                        if isinstance(name, str)
+                    ]
+                    if isinstance(raw_skill_names, list)
+                    else []
+                )
+                persisted[HIDDEN_HISTORY_META] = {
+                    "kind": "active_skills",
+                    "skill_names": skill_names,
+                }
+                persisted.setdefault("timestamp", time.strftime("%Y-%m-%dT%H:%M:%S"))
+                ctx.session.messages.append(persisted)
+                loaded_skills.update(skill_names)
+            ctx.session.metadata[LOADED_SKILL_SNAPSHOTS_META] = sorted(loaded_skills)
+            self.sessions.save(ctx.session)
+        elif not ctx.ephemeral and loaded_skills != recorded_skills:
+            ctx.session.metadata[LOADED_SKILL_SNAPSHOTS_META] = sorted(loaded_skills)
+            self.sessions.save(ctx.session)
+        messages = self.context.build_messages(
             history=ctx.history,
             current_message=ctx.msg.content,
             media=ctx.msg.media if ctx.kind is TurnKind.USER and ctx.msg.media else None,
@@ -723,7 +819,15 @@ class AgentLoop:
             include_memory_recent_history=not ctx.ephemeral,
             session_key=ctx.session.key,
             unified_session=self._unified_session,
+            context_snapshot=context_snapshot,
+            archived_contexts=(
+                []
+                if any(is_archived_context_message(message) for message in ctx.history)
+                else archived_context_entries(ctx.session.metadata)
+            ),
+            include_active_skill_meta=False,
         )
+        return [*messages, *deepcopy(ctx.runtime_meta_messages)]
 
     def _request_context_for_turn(self, ctx: TurnContext) -> RequestContext:
         assert ctx.session is not None
@@ -862,6 +966,7 @@ class AgentLoop:
         tools: ToolRegistry | None = None,
         request_context: RequestContext | None = None,
         provider_state: ProviderConversationState | None = None,
+        runtime_meta_messages: list[dict[str, Any]] | None = None,
     ) -> tuple[str | None, list[str], list[dict[str, Any]], str, bool]:
         """Run the agent iteration loop.
 
@@ -1056,6 +1161,10 @@ class AgentLoop:
             result = await self.runner.run(AgentRunSpec(
                 initial_messages=initial_messages,
                 tools=effective_tools,
+                tool_definitions=ContextBuilder.session_tool_definitions(
+                    session.metadata if session is not None else None
+                ),
+                runtime_meta_messages=runtime_meta_messages,
                 runtime=runtime,
                 max_iterations=self.max_iterations,
                 max_tool_result_chars=self.max_tool_result_chars,
@@ -1797,6 +1906,7 @@ class AgentLoop:
             tools=ctx.tools,
             request_context=ctx.request_context,
             provider_state=ctx.provider_state,
+            runtime_meta_messages=None,
         )
         final_content, _, all_msgs, stop_reason, had_injections = result
         ctx.final_content = final_content

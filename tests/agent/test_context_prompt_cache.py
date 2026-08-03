@@ -73,6 +73,7 @@ def test_provider_context_appended_after_user_content(tmp_path) -> None:
         runtime_context_blocks=[
             RuntimeContextBlock(source="test", content="provider context"),
         ],
+        include_active_skill_meta=False,
     )
 
     content = messages[-1]["content"]
@@ -81,19 +82,21 @@ def test_provider_context_appended_after_user_content(tmp_path) -> None:
     assert user_pos < context_pos, "user content must precede provider context"
 
 
-def test_unprocessed_history_injected_into_system_prompt(tmp_path) -> None:
-    """Entries in history.jsonl not yet consumed by Dream appear with timestamps."""
+def test_unprocessed_history_captured_outside_system_prompt(tmp_path) -> None:
+    """Unprocessed history is captured in a frozen user-meta snapshot."""
     workspace = _make_workspace(tmp_path)
     builder = ContextBuilder(workspace)
 
     builder.memory.append_history("User asked about weather in Tokyo")
     builder.memory.append_history("Agent fetched forecast via web_search")
 
-    prompt = builder.build_system_prompt()
-    assert "# Recent History" in prompt
-    assert "User asked about weather in Tokyo" in prompt
-    assert "Agent fetched forecast via web_search" in prompt
-    assert re.search(r"\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}\]", prompt)
+    system = builder.build_system_prompt()
+    snapshot = builder.create_session_context_snapshot()
+    recent = snapshot["recent_history_snapshot"]
+    assert "User asked about weather in Tokyo" not in system
+    assert "User asked about weather in Tokyo" in recent
+    assert "Agent fetched forecast via web_search" in recent
+    assert re.search(r"\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}\]", recent)
 
 
 def test_recent_history_injection_is_session_scoped(tmp_path) -> None:
@@ -104,12 +107,12 @@ def test_recent_history_injection_is_session_scoped(tmp_path) -> None:
     builder.memory.append_history("telegram history", session_key="telegram:chat-1")
     builder.memory.append_history("slack history", session_key="slack:chat-2")
 
-    prompt = builder.build_system_prompt(session_key="telegram:chat-1")
+    snapshot = builder.create_session_context_snapshot(session_key="telegram:chat-1")
+    recent = snapshot["recent_history_snapshot"]
 
-    assert "# Recent History" in prompt
-    assert "telegram history" in prompt
-    assert "slack history" not in prompt
-    assert "legacy entry without session" not in prompt
+    assert "telegram history" in recent
+    assert "slack history" not in recent
+    assert "legacy entry without session" not in recent
 
 
 def test_recent_history_injection_unified_excludes_cron_internals(tmp_path) -> None:
@@ -120,14 +123,15 @@ def test_recent_history_injection_unified_excludes_cron_internals(tmp_path) -> N
     builder.memory.append_history("channel user history", session_key="telegram:chat-1")
     builder.memory.append_history("cron internal history", session_key="cron:job-1")
 
-    prompt = builder.build_system_prompt(
+    snapshot = builder.create_session_context_snapshot(
         session_key="unified:default",
         unified_session=True,
     )
+    recent = snapshot["recent_history_snapshot"]
 
-    assert "unified user history" in prompt
-    assert "channel user history" in prompt
-    assert "cron internal history" not in prompt
+    assert "unified user history" in recent
+    assert "channel user history" in recent
+    assert "cron internal history" not in recent
 
 
 def test_cron_recent_history_can_see_own_history_and_unified_context(tmp_path) -> None:
@@ -138,14 +142,15 @@ def test_cron_recent_history_can_see_own_history_and_unified_context(tmp_path) -
     builder.memory.append_history("own cron history", session_key="cron:job-1")
     builder.memory.append_history("other cron history", session_key="cron:job-2")
 
-    prompt = builder.build_system_prompt(
+    snapshot = builder.create_session_context_snapshot(
         session_key="cron:job-1",
         unified_session=True,
     )
+    recent = snapshot["recent_history_snapshot"]
 
-    assert "unified user history" in prompt
-    assert "own cron history" in prompt
-    assert "other cron history" not in prompt
+    assert "unified user history" in recent
+    assert "own cron history" in recent
+    assert "other cron history" not in recent
 
 
 def test_recent_history_capped_at_max(tmp_path) -> None:
@@ -156,10 +161,10 @@ def test_recent_history_capped_at_max(tmp_path) -> None:
     for i in range(builder._MAX_RECENT_HISTORY + 20):
         builder.memory.append_history(f"entry-{i}")
 
-    prompt = builder.build_system_prompt()
-    assert "entry-0" not in prompt
-    assert "entry-19" not in prompt
-    assert f"entry-{builder._MAX_RECENT_HISTORY + 19}" in prompt
+    recent = builder.create_session_context_snapshot()["recent_history_snapshot"]
+    assert "entry-0" not in recent
+    assert "entry-19" not in recent
+    assert f"entry-{builder._MAX_RECENT_HISTORY + 19}" in recent
 
 
 def test_recent_history_truncated_at_max_tokens(tmp_path) -> None:
@@ -172,12 +177,10 @@ def test_recent_history_truncated_at_max_tokens(tmp_path) -> None:
     big_entry = "word " * (builder._MAX_HISTORY_TOKENS + 5_000)
     builder.memory.append_history(big_entry)
 
-    prompt = builder.build_system_prompt()
-    history_section = prompt.split("# Recent History\n\n", 1)
-    assert len(history_section) == 2
+    recent = builder.create_session_context_snapshot()["recent_history_snapshot"]
 
     enc = tiktoken.get_encoding("cl100k_base")
-    assert len(enc.encode(history_section[1])) <= builder._MAX_HISTORY_TOKENS
+    assert len(enc.encode(recent)) <= builder._MAX_HISTORY_TOKENS
 
 
 def test_no_recent_history_when_dream_has_processed_all(tmp_path) -> None:
@@ -188,8 +191,8 @@ def test_no_recent_history_when_dream_has_processed_all(tmp_path) -> None:
     cursor = builder.memory.append_history("already processed entry")
     builder.memory.set_last_dream_cursor(cursor)
 
-    prompt = builder.build_system_prompt()
-    assert "# Recent History" not in prompt
+    snapshot = builder.create_session_context_snapshot()
+    assert snapshot["recent_history_snapshot"] == ""
 
 
 def test_partial_dream_processing_shows_only_remainder(tmp_path) -> None:
@@ -204,12 +207,11 @@ def test_partial_dream_processing_shows_only_remainder(tmp_path) -> None:
 
     builder.memory.set_last_dream_cursor(c2)
 
-    prompt = builder.build_system_prompt()
-    assert "# Recent History" in prompt
-    assert "old conversation about Python" not in prompt
-    assert "old conversation about Rust" not in prompt
-    assert "recent question about Docker" in prompt
-    assert "recent question about K8s" in prompt
+    recent = builder.create_session_context_snapshot()["recent_history_snapshot"]
+    assert "old conversation about Python" not in recent
+    assert "old conversation about Rust" not in recent
+    assert "recent question about Docker" in recent
+    assert "recent question about K8s" in recent
 
 
 def test_execution_rules_in_system_prompt(tmp_path) -> None:
@@ -353,6 +355,21 @@ def test_memory_skill_is_lazy_loaded_from_skills_index(tmp_path) -> None:
     assert "Examples (replace `keyword`)" not in prompt
 
 
+def test_system_skill_index_is_bounded(tmp_path, monkeypatch) -> None:
+    workspace = _make_workspace(tmp_path)
+    builder = ContextBuilder(workspace)
+    monkeypatch.setattr(
+        builder.skills,
+        "build_skills_summary",
+        lambda: "- **skill** — description\n" * 20_000,
+    )
+
+    prompt = builder.build_system_prompt()
+
+    assert "... (truncated)" in prompt
+    assert prompt.count("- **skill**") < 20_000
+
+
 def test_fresh_workspace_omits_default_prompt_scaffolding(tmp_path) -> None:
     from nanobot.utils.helpers import sync_workspace_templates
 
@@ -383,8 +400,8 @@ def test_template_memory_md_is_skipped(tmp_path) -> None:
     assert "This file is automatically updated by nanobot" not in prompt
 
 
-def test_customized_memory_md_is_injected(tmp_path, monkeypatch) -> None:
-    """A Dream-populated MEMORY.md should be injected normally."""
+def test_customized_memory_md_is_captured_outside_system(tmp_path, monkeypatch) -> None:
+    """A Dream-populated MEMORY.md becomes a bounded session snapshot."""
     workspace = _make_workspace(tmp_path)
     from nanobot.utils.helpers import sync_workspace_templates
     sync_workspace_templates(workspace, silent=True)
@@ -403,8 +420,95 @@ def test_customized_memory_md_is_injected(tmp_path, monkeypatch) -> None:
         return read_memory()
 
     monkeypatch.setattr(builder.memory, "read_memory", tracked_read_memory)
-    prompt = builder.build_system_prompt()
+    system = builder.build_system_prompt()
+    snapshot = builder.create_session_context_snapshot()
 
-    assert "# Memory\n\n## Long-term Memory" in prompt
-    assert "User prefers dark mode" in prompt
+    assert "User prefers dark mode" not in system
+    assert "User prefers dark mode" in snapshot["memory_snapshot"]
     assert calls == 1
+
+
+def test_session_snapshot_freezes_system_memory_history_and_tools(tmp_path) -> None:
+    workspace = _make_workspace(tmp_path)
+    (workspace / "AGENTS.md").write_text("original rules", encoding="utf-8")
+    memory_dir = workspace / "memory"
+    memory_dir.mkdir()
+    (memory_dir / "MEMORY.md").write_text("original memory", encoding="utf-8")
+    builder = ContextBuilder(workspace)
+    builder.memory.append_history("original recent history", session_key="cli:test")
+    metadata: dict = {}
+    tools = [{"type": "function", "function": {"name": "alpha"}}]
+
+    first, created = builder.ensure_session_context_snapshot(
+        metadata,
+        session_key="cli:test",
+        tool_definitions=tools,
+    )
+    assert created is True
+
+    (workspace / "AGENTS.md").write_text("changed rules", encoding="utf-8")
+    (memory_dir / "MEMORY.md").write_text("changed memory", encoding="utf-8")
+    builder.memory.append_history("changed recent history", session_key="cli:test")
+    second, created = builder.ensure_session_context_snapshot(
+        metadata,
+        session_key="cli:test",
+        tool_definitions=[{"type": "function", "function": {"name": "beta"}}],
+    )
+
+    assert created is False
+    assert second == first
+    assert "original rules" in second["system_prompt"]
+    assert "changed rules" not in second["system_prompt"]
+    assert second["memory_snapshot"] == "original memory"
+    assert "changed recent history" not in second["recent_history_snapshot"]
+    assert second["tool_definitions"] == tools
+
+
+def test_snapshot_and_archive_are_user_role_meta_messages(tmp_path) -> None:
+    workspace = _make_workspace(tmp_path)
+    memory_dir = workspace / "memory"
+    memory_dir.mkdir()
+    (memory_dir / "MEMORY.md").write_text("bounded memory", encoding="utf-8")
+    builder = ContextBuilder(workspace)
+    snapshot = builder.create_session_context_snapshot(tool_definitions=[])
+
+    messages = builder.build_messages(
+        [],
+        "current task",
+        context_snapshot=snapshot,
+        archived_contexts=[{"id": "archive-1", "text": "old trajectory summary"}],
+        include_active_skill_meta=False,
+    )
+
+    assert "bounded memory" not in messages[0]["content"]
+    assert messages[1]["role"] == "user"
+    assert "<memory_snapshot" in messages[1]["content"]
+    archived = next(message for message in messages if "<archived_context" in message["content"])
+    assert archived["role"] == "user"
+    assert archived["_meta"]["context_meta"]["isMeta"] is True
+    assert "current task" not in archived["content"]
+    current = next(message for message in messages if message.get("content") == "current task")
+    assert current["role"] == "user"
+    assert "_meta" not in current
+
+
+def test_tampered_session_snapshot_is_rebuilt(tmp_path) -> None:
+    workspace = _make_workspace(tmp_path)
+    (workspace / "AGENTS.md").write_text("trusted rules", encoding="utf-8")
+    builder = ContextBuilder(workspace)
+    metadata: dict = {}
+    snapshot, created = builder.ensure_session_context_snapshot(
+        metadata,
+        tool_definitions=[{"type": "function", "function": {"name": "safe"}}],
+    )
+    assert created is True
+    metadata["_context_snapshot"]["system_prompt"] = "tampered"
+
+    rebuilt, created = builder.ensure_session_context_snapshot(
+        metadata,
+        tool_definitions=snapshot["tool_definitions"],
+    )
+
+    assert created is True
+    assert rebuilt["system_prompt"] != "tampered"
+    assert "trusted rules" in rebuilt["system_prompt"]

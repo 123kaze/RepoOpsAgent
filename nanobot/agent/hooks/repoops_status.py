@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
+from nanobot.agent.context_meta import CONTEXT_META_MESSAGE_KEY
 from nanobot.agent.hook import (
     AgentHook,
     AgentHookContext,
@@ -36,6 +37,7 @@ _EVIDENCE_TOOLS = {
     "repoops_get_pull_request",
     "repoops_get_pull_request_diff",
     "repoops_read_file",
+    "repoops_read_artifact",
     "repoops_search_code",
     "repoops_search_issues",
     "repoops_search_workspace",
@@ -158,6 +160,13 @@ class RepoOpsStatusHook(AgentHook):
             {
                 "role": "user",
                 "content": self._render_status(context.iteration),
+                "_meta": {
+                    CONTEXT_META_MESSAGE_KEY: {
+                        "isMeta": True,
+                        "kind": "agent_status",
+                        "persistence": "model_only",
+                    }
+                },
             }
         )
 

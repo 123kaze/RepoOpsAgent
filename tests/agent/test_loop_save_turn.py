@@ -28,6 +28,7 @@ from nanobot.runtime_context import (
     RuntimeContextBlock,
     append_runtime_context,
     public_history_message,
+    public_history_messages,
 )
 from nanobot.session.automation_turns import AUTOMATION_HISTORY_META
 from nanobot.session.goal_state import GOAL_STATE_KEY
@@ -412,6 +413,7 @@ def test_build_and_save_preserves_user_text_containing_goal_guidance_tag(tmp_pat
         [],
         user_text,
         channel="cli",
+        include_active_skill_meta=False,
     )
     assert "_meta" not in messages[-1]
 
@@ -787,8 +789,9 @@ async def test_process_message_persists_user_message_before_turn_completes(tmp_p
 
     loop.sessions.invalidate("feishu:c1")
     persisted = loop.sessions.get_or_create("feishu:c1")
-    assert [m["role"] for m in persisted.messages] == ["user"]
-    assert persisted.messages[0]["content"] == "persist me"
+    visible = public_history_messages(persisted.messages)
+    assert [m["role"] for m in visible] == ["user"]
+    assert visible[0]["content"] == "persist me"
     assert persisted.metadata.get(AgentLoop._PENDING_USER_TURN_KEY) is True
     assert persisted.updated_at >= persisted.created_at
 
@@ -802,6 +805,12 @@ async def test_subagent_followup_stages_provider_state_before_turn_runs(
     loop._run_agent_loop = AsyncMock(side_effect=RuntimeError("boom"))  # type: ignore[method-assign]
     loop.provider.can_resume_conversation_state.return_value = True
     session = loop.sessions.get_or_create("cli:subagent-crash")
+    loop.context.ensure_session_context_snapshot(
+        session.metadata,
+        channel="cli",
+        session_key=session.key,
+        tool_definitions=loop.tools.get_definitions(),
+    )
     session.provider_state = _provider_state()
     loop.sessions.save(session)
 
@@ -817,10 +826,46 @@ async def test_subagent_followup_stages_provider_state_before_turn_runs(
 
     loop.sessions.invalidate("cli:subagent-crash")
     persisted = loop.sessions.get_or_create("cli:subagent-crash")
-    assert persisted.messages[-1]["content"] == "subagent result"
+    assert public_history_messages(persisted.messages)[-1]["content"] == "subagent result"
     assert persisted.provider_state is not None
     assert persisted.provider_state.pending_messages[-1]["role"] == "user"
     assert persisted.provider_state.pending_messages[-1]["content"] == "subagent result"
+
+
+@pytest.mark.asyncio
+async def test_new_context_snapshot_discards_legacy_provider_state(tmp_path: Path) -> None:
+    loop = _make_full_loop(tmp_path)
+    loop.consolidator.maybe_consolidate_by_tokens = AsyncMock(return_value=False)  # type: ignore[method-assign]
+    loop.provider.can_resume_conversation_state.return_value = True
+    session = loop.sessions.get_or_create("cli:legacy-state")
+    session.provider_state = _provider_state()
+    loop.sessions.save(session)
+    seen: dict[str, object] = {}
+
+    async def fake_run(initial_messages, *, provider_state=None, **_kwargs):
+        seen["provider_state"] = provider_state
+        return (
+            "done",
+            [],
+            [*initial_messages, {"role": "assistant", "content": "done"}],
+            "stop",
+            False,
+        )
+
+    loop._run_agent_loop = fake_run  # type: ignore[method-assign]
+    result = await loop._process_message(
+        InboundMessage(
+            channel="cli",
+            sender_id="user",
+            chat_id="legacy-state",
+            content="new task",
+        )
+    )
+
+    assert result is not None
+    assert seen["provider_state"] is None
+    assert session.provider_state is None
+    assert "_context_snapshot" in session.metadata
 
 
 @pytest.mark.asyncio
@@ -868,6 +913,12 @@ async def test_subagent_redelivery_does_not_duplicate_staged_provider_input(
         side_effect=RuntimeError("prompt boom"),
     )
     session = loop.sessions.get_or_create("cli:subagent-redelivery")
+    loop.context.ensure_session_context_snapshot(
+        session.metadata,
+        channel="cli",
+        session_key=session.key,
+        tool_definitions=loop.tools.get_definitions(),
+    )
     session.provider_state = _provider_state()
     loop.sessions.save(session)
     msg = InboundMessage(
@@ -1058,9 +1109,10 @@ async def test_process_message_persists_media_paths_on_user_turn(tmp_path: Path)
 
     loop.sessions.invalidate("websocket:c-media")
     persisted = loop.sessions.get_or_create("websocket:c-media")
-    assert [m["role"] for m in persisted.messages] == ["user"]
-    assert persisted.messages[0]["content"] == "look"
-    assert persisted.messages[0]["media"] == [str(img_a), str(img_b)]
+    visible = public_history_messages(persisted.messages)
+    assert [m["role"] for m in visible] == ["user"]
+    assert visible[0]["content"] == "look"
+    assert visible[0]["media"] == [str(img_a), str(img_b)]
 
 
 @pytest.mark.asyncio
@@ -1090,27 +1142,27 @@ async def test_process_message_persists_media_only_turn_without_text(tmp_path: P
 
     loop.sessions.invalidate("websocket:c-images-only")
     persisted = loop.sessions.get_or_create("websocket:c-images-only")
-    assert len(persisted.messages) == 1
-    assert persisted.messages[0]["role"] == "user"
-    assert persisted.messages[0]["content"] == ""
-    assert persisted.messages[0]["media"] == [str(img)]
+    visible = public_history_messages(persisted.messages)
+    assert len(visible) == 1
+    assert visible[0]["role"] == "user"
+    assert visible[0]["content"] == ""
+    assert visible[0]["media"] == [str(img)]
 
 
 @pytest.mark.asyncio
 async def test_process_message_does_not_duplicate_early_persisted_user_message(tmp_path: Path) -> None:
     loop = _make_full_loop(tmp_path)
     loop.consolidator.maybe_consolidate_by_tokens = AsyncMock(return_value=False)  # type: ignore[method-assign]
-    loop._run_agent_loop = AsyncMock(return_value=(
-        "done",
-        None,
-        [
-            {"role": "system", "content": "system"},
-            {"role": "user", "content": "hello"},
-            {"role": "assistant", "content": "done"},
-        ],
-        "stop",
-        False,
-    ))  # type: ignore[method-assign]
+    async def fake_run(initial_messages, **_kwargs):
+        return (
+            "done",
+            None,
+            [*initial_messages, {"role": "assistant", "content": "done"}],
+            "stop",
+            False,
+        )
+
+    loop._run_agent_loop = fake_run  # type: ignore[method-assign]
 
     result = await loop._process_message(
         InboundMessage(channel="feishu", sender_id="u1", chat_id="c2", content="hello")
@@ -1121,7 +1173,7 @@ async def test_process_message_does_not_duplicate_early_persisted_user_message(t
     session = loop.sessions.get_or_create("feishu:c2")
     assert [
         {k: v for k, v in m.items() if k in {"role", "content"}}
-        for m in session.messages
+        for m in public_history_messages(session.messages)
     ] == [
         {"role": "user", "content": "hello"},
         {"role": "assistant", "content": "done"},
@@ -1185,7 +1237,7 @@ async def test_internal_continuation_queues_turn_without_fake_user_history(
     assert "Finish the long goal." in str(session.messages[0]["content"])
     assert [
         {k: v for k, v in m.items() if k in {"role", "content"}}
-        for m in map(public_history_message, session.messages)
+        for m in public_history_messages(session.messages)
     ] == [{"role": "user", "content": "start the goal"}]
 
     second = await loop._process_message(queued, pending_queue=asyncio.Queue())
@@ -1195,7 +1247,7 @@ async def test_internal_continuation_queues_turn_without_fake_user_history(
     session = loop.sessions.get_or_create("feishu:c-auto")
     assert [
         {k: v for k, v in m.items() if k in {"role", "content"}}
-        for m in map(public_history_message, session.messages)
+        for m in public_history_messages(session.messages)
     ] == [
         {"role": "user", "content": "start the goal"},
         {"role": "assistant", "content": "done"},
@@ -1509,7 +1561,7 @@ async def test_process_direct_skip_user_persist_does_not_save_retry_user(
     )
 
     session = loop.sessions.get_or_create("api:default")
-    assert [(m["role"], m["content"]) for m in session.messages] == [
+    assert [(m["role"], m["content"]) for m in public_history_messages(session.messages)] == [
         ("user", "hello"),
         ("assistant", "previous empty-response attempt"),
         ("assistant", "Test title"),
@@ -1553,19 +1605,16 @@ async def test_next_turn_after_crash_closes_pending_user_turn_before_new_input(t
     ])
     loop.sessions.save(session)
 
-    loop._run_agent_loop = AsyncMock(return_value=(
-        "new answer",
-        None,
-        [
-            {"role": "system", "content": "system"},
-            {"role": "user", "content": "old question"},
-            {"role": "assistant", "content": "Error: Task interrupted before a response was generated."},
-            {"role": "user", "content": "new question"},
-            {"role": "assistant", "content": "new answer"},
-        ],
-        "stop",
-        False,
-    ))  # type: ignore[method-assign]
+    async def fake_run(initial_messages, **_kwargs):
+        return (
+            "new answer",
+            None,
+            [*initial_messages, {"role": "assistant", "content": "new answer"}],
+            "stop",
+            False,
+        )
+
+    loop._run_agent_loop = fake_run  # type: ignore[method-assign]
 
     result = await loop._process_message(
         InboundMessage(channel="feishu", sender_id="u1", chat_id="c3", content="new question")
@@ -1576,7 +1625,7 @@ async def test_next_turn_after_crash_closes_pending_user_turn_before_new_input(t
     session = loop.sessions.get_or_create("feishu:c3")
     assert [
         {k: v for k, v in m.items() if k in {"role", "content"}}
-        for m in session.messages
+        for m in public_history_messages(session.messages)
     ] == [
         {"role": "user", "content": "old question"},
         {"role": "assistant", "content": "Error: Task interrupted before a response was generated."},
@@ -1677,7 +1726,7 @@ async def test_stop_preserves_runtime_checkpoint_for_next_turn(tmp_path: Path) -
     session = loop.sessions.get_or_create("feishu:c4")
     assert [
         {k: v for k, v in m.items() if k in {"role", "content", "tool_call_id", "name"}}
-        for m in session.messages
+        for m in public_history_messages(session.messages)
     ] == [
         {"role": "user", "content": "keep progress"},
         {"role": "assistant", "content": "working"},
@@ -1768,7 +1817,7 @@ async def test_system_subagent_followup_is_persisted_before_prompt_assembly(tmp_
     persisted = loop.sessions.get_or_create("cli:test")
     assert [
         {k: v for k, v in m.items() if k in {"role", "content", "injected_event", "subagent_task_id"}}
-        for m in persisted.messages
+        for m in public_history_messages(persisted.messages)
     ] == [
         {"role": "user", "content": "question"},
         {"role": "assistant", "content": "working"},
@@ -1948,6 +1997,7 @@ def test_subagent_followup_uses_user_model_input_and_assistant_history(tmp_path:
         history=history,
         current_message="subagent result",
         channel="cli",
+        include_active_skill_meta=False,
     )
 
     non_system = [m for m in projected if m.get("role") != "system"]
@@ -2084,7 +2134,8 @@ async def test_turn_after_unanswered_user_keeps_tool_call_pairing(tmp_path: Path
     loop.sessions.save(session)
 
     async def fake_run_agent_loop(initial_messages, **_kwargs):
-        assert [m["role"] for m in initial_messages] == ["system", "user"]
+        assert [m["role"] for m in initial_messages] == ["system", "user", "user"]
+        assert initial_messages[-1]["content"].startswith("<system-reminder>")
         return (
             "done",
             [],
@@ -2129,7 +2180,7 @@ async def test_turn_after_unanswered_user_keeps_tool_call_pairing(tmp_path: Path
                 f"orphaned tool result {message.get('tool_call_id')!r}: "
                 f"{[m.get('role') for m in persisted.messages]}"
             )
-    assert [m["role"] for m in persisted.messages] == [
+    assert [m["role"] for m in public_history_messages(persisted.messages)] == [
         "user", "user", "assistant", "tool", "assistant",
     ]
 

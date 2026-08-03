@@ -1,7 +1,8 @@
 # RepoOps Architecture
 
 RepoOps 没有把一段仓库分析 prompt 包装成产品。它复用 nanobot 的小型 Agent
-runtime，在运行时边界增加 15 个 GitHub/代码工具、结构化状态、安全策略和可复现
+runtime，在运行时边界增加 16 个 GitHub/代码/Artifact 工具、结构化状态、安全策略、
+KV Cache 友好的分层上下文和可复现
 评测。
 
 ```mermaid
@@ -19,6 +20,9 @@ flowchart LR
     S --> H[Status Hook<br/>budget · repeat · evidence delta]
     A --> H
     H -. model-only status .-> R
+
+    C[Session context snapshot<br/>static system + frozen tools] --> R
+    O[Archived context<br/>persisted user-role meta] --> R
 
     G --> N[SSRF-guarded<br/>GitHub REST API]
     S --> D[(workspace/.repoops)]
@@ -55,7 +59,10 @@ sequenceDiagram
 
 | 模块 | 职责 |
 |---|---|
-| `nanobot/agent/tools/repoops.py` | 15 个 Agent 工具及 JSON schema |
+| `nanobot/agent/tools/repoops.py` | 16 个 Agent 工具及 JSON schema |
+| `nanobot/agent/context.py` | 静态 system、会话冻结快照和 user-role 元消息装配 |
+| `nanobot/agent/context_meta.py` | Snapshot/Archive/Skill 元消息协议与边界 |
+| `nanobot/agent/context_governance.py` | Token 预算、真实用户优先裁剪和大输出落盘 |
 | `nanobot/repoops/client.py` | GitHub REST、SSRF、Actions 日志跳转和大小限制 |
 | `nanobot/repoops/models.py` | 任务、证据、假设、工具记录和草稿模型 |
 | `nanobot/repoops/state.py` | 工作区内原子状态持久化 |
@@ -81,6 +88,59 @@ Skill 是注入 Agent 上下文的工作流说明；它不新增工具权限、�
 
 因此删掉四个 RepoOps Skill 后，工具和安全机制仍然存在，只是模型少了领域流程
 指导；只复制 Skill 到另一个 nanobot，则不会凭空获得这些工具和状态实现。
+
+## 分层上下文与 KV Cache
+
+System Prompt 和工具 definitions 在会话第一次 BUILD 时形成快照并写入 session
+metadata。后续请求从该快照读取，而不是重新读取动态 Memory、Recent History 或工具
+registry。因此同一会话内的最前静态前缀保持字节稳定：
+
+```text
+system                         会话内冻结
+tools                          会话内冻结
+user-role memory snapshot      ≤ 2K token，会话内冻结
+user-role recent-history       ≤ 8K token，会话内冻结
+user / assistant / tool        持久轨迹
+user-role archived context     Consolidator 到阈值才追加
+user-role active skill         首次生效时追加一次
+user-role agent status         每次调用临时计算，不持久化
+```
+
+### 会话快照
+
+`_context_snapshot` 保存版本、System Prompt、Memory、Recent History、工具 definitions
+及各自 SHA-256。读取时 hash 不一致会重建快照并丢弃基于旧前缀的 resumable Provider
+state。`/new` 清除快照；fork 是新会话，
+会生成新快照。当前会话中途修改 `AGENTS.md`、`MEMORY.md` 或工具注册表不会改变已有
+请求前缀，也不会让 Provider 看到半轮更新。工具执行仍走活动 registry，但模型只看到
+该会话冻结的 schema；改变工具拓扑后应创建新会话。
+
+Dream 会话只接收它自己的有界批次，不加载 RepoOps always-on Skill。普通会话启动时
+最多读取 2K token 的 Memory 索引/摘要；详细长期记忆可用只读 `read_file` 访问
+`memory/MEMORY.md`。会话中的 Dream 更新不改写当前快照，从下一会话生效。
+
+### 归档与 Skill
+
+Consolidator 接近 token 阈值时批量处理旧轨迹，在模型 replay 边界插入带 ID 的
+`<archived_context>` user-role 元消息，并推进 `last_consolidated`。旧消息仍留在
+append-only `history.jsonl` 供审计，但不再进入正常 replay；归档 ledger 限制为 8 条或
+8K token，跨阈值才裁剪。归档不会进入 System Prompt。
+
+always-on 或显式 Skill 以 `<system-reminder>` user-role 元消息追加到轨迹末尾，标为
+UI 隐藏并记录已加载 Skill。后续轮次和 fork 会从历史恢复该 ledger，同一 Skill 不会
+重复追加。这样只有 Skill 首次生效位置之后需要新建缓存，之前的 system/tools/trajectory
+前缀仍可复用。
+
+### 大输出与预算退化
+
+超过单工具字符上限的输出原文原子写到 `.nanobot/tool-results/`，模型收到
+`artifact://tool-results/...`、绝对路径、字节数、SHA-256 和头尾预览。通用 profile
+用 `read_file`，RepoOps profile 用限定在该目录内的 `repoops_read_artifact` 按行回读；
+路径逃逸和超大文件会被拒绝。
+
+上下文裁剪把带 `context_meta.isMeta=true` 的 user 消息与真实用户输入分开处理。窗口
+不足时先保留最新真实 user 及其 assistant/tool 链，再按剩余预算加入 Skill、Archive、
+Memory 等元消息和旧历史，避免“只剩状态/Skill、真实问题被裁掉”。
 
 ## 状态与一致性
 

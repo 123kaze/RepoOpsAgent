@@ -415,7 +415,13 @@ async def test_persisted_turn_callback_is_best_effort_and_reads_display_safe_ses
     assert failed_sync_attempts == 1
     trusted_snapshot = bot.sessions.export("sdk:persisted")
     assert trusted_snapshot is not None
-    assert "model-only context" in trusted_snapshot.messages[-2]["content"]
+    trusted_user = next(
+        message
+        for message in trusted_snapshot.messages
+        if message.get("role") == "user"
+        and "model-only context" in str(message.get("content") or "")
+    )
+    assert "model-only context" in trusted_user["content"]
 
     remove_failure()
     unsubscribe()

@@ -17,6 +17,7 @@ from nanobot.agent.context_governance import (
     ContextGovernanceConfig,
     ContextGovernor,
 )
+from nanobot.agent.context_meta import CONTEXT_META_MESSAGE_KEY
 from nanobot.agent.hook import AgentHook, AgentHookContext, AgentRunHookContext
 from nanobot.agent.tools.registry import ToolRegistry, is_tool_error_result
 from nanobot.providers.base import (
@@ -107,6 +108,8 @@ class AgentRunSpec:
     runtime: LLMRuntime
     max_iterations: int
     max_tool_result_chars: int
+    tool_definitions: list[dict[str, Any]] | None = None
+    runtime_meta_messages: list[dict[str, Any]] | None = None
     hook: AgentHook | None = None
     error_message: str | None = _DEFAULT_ERROR_MESSAGE
     max_iterations_message: str | None = None
@@ -464,6 +467,7 @@ class AgentRunner:
             workspace=spec.workspace,
             session_key=spec.session_key,
             max_tool_result_chars=spec.max_tool_result_chars,
+            tool_definitions=spec.tool_definitions,
             context_window_tokens=spec.runtime.context_window_tokens,
             context_block_limit=spec.context_block_limit,
             max_tokens=spec.runtime.generation.max_tokens,
@@ -483,6 +487,7 @@ class AgentRunner:
                     compacted_tool_call_ids,
                 )
             )
+            messages_for_model.extend(deepcopy(spec.runtime_meta_messages or []))
             context = AgentHookContext(
                 iteration=iteration,
                 messages=messages,
@@ -494,6 +499,11 @@ class AgentRunner:
                 messages,
                 context_window_tokens=spec.runtime.context_window_tokens,
                 model_messages=messages_for_model,
+                supplemental_messages=(
+                    self._initial_provider_state_supplemental(messages_for_model)
+                    if iteration == 0
+                    else None
+                ),
             )
             response = await self._request_model(
                 spec,
@@ -942,6 +952,30 @@ class AgentRunner:
             provider_state=conversation_state.finish(messages),
         )
 
+    @staticmethod
+    def _initial_provider_state_supplemental(
+        model_messages: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        """Project ephemeral skill/status metadata into resumable provider state."""
+        supplemental: list[dict[str, Any]] = []
+        for message in model_messages:
+            content = message.get("content")
+            internal_meta = message.get("_meta")
+            context_meta = (
+                cast(dict[str, Any], internal_meta).get(CONTEXT_META_MESSAGE_KEY)
+                if isinstance(internal_meta, dict)
+                else None
+            )
+            is_active_skill = (
+                isinstance(context_meta, dict)
+                and cast(dict[str, Any], context_meta).get("kind") == "active_skills"
+                and not is_hidden_history_message(message)
+            )
+            is_status = isinstance(content, str) and content.startswith("<agent_status>")
+            if is_active_skill or is_status:
+                supplemental.append(deepcopy(message))
+        return supplemental
+
     def _build_request_kwargs(
         self,
         spec: AgentRunSpec,
@@ -989,7 +1023,11 @@ class AgentRunner:
         kwargs = self._build_request_kwargs(
             spec,
             messages,
-            tools=spec.tools.get_definitions(),
+            tools=(
+                spec.tool_definitions
+                if spec.tool_definitions is not None
+                else spec.tools.get_definitions()
+            ),
         )
         wants_streaming = hook.wants_streaming()
         progress_callback = spec.progress_callback
@@ -1478,7 +1516,11 @@ class AgentRunner:
         response: LLMResponse,
     ) -> dict[str, int]:
         try:
-            tools = spec.tools.get_definitions()
+            tools = (
+                spec.tool_definitions
+                if spec.tool_definitions is not None
+                else spec.tools.get_definitions()
+            )
         except Exception:
             tools = None
         prompt_tokens, _ = estimate_prompt_tokens_chain(

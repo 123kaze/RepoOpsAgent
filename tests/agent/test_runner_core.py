@@ -178,6 +178,95 @@ async def test_runner_replays_provider_state_without_chat_projection_duplicates(
 
 
 @pytest.mark.asyncio
+async def test_runner_sends_ephemeral_meta_to_resumable_provider_state() -> None:
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    provider.can_resume_conversation_state.return_value = True
+    provider.supports_native_compaction.return_value = False
+    initial_state = ProviderConversationState(
+        kind="openai_responses",
+        provider="openai:test",
+        model="gpt-5.6",
+        version=1,
+        payload={"items": []},
+        pending_messages=[{"role": "user", "content": "current task"}],
+    )
+    captured: dict = {}
+
+    async def chat_with_retry(**kwargs):
+        captured.update(kwargs)
+        return LLMResponse(content="done")
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+    runtime_meta = {
+        "role": "user",
+        "content": "<system-reminder>active skill</system-reminder>",
+        "_meta": {"context_meta": {"isMeta": True, "kind": "active_skills"}},
+    }
+
+    result = await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[
+            {"role": "system", "content": "system"},
+            {"role": "user", "content": "current task"},
+        ],
+        tools=tools,
+        model="gpt-5.6",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+        provider_state=initial_state,
+        runtime_meta_messages=[runtime_meta],
+    ))
+
+    context = captured["provider_context"]
+    assert isinstance(context, ProviderCallContext)
+    assert context.conversation_state is not None
+    assert context.conversation_state.pending_messages[-1] == runtime_meta
+    assert runtime_meta not in result.messages
+    historical = {
+        **runtime_meta,
+        "_hidden_history": {"kind": "active_skills", "skill_names": ["repoops"]},
+    }
+    assert AgentRunner._initial_provider_state_supplemental([historical]) == []
+
+
+@pytest.mark.asyncio
+async def test_runner_uses_session_frozen_tool_definitions() -> None:
+    from nanobot.agent.runner import AgentRunner
+
+    provider = MagicMock(spec=LLMProvider)
+    provider.can_resume_conversation_state.return_value = False
+    provider.supports_native_compaction.return_value = False
+    captured: dict = {}
+
+    async def chat_with_retry(**kwargs):
+        captured.update(kwargs)
+        return LLMResponse(content="done")
+
+    provider.chat_with_retry = chat_with_retry
+    tools = MagicMock()
+    tools.get_definitions.return_value = [
+        {"type": "function", "function": {"name": "new_tool"}}
+    ]
+    frozen = [{"type": "function", "function": {"name": "frozen_tool"}}]
+
+    await AgentRunner().run(make_run_spec(
+        provider,
+        initial_messages=[{"role": "user", "content": "task"}],
+        tools=tools,
+        model="test-model",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+        tool_definitions=frozen,
+    ))
+
+    assert captured["tools"] == frozen
+
+
+@pytest.mark.asyncio
 async def test_runner_governs_tool_result_before_adding_it_to_provider_state():
     from nanobot.agent.runner import AgentRunner
 

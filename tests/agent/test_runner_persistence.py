@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import time
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -49,6 +51,8 @@ async def test_runner_persists_large_tool_results_for_follow_up_calls(tmp_path):
     assert result.final_content == "done"
     tool_message = next(msg for msg in captured_second_call if msg.get("role") == "tool")
     assert "[tool output persisted]" in tool_message["content"]
+    assert "Artifact URI: artifact://tool-results/test_runner/call_big.txt" in tool_message["content"]
+    assert f"SHA-256: {hashlib.sha256(('x' * 20_000).encode()).hexdigest()}" in tool_message["content"]
     assert "tool-results" in tool_message["content"]
     assert (tmp_path / ".nanobot" / "tool-results" / "test_runner" / "call_big.txt").exists()
 
@@ -96,6 +100,31 @@ def test_persist_tool_result_leaves_no_temp_files(tmp_path):
 
     assert (root / "current_session" / "call_big.txt").exists()
     assert list((root / "current_session").glob("*.tmp")) == []
+
+
+def test_structured_tool_result_hash_matches_saved_artifact(tmp_path):
+    from nanobot.utils.helpers import maybe_persist_tool_result
+
+    content = [{"type": "text", "text": "证据" * 200}]
+    persisted = maybe_persist_tool_result(
+        tmp_path,
+        "structured:session",
+        "call_json",
+        content,
+        max_chars=64,
+    )
+    artifact = (
+        tmp_path
+        / ".nanobot"
+        / "tool-results"
+        / "structured_session"
+        / "call_json.json"
+    )
+    expected = json.dumps(content, ensure_ascii=False, indent=2)
+
+    assert artifact.read_text(encoding="utf-8") == expected
+    assert f"SHA-256: {hashlib.sha256(expected.encode()).hexdigest()}" in persisted
+    assert f"{len(expected.encode())} bytes" in persisted
 
 
 def test_persist_tool_result_logs_cleanup_failures(monkeypatch, tmp_path):

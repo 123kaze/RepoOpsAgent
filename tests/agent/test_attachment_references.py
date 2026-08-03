@@ -11,6 +11,7 @@ from nanobot.bus.events import InboundMessage
 from nanobot.bus.queue import MessageBus
 from nanobot.config.schema import ChannelsConfig
 from nanobot.providers.base import LLMResponse
+from nanobot.runtime_context import public_history_messages
 from nanobot.utils.document import reference_non_image_attachments
 
 
@@ -105,12 +106,13 @@ async def test_document_reference_survives_session_reload(tmp_path: Path) -> Non
     session_key = "websocket:persisted-attachment"
     loop.sessions.invalidate(session_key)
     persisted = loop.sessions.get_or_create(session_key)
+    visible = public_history_messages(persisted.messages)
 
-    assert [message["role"] for message in persisted.messages] == ["user"]
-    assert persisted.messages[0]["content"] == (
+    assert [message["role"] for message in visible] == ["user"]
+    assert visible[0]["content"] == (
         f"review this\n\n[Attachment: {doc_path.resolve()}]"
     )
-    assert "media" not in persisted.messages[0]
+    assert "media" not in visible[0]
 
 
 @pytest.mark.asyncio

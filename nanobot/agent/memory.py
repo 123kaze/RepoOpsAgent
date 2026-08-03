@@ -13,6 +13,7 @@ import os
 import re
 import threading
 import weakref
+from collections.abc import Mapping
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +21,13 @@ from typing import TYPE_CHECKING, Any, Callable, Iterator, cast
 
 from loguru import logger
 
+from nanobot.agent.context_meta import (
+    SESSION_CONTEXT_SNAPSHOT_META,
+    append_archived_context,
+    archived_context_entries,
+    archived_context_message,
+    is_archived_context_message,
+)
 from nanobot.runtime_context import public_history_messages
 from nanobot.session.manager import Session, SessionManager
 from nanobot.utils.gitstore import GitStore
@@ -931,16 +939,48 @@ class Consolidator:
             session_key=session.key,
         )
         session.last_consolidated = end_idx
+        if isinstance(summary, str) and summary != "(nothing)":
+            self._record_archived_context_message(session, summary)
         session.provider_state = None
         self.sessions.save(session)
         return summary
 
+    def _record_archived_context_message(
+        self,
+        session: Session,
+        summary: str,
+        *,
+        last_active: str | None = None,
+    ) -> None:
+        """Insert one archive summary exactly at the replay boundary."""
+        active = last_active or session.updated_at.isoformat()
+        append_archived_context(session.metadata, summary, last_active=active)
+        candidate = archived_context_message(summary, last_active=active)
+        marker = cast(dict[str, Any], candidate["_hidden_history"])
+        archive_id = marker["archive_id"]
+        visible_tail = session.messages[session.last_consolidated:]
+        if any(
+            is_archived_context_message(message)
+            and isinstance(message.get("_hidden_history"), dict)
+            and cast(dict[str, Any], message["_hidden_history"]).get("archive_id")
+            == archive_id
+            for message in visible_tail
+        ):
+            return
+        session.messages.insert(session.last_consolidated, candidate)
+
     def _persist_last_summary(self, session: Session, summary: str | None) -> None:
-        if summary and summary != "(nothing)":
+        if isinstance(summary, str) and summary != "(nothing)":
+            last_active = session.updated_at.isoformat()
             session.metadata["_last_summary"] = {
                 "text": summary,
-                "last_active": session.updated_at.isoformat(),
+                "last_active": last_active,
             }
+            append_archived_context(
+                session.metadata,
+                summary,
+                last_active=last_active,
+            )
             self.sessions.save(session)
 
     def estimate_session_prompt_tokens(
@@ -952,7 +992,8 @@ class Consolidator:
         """Estimate prompt size from the full unconsolidated session tail."""
         history = self._full_unconsolidated_history(session)
         channel = session.key.split(":", 1)[0] if ":" in session.key else None
-        # Include archived summary in estimation so the budget accounts for it.
+        # Include user-role archive metadata and the session-frozen prefix in
+        # estimation so consolidation decisions match actual model requests.
         meta = session.metadata.get("_last_summary")
         summary = (
             cast(dict[str, Any], meta).get("text")
@@ -961,6 +1002,13 @@ class Consolidator:
             if isinstance(meta, str)
             else None
         )
+        context_snapshot = session.metadata.get(SESSION_CONTEXT_SNAPSHOT_META)
+        has_active_skill_meta = any(
+            isinstance(message.get("_hidden_history"), Mapping)
+            and cast(Mapping[str, Any], message["_hidden_history"]).get("kind")
+            == "active_skills"
+            for message in history
+        )
         probe_messages = self._build_messages(
             history=history,
             current_message="[token-probe]",
@@ -968,12 +1016,28 @@ class Consolidator:
             session_summary=summary,
             session_key=session.key,
             unified_session=self.unified_session,
+            context_snapshot=context_snapshot,
+            archived_contexts=(
+                []
+                if any(is_archived_context_message(message) for message in history)
+                else archived_context_entries(session.metadata)
+            ),
+            include_active_skill_meta=not has_active_skill_meta,
+        )
+        frozen_tools = (
+            cast(dict[str, Any], context_snapshot).get("tool_definitions")
+            if isinstance(context_snapshot, dict)
+            else None
         )
         return estimate_prompt_tokens_chain(
             runtime.provider,
             runtime.model,
             probe_messages,
-            self._get_tool_definitions(),
+            (
+                cast(list[dict[str, Any]], frozen_tools)
+                if isinstance(frozen_tools, list)
+                else self._get_tool_definitions()
+            ),
         )
 
     def _input_token_budget(self, runtime: LLMRuntime) -> int:
@@ -1115,6 +1179,12 @@ class Consolidator:
                 chunk = session.messages[session.last_consolidated:end_idx]
                 if not chunk:
                     break
+                if all(is_archived_context_message(message) for message in chunk):
+                    logger.debug(
+                        "Token consolidation stopped at archive-only boundary for {}",
+                        session.key,
+                    )
+                    break
 
                 logger.info(
                     "Token consolidation round {} for {}: {}/{} via {}, chunk={} msgs",
@@ -1137,6 +1207,8 @@ class Consolidator:
                 if summary:
                     last_summary = summary
                 session.last_consolidated = end_idx
+                if isinstance(summary, str) and summary != "(nothing)":
+                    self._record_archived_context_message(session, summary)
                 session.provider_state = None
                 self.sessions.save(session)
                 if not summary:
@@ -1199,14 +1271,27 @@ class Consolidator:
                 summary_messages=messages_to_summarize,
             )
 
-            if summary and summary != "(nothing)":
+            boundary = len(session.messages) - len(visible_suffix)
+            session.last_consolidated = boundary
+            if isinstance(summary, str) and summary != "(nothing)":
+                last_active_iso = last_active.isoformat()
                 session.metadata["_last_summary"] = {
                     "text": summary,
-                    "last_active": last_active.isoformat(),
+                    "last_active": last_active_iso,
                 }
+                append_archived_context(
+                    session.metadata,
+                    summary,
+                    last_active=last_active_iso,
+                )
+                self._record_archived_context_message(
+                    session,
+                    summary,
+                    last_active=last_active_iso,
+                )
 
-            # Preserve history and advance only the replay boundary.
-            session.last_consolidated = len(session.messages) - len(visible_suffix)
+            # Preserve history and advance only the replay boundary. A summary
+            # message, when present, sits at that boundary and remains visible.
             session.provider_state = None
             self.sessions.save(session)
 

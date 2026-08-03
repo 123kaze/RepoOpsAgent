@@ -167,7 +167,8 @@ Python v5 虽达到 20/20 结构化成功，但因网络阻断时 prompt 遗漏 
 
 - 这是两个 Agent 系统使用同一主模型的工程对照，不是隔离所有变量后的纯模型实验。
 - 两者系统提示、工具协议、结构化输出实现和迭代策略不同。
-- Claude Code 使用通用 Bash/Read，RepoOps 使用 15 个领域工具；这正是被评估的架构
+- Claude Code 使用通用 Bash/Read，锁定评测时 RepoOps 使用 15 个领域工具；当前新增
+  的 `repoops_read_artifact` 是第 16 个工具，没有重写该历史轨迹；这正是被评估的架构
   差异。
 - Claude Code init/result 记录的主模型是 `deepseek-v4-pro`；单独诊断 smoke 的
   `modelUsage` 曾出现 `deepseek-v4-flash` 辅助用量，因此不声称其内部绝对只有一次

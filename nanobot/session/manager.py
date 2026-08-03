@@ -16,12 +16,18 @@ from weakref import WeakValueDictionary
 
 from loguru import logger
 
+from nanobot.agent.context_meta import (
+    ARCHIVED_CONTEXTS_META,
+    LOADED_SKILL_SNAPSHOTS_META,
+    SESSION_CONTEXT_SNAPSHOT_META,
+)
 from nanobot.config.paths import get_legacy_sessions_dir
 from nanobot.providers.base import ProviderConversationState
 from nanobot.runtime_context import (
     RUNTIME_CONTEXT_HISTORY_META,
     public_history_message,
 )
+from nanobot.session.history_visibility import is_hidden_history_message
 from nanobot.utils.helpers import (
     content_with_media_breadcrumbs,
     ensure_dir,
@@ -49,6 +55,8 @@ _PROVIDER_STATE_RECORD_PREFIX_RE = re.compile(
     r'^\s*\{\s*"_type"\s*:\s*"provider_state"\s*(?:,|\})'
 )
 _FORK_VOLATILE_METADATA_KEYS = {
+    SESSION_CONTEXT_SNAPSHOT_META,
+    LOADED_SKILL_SNAPSHOTS_META,
     "goal_state",
     "pending_user_turn",
     "runtime_checkpoint",
@@ -320,6 +328,9 @@ class Session:
         self.provider_state = None
         self.updated_at = datetime.now()
         self.metadata.pop("_last_summary", None)
+        self.metadata.pop(ARCHIVED_CONTEXTS_META, None)
+        self.metadata.pop(SESSION_CONTEXT_SNAPSHOT_META, None)
+        self.metadata.pop(LOADED_SKILL_SNAPSHOTS_META, None)
 
     def retain_recent_legal_suffix(
         self,
@@ -1130,7 +1141,7 @@ class SessionManager:
         user_index = 0
         found_target = False
         for message in source.messages:
-            if message.get("role") == "user":
+            if message.get("role") == "user" and not is_hidden_history_message(message):
                 if user_index == before_user_index:
                     found_target = True
                     break
@@ -1148,6 +1159,7 @@ class SessionManager:
         last_consolidated = min(source.last_consolidated, len(copied))
         if source.last_consolidated > len(copied):
             metadata.pop("_last_summary", None)
+            metadata.pop(ARCHIVED_CONTEXTS_META, None)
             last_consolidated = 0
 
         now = datetime.now()

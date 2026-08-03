@@ -405,7 +405,9 @@ class TestAutoCompact:
         assert session_after.messages[0]["content"] == "old user 0"
         visible = session_after.get_history(max_messages=len(session_after.messages))
         assert len(visible) > loop.auto_compact._RECENT_SUFFIX_MESSAGES
-        assert visible[0]["content"] == "record this"
+        assert visible[0]["role"] == "user"
+        assert "<archived_context" in visible[0]["content"]
+        assert visible[1]["content"] == "record this"
         assert visible[-1]["content"] == "done"
         tool_results = {
             m.get("tool_call_id")

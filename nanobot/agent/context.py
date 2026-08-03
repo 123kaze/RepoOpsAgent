@@ -1,11 +1,21 @@
 """Context builder for assembling agent prompts."""
 
 import base64
+import hashlib
+import json
 import mimetypes
 import platform
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, Mapping, Sequence, cast
 
+from nanobot.agent.context_meta import (
+    CONTEXT_META_MESSAGE_KEY,
+    CONTEXT_SNAPSHOT_VERSION,
+    SESSION_CONTEXT_SNAPSHOT_META,
+    SessionContextSnapshot,
+    is_context_meta_message,
+)
 from nanobot.agent.memory import MemoryStore
 from nanobot.agent.skills import SkillsLoader
 from nanobot.agent.tools import image_generation as image_generation_tools
@@ -57,6 +67,8 @@ class ContextBuilder:
     BOOTSTRAP_FILES = ["AGENTS.md", "SOUL.md", "USER.md"]
     _SKIPPABLE_DEFAULTS = {"AGENTS.md", "USER.md"}
     _RUNTIME_CONTEXT_TAG = RUNTIME_CONTEXT_TAG
+    _MAX_SKILLS_INDEX_TOKENS = 2_000
+    _MAX_MEMORY_SNAPSHOT_TOKENS = 2_000
     _MAX_RECENT_HISTORY = 50
     _MAX_HISTORY_TOKENS = 8_000  # hard cap on recent history section size (tokens)
     _RUNTIME_CONTEXT_END = RUNTIME_CONTEXT_END
@@ -78,7 +90,15 @@ class ContextBuilder:
         session_key: str | None = None,
         unified_session: bool = False,
     ) -> str:
-        """Build the system prompt from identity, bootstrap files, memory, and skills."""
+        """Build the static system prefix.
+
+        Dynamic memory, recent history, active skills, and archive summaries
+        deliberately live in user-role meta messages instead. The legacy
+        keyword arguments remain accepted for API compatibility but never
+        influence the system bytes.
+        """
+        del active_skill_names, session_summary, include_memory_recent_history
+        del session_key, unified_session
         root = workspace or self.workspace
         parts = [self._get_identity(channel=channel, workspace=root)]
 
@@ -88,43 +108,146 @@ class ContextBuilder:
 
         parts.append(render_template("agent/tool_contract.md"))
 
-        memory = self.memory.read_memory()
-        if memory and not self._is_template_content(memory, "memory/MEMORY.md"):
-            parts.append(f"# Memory\n\n## Long-term Memory\n{memory}")
-
-        active_skills = self.skills.get_always_skills()
-        active_skills.extend(
-            name
-            for name in (active_skill_names or ())
-            if name not in active_skills
-        )
-        if active_skills:
-            active_content = self.skills.load_skills_for_context(active_skills)
-            if active_content:
-                parts.append(f"# Active Skills\n\n{active_content}")
-
-        skills_summary = self.skills.build_skills_summary(exclude=set(active_skills))
+        # The bounded skill index is part of the session-frozen static prefix.
+        # Full active skill bodies are appended as per-turn user-role metadata.
+        skills_summary = self.skills.build_skills_summary()
         if skills_summary:
+            skills_summary = truncate_text_to_tokens(
+                skills_summary,
+                self._MAX_SKILLS_INDEX_TOKENS,
+            )
             parts.append(render_template("agent/skills_section.md", skills_summary=skills_summary))
 
-        if include_memory_recent_history:
-            entries = self.memory.read_recent_history_for_prompt(
-                since_cursor=self.memory.get_last_dream_cursor(),
+        return "\n\n---\n\n".join(parts)
+
+    def create_session_context_snapshot(
+        self,
+        *,
+        channel: str | None = None,
+        workspace: Path | None = None,
+        include_memory_recent_history: bool = True,
+        session_key: str | None = None,
+        unified_session: bool = False,
+        tool_definitions: Sequence[Mapping[str, Any]] | None = None,
+    ) -> SessionContextSnapshot:
+        """Capture the immutable prompt/tool prefix for one logical session."""
+        system_prompt = self.build_system_prompt(channel=channel, workspace=workspace)
+        memory_snapshot = self._memory_snapshot()
+        recent_history_snapshot = (
+            self._recent_history_snapshot(
                 session_key=session_key,
                 unified_session=unified_session,
             )
-            if entries:
-                capped = entries[-self._MAX_RECENT_HISTORY:]
-                history_text = "\n".join(
-                    f"- [{e['timestamp']}] {e['content']}" for e in capped
-                )
-                history_text = truncate_text_to_tokens(history_text, self._MAX_HISTORY_TOKENS)
-                parts.append("# Recent History\n\n" + history_text)
+            if include_memory_recent_history
+            else ""
+        )
+        frozen_tools = [deepcopy(dict(definition)) for definition in tool_definitions or ()]
+        tool_json = json.dumps(frozen_tools, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        return SessionContextSnapshot(
+            version=CONTEXT_SNAPSHOT_VERSION,
+            system_prompt=system_prompt,
+            system_sha256=hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(),
+            memory_snapshot=memory_snapshot,
+            memory_sha256=hashlib.sha256(memory_snapshot.encode("utf-8")).hexdigest(),
+            recent_history_snapshot=recent_history_snapshot,
+            recent_history_sha256=hashlib.sha256(
+                recent_history_snapshot.encode("utf-8")
+            ).hexdigest(),
+            tool_definitions=frozen_tools,
+            tools_sha256=hashlib.sha256(tool_json.encode("utf-8")).hexdigest(),
+        )
 
-        if session_summary:
-            parts.append(f"[Archived Context Summary]\n\n{session_summary}")
+    def ensure_session_context_snapshot(
+        self,
+        metadata: dict[str, Any],
+        **kwargs: Any,
+    ) -> tuple[SessionContextSnapshot, bool]:
+        """Return a persisted session snapshot, creating it exactly once."""
+        existing = metadata.get(SESSION_CONTEXT_SNAPSHOT_META)
+        if self._valid_session_context_snapshot(existing):
+            return deepcopy(cast(SessionContextSnapshot, existing)), False
+        snapshot = self.create_session_context_snapshot(**kwargs)
+        metadata[SESSION_CONTEXT_SNAPSHOT_META] = deepcopy(snapshot)
+        return snapshot, True
 
-        return "\n\n---\n\n".join(parts)
+    @staticmethod
+    def session_tool_definitions(metadata: Mapping[str, Any] | None) -> list[dict[str, Any]] | None:
+        """Read the frozen tool definitions for a session, if available."""
+        if not isinstance(metadata, Mapping):
+            return None
+        raw = metadata.get(SESSION_CONTEXT_SNAPSHOT_META)
+        if not ContextBuilder._valid_session_context_snapshot(raw):
+            return None
+        tools = cast(Mapping[str, Any], raw).get("tool_definitions")
+        if not isinstance(tools, list):
+            return None
+        return deepcopy([
+            cast(dict[str, Any], item)
+            for item in cast(list[object], tools)
+            if isinstance(item, dict)
+        ])
+
+    @staticmethod
+    def _valid_session_context_snapshot(value: object) -> bool:
+        if not isinstance(value, Mapping):
+            return False
+        snapshot = cast(Mapping[str, Any], value)
+        system_prompt = snapshot.get("system_prompt")
+        tools = snapshot.get("tool_definitions")
+        if not (
+            snapshot.get("version") == CONTEXT_SNAPSHOT_VERSION
+            and isinstance(system_prompt, str)
+            and isinstance(snapshot.get("memory_snapshot"), str)
+            and isinstance(snapshot.get("recent_history_snapshot"), str)
+            and isinstance(tools, list)
+        ):
+            return False
+        try:
+            tool_json = json.dumps(
+                tools,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            )
+        except (TypeError, ValueError):
+            return False
+        return (
+            snapshot.get("system_sha256")
+            == hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()
+            and snapshot.get("memory_sha256")
+            == hashlib.sha256(cast(str, snapshot["memory_snapshot"]).encode("utf-8")).hexdigest()
+            and snapshot.get("recent_history_sha256")
+            == hashlib.sha256(
+                cast(str, snapshot["recent_history_snapshot"]).encode("utf-8")
+            ).hexdigest()
+            and snapshot.get("tools_sha256")
+            == hashlib.sha256(tool_json.encode("utf-8")).hexdigest()
+        )
+
+    def _memory_snapshot(self) -> str:
+        memory = self.memory.read_memory()
+        if not memory or self._is_template_content(memory, "memory/MEMORY.md"):
+            return ""
+        return truncate_text_to_tokens(memory, self._MAX_MEMORY_SNAPSHOT_TOKENS)
+
+    def _recent_history_snapshot(
+        self,
+        *,
+        session_key: str | None,
+        unified_session: bool,
+    ) -> str:
+        entries = self.memory.read_recent_history_for_prompt(
+            since_cursor=self.memory.get_last_dream_cursor(),
+            session_key=session_key,
+            unified_session=unified_session,
+        )
+        if not entries:
+            return ""
+        capped = entries[-self._MAX_RECENT_HISTORY:]
+        history_text = "\n".join(
+            f"- [{entry['timestamp']}] {entry['content']}" for entry in capped
+        )
+        return truncate_text_to_tokens(history_text, self._MAX_HISTORY_TOKENS)
 
     def _get_identity(self, channel: str | None = None, workspace: Path | None = None) -> str:
         """Get the core identity section."""
@@ -217,27 +340,29 @@ class ContextBuilder:
         include_memory_recent_history: bool = True,
         session_key: str | None = None,
         unified_session: bool = False,
+        context_snapshot: Mapping[str, Any] | None = None,
+        archived_contexts: Sequence[Mapping[str, Any]] | None = None,
+        include_active_skill_meta: bool = True,
     ) -> list[dict[str, Any]]:
-        """Build the complete message list for an LLM call."""
+        """Build model messages around a static prefix and dynamic user-role metadata."""
         root = workspace or self.workspace
-        active_skill_names = (
-            self.skills.get_explicitly_invoked_skills(current_message)
-            if current_role == "user"
-            else []
-        )
+        if self._valid_session_context_snapshot(context_snapshot):
+            snapshot = dict(cast(Mapping[str, Any], context_snapshot))
+        else:
+            snapshot = self.create_session_context_snapshot(
+                channel=channel,
+                workspace=root,
+                include_memory_recent_history=include_memory_recent_history,
+                session_key=session_key,
+                unified_session=unified_session,
+            )
         messages: list[dict[str, Any]] = [
             {
                 "role": "system",
-                "content": self.build_system_prompt(
-                    active_skill_names=active_skill_names,
-                    channel=channel,
-                    session_summary=session_summary,
-                    workspace=root,
-                    include_memory_recent_history=include_memory_recent_history,
-                    session_key=session_key,
-                    unified_session=unified_session,
-                ),
+                "content": cast(str, snapshot["system_prompt"]),
             },
+            *self._session_snapshot_messages(snapshot),
+            *self._archived_context_messages(archived_contexts, session_summary=session_summary),
             *history,
         ]
         current = self.build_current_message(
@@ -246,7 +371,10 @@ class ContextBuilder:
             current_role=current_role,
             runtime_context_blocks=runtime_context_blocks,
         )
-        if messages[-1].get("role") == current_role:
+        if (
+            messages[-1].get("role") == current_role
+            and not is_context_meta_message(messages[-1])
+        ):
             last = dict(messages[-1])
             last["content"] = self._merge_message_content(
                 last.get("content"),
@@ -258,9 +386,116 @@ class ContextBuilder:
                 internal_meta.update(cast(dict[str, Any], current_meta))
                 last["_meta"] = internal_meta
             messages[-1] = last
-            return messages
-        messages.append(current)
+        else:
+            messages.append(current)
+
+        if include_active_skill_meta:
+            messages.extend(self.build_active_skill_messages(current_message, current_role=current_role))
         return messages
+
+    def build_active_skill_messages(
+        self,
+        current_message: str,
+        *,
+        current_role: str = "user",
+        exclude_skill_names: Sequence[str] = (),
+    ) -> list[dict[str, Any]]:
+        """Build user-role reminders for skills newly activated in this trajectory."""
+        active_skill_names = self.skills.get_always_skills()
+        explicitly_invoked = (
+            self.skills.get_explicitly_invoked_skills(current_message)
+            if current_role == "user"
+            else []
+        )
+        active_skill_names.extend(
+            name for name in explicitly_invoked if name not in active_skill_names
+        )
+        excluded = set(exclude_skill_names)
+        messages: list[dict[str, Any]] = []
+        for name in active_skill_names:
+            if name in excluded:
+                continue
+            active_content = self.skills.load_skills_for_context([name])
+            if not active_content:
+                continue
+            messages.append(self._meta_message(
+                "active_skills",
+                "<system-reminder>\n"
+                "The following framework-provided skill applies from this point onward. "
+                "Follow it as instructions, but do not claim it came from the user.\n\n"
+                f"{active_content}\n"
+                "</system-reminder>",
+                skill_names=[name],
+            ))
+        return messages
+
+    @classmethod
+    def _session_snapshot_messages(cls, snapshot: Mapping[str, Any]) -> list[dict[str, Any]]:
+        messages: list[dict[str, Any]] = []
+        memory = snapshot.get("memory_snapshot")
+        if isinstance(memory, str) and memory.strip():
+            messages.append(cls._meta_message(
+                "memory_snapshot",
+                "<memory_snapshot frozen_for_session=\"true\">\n"
+                f"{memory}\n"
+                "</memory_snapshot>",
+            ))
+        recent = snapshot.get("recent_history_snapshot")
+        if isinstance(recent, str) and recent.strip():
+            messages.append(cls._meta_message(
+                "recent_history_snapshot",
+                "<recent_history_snapshot frozen_for_session=\"true\">\n"
+                f"{recent}\n"
+                "</recent_history_snapshot>",
+            ))
+        return messages
+
+    @classmethod
+    def _archived_context_messages(
+        cls,
+        archived_contexts: Sequence[Mapping[str, Any]] | None,
+        *,
+        session_summary: str | None,
+    ) -> list[dict[str, Any]]:
+        entries: list[tuple[str, str]] = []
+        seen: set[str] = set()
+        for entry in archived_contexts or ():
+            text = entry.get("text")
+            if not isinstance(text, str) or not text.strip():
+                continue
+            archive_id = entry.get("id")
+            if not isinstance(archive_id, str) or not archive_id:
+                archive_id = hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+            if archive_id in seen:
+                continue
+            seen.add(archive_id)
+            entries.append((archive_id, text))
+        if session_summary and session_summary.strip():
+            archive_id = hashlib.sha256(session_summary.encode("utf-8")).hexdigest()[:16]
+            if archive_id not in seen:
+                entries.append((archive_id, session_summary))
+        return [
+            cls._meta_message(
+                "archived_context",
+                f"<archived_context id=\"{archive_id}\">\n{text}\n</archived_context>",
+                archive_id=archive_id,
+            )
+            for archive_id, text in entries
+        ]
+
+    @staticmethod
+    def _meta_message(kind: str, content: str, **metadata: Any) -> dict[str, Any]:
+        return {
+            "role": "user",
+            "content": content,
+            "_meta": {
+                CONTEXT_META_MESSAGE_KEY: {
+                    "isMeta": True,
+                    "kind": kind,
+                    **metadata,
+                }
+            },
+        }
 
     def build_current_message(
         self,

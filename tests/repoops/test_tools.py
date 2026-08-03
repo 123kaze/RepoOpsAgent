@@ -158,6 +158,35 @@ async def test_workspace_snapshot_read_reports_missing_file_without_network(tmp_
 
 
 @pytest.mark.asyncio
+async def test_read_artifact_supports_uri_and_rejects_escape(tmp_path) -> None:
+    artifact = tmp_path / ".nanobot" / "tool-results" / "cli_test" / "call.txt"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("line one\nline two\nline three\n", encoding="utf-8")
+    outside = tmp_path / "outside.txt"
+    outside.write_text("secret", encoding="utf-8")
+    registry = _registry(tmp_path)
+
+    result = await registry.execute(
+        "repoops_read_artifact",
+        {
+            "artifact": "artifact://tool-results/cli_test/call.txt",
+            "start_line": 2,
+            "end_line": 3,
+        },
+    )
+    escaped = await registry.execute(
+        "repoops_read_artifact",
+        {"artifact": str(outside)},
+    )
+
+    assert "line two" in str(result)
+    assert "line three" in str(result)
+    assert "sha256=" in str(result)
+    assert "inside .nanobot/tool-results" in str(escaped)
+    assert "secret" not in str(escaped)
+
+
+@pytest.mark.asyncio
 async def test_workspace_search_keeps_all_top_k_paths_in_valid_json(tmp_path) -> None:
     for index in range(12):
         (tmp_path / f"module_{index}.py").write_text(

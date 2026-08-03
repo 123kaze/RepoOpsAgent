@@ -484,10 +484,13 @@ class TestConsolidatorTokenBudget:
         archived_chunk = consolidator.archive.await_args.args[0]
         assert archived_chunk[2]["content"] == "long older turn"
         assert archived_chunk[-1]["content"] == "older final"
-        assert session.last_consolidated == len(session.messages) - 2
+        # The persisted user-role archive meta sits immediately before the
+        # untouched new-question suffix.
+        assert session.last_consolidated == len(session.messages) - 3
 
         history = session.get_history(max_messages=6, extend_to_user=True)
-        assert [m["content"] for m in history] == ["new question", "new answer"]
+        assert "<archived_context" in history[0]["content"]
+        assert [m["content"] for m in history[1:]] == ["new question", "new answer"]
 
     async def test_large_chunk_archived_without_cap(self, consolidator, runtime):
         """Without chunk cap, the full range from pick_consolidation_boundary is archived."""
@@ -643,13 +646,14 @@ class TestCompactIdleSession:
 
         sessions.invalidate("cli:test")
         reloaded = sessions.get_or_create("cli:test")
-        assert len(reloaded.messages) == 40
+        assert len(reloaded.messages) == 41
         assert reloaded.messages[0]["content"] == "user msg 0"
         assert reloaded.last_consolidated == 32
         assert reloaded.provider_state is None
         visible = reloaded.get_history(max_messages=40)
-        assert len(visible) == 8
-        assert visible[0]["content"] == "user msg 16"
+        assert len(visible) == 9
+        assert "<archived_context" in visible[0]["content"]
+        assert visible[1]["content"] == "user msg 16"
         assert visible[-1]["content"] == "assistant msg 19"
         meta = reloaded.metadata.get("_last_summary")
         assert meta is not None
@@ -834,7 +838,7 @@ class TestCompactIdleSession:
         )
         assert result == "Tail summary."
         reloaded = sessions.get_or_create("cli:offset")
-        assert len(reloaded.messages) == 60
+        assert len(reloaded.messages) == 61
         assert reloaded.last_consolidated == 56
 
         # Verify only the unconsolidated tail was processed:
@@ -869,9 +873,11 @@ class TestCompactIdleSession:
         assert result == "Tail summary."
 
         reloaded = sessions.get_or_create("cli:noncontiguous")
-        assert len(reloaded.messages) == 25
+        assert len(reloaded.messages) == 26
         assert reloaded.last_consolidated == 14
-        assert [m["content"] for m in reloaded.get_history(max_messages=25)] == [
+        visible = reloaded.get_history(max_messages=25)
+        assert "<archived_context" in visible[0]["content"]
+        assert [m["content"] for m in visible[1:]] == [
             "user-14",
             "assistant-00",
             "assistant-01",
@@ -1033,9 +1039,11 @@ class TestConsolidatorSessionRefresh:
         )
 
         session_after = sessions.get_or_create("cli:test")
-        assert len(session_after.messages) == 40
+        assert len(session_after.messages) == 41
         assert session_after.last_consolidated == 32
-        assert len(session_after.get_history(max_messages=40)) == 8
+        visible = session_after.get_history(max_messages=40)
+        assert len(visible) == 9
+        assert "<archived_context" in visible[0]["content"]
 
 
 class TestRawArchiveTruncation:

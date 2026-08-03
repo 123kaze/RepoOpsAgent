@@ -106,6 +106,11 @@ async def test_status_is_ephemeral_and_reports_task_budget_repeat_and_approval(t
     assert persisted == [{"role": "user", "content": "diagnose"}]
     assert len(model_messages) == 2
     assert model_messages[-1]["role"] == "user"
+    assert model_messages[-1]["_meta"]["context_meta"] == {
+        "isMeta": True,
+        "kind": "agent_status",
+        "persistence": "model_only",
+    }
     status = str(model_messages[-1]["content"])
     assert "iteration: 2/20" in status
     assert "tool_budget: 4/6 remaining=2" in status

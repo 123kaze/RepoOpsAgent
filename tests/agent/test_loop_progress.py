@@ -852,7 +852,12 @@ class TestToolEventProgress:
 
         assert len(requests) == 2
         assert requests[0][-1]["role"] == "user"
-        assert requests[0][-1]["content"].endswith("Background research completed")
+        assert any(
+            message.get("role") == "user"
+            and str(message.get("content", "")).endswith("Background research completed")
+            for message in requests[0]
+        )
+        assert "<system-reminder>" in requests[0][-1]["content"]
         assert any(
             message.get("role") == "user"
             and message.get("content") == "Can you include the key detail?"

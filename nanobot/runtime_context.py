@@ -242,4 +242,11 @@ def public_history_message(message: Mapping[str, Any]) -> dict[str, Any]:
 
 def public_history_messages(messages: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
     """Return user-visible copies of persisted messages."""
-    return [public_history_message(message) for message in messages]
+    return [
+        public_history_message(message)
+        for message in messages
+        if not (
+            message.get("_hidden_history") is True
+            or isinstance(message.get("_hidden_history"), Mapping)
+        )
+    ]

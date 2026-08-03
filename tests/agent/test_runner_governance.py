@@ -20,6 +20,7 @@ from nanobot.providers.base import (
     ProviderConversationState,
     ToolCallRequest,
 )
+from nanobot.runtime_context import public_history_messages
 
 _MAX_TOOL_RESULT_CHARS = AgentDefaults().max_tool_result_chars
 
@@ -367,7 +368,7 @@ async def test_backfill_repairs_model_context_without_shifting_save_turn_boundar
             for key, value in message.items()
             if key in {"role", "content", "tool_call_id", "name", "tool_calls"}
         }
-        for message in session_after.messages
+        for message in public_history_messages(session_after.messages)
     ] == [
         {"role": "user", "content": "old user"},
         {
@@ -827,6 +828,51 @@ def test_snip_history_preserves_user_message_after_truncation(monkeypatch):
         f"First non-system message must be 'user', got '{non_system[0]['role']}'. "
         f"Roles: {[m['role'] for m in trimmed]}"
     )
+
+
+def test_snip_history_never_lets_trailing_meta_displace_real_user(monkeypatch):
+    provider = MagicMock()
+    tools = MagicMock()
+    tools.get_definitions.return_value = []
+    messages = [
+        {"role": "system", "content": "system"},
+        {"role": "user", "content": "old question"},
+        {"role": "assistant", "content": "old answer"},
+        {"role": "user", "content": "current question"},
+        {
+            "role": "user",
+            "content": "<system-reminder>large skill</system-reminder>",
+            "_meta": {
+                "context_meta": {"isMeta": True, "kind": "active_skills"},
+            },
+        },
+    ]
+    spec = make_run_spec(
+        provider,
+        initial_messages=messages,
+        tools=tools,
+        model="test-model",
+        max_iterations=1,
+        max_tool_result_chars=_MAX_TOOL_RESULT_CHARS,
+        context_window_tokens=2000,
+        context_block_limit=100,
+    )
+    monkeypatch.setattr(
+        "nanobot.agent.context_governance.estimate_prompt_tokens_chain",
+        lambda *_args, **_kwargs: (500, None),
+    )
+    monkeypatch.setattr(
+        "nanobot.agent.context_governance.estimate_message_tokens",
+        lambda message: 500 if "system-reminder" in str(message.get("content")) else 20,
+    )
+
+    trimmed = ContextGovernor().snip_history(
+        _governance_config(provider, tools, spec),
+        messages,
+    )
+
+    assert any(message.get("content") == "current question" for message in trimmed)
+    assert not any("system-reminder" in str(message.get("content")) for message in trimmed)
 
 
 def test_snip_history_no_user_at_all_falls_back_gracefully(monkeypatch):

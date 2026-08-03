@@ -201,8 +201,11 @@ async def test_consolidation_persists_summary_for_next_prepare_session(tmp_path,
     assert meta["text"] == "User discussed project status."
 
     reloaded, pending = loop.auto_compact.prepare_session(reloaded, "cli:test")
-    assert pending is not None
-    assert "User discussed project status." in pending
+    assert pending is None
+    visible = reloaded.get_history(max_messages=len(reloaded.messages))
+    assert visible[0]["role"] == "user"
+    assert "<archived_context" in visible[0]["content"]
+    assert "User discussed project status." in visible[0]["content"]
     # _last_summary persists for restart survival.
     assert "_last_summary" in reloaded.metadata
 

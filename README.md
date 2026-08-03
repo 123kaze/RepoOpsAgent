@@ -3,9 +3,9 @@
 > 基于 nanobot 的证据优先 GitHub 仓库维护 Agent：分析 Issue、审查 PR、诊断 CI，
 > 用结构化状态区分事实与假设，并用两回合人工审批保护所有 GitHub 写操作。
 
-RepoOps 不是“让大模型读一下仓库”的聊天包装。它包含 15 个可执行工具、GitHub
+RepoOps 不是“让大模型读一下仓库”的聊天包装。它包含 16 个可执行工具、GitHub
 安全客户端、符号优先代码检索、持久化证据模型、代码维护的 Agent Status Bar、
-审批状态机，以及真正启动
+KV Cache 友好的分层上下文、审批状态机，以及真正启动
 RepoOps Agent + DeepSeek V4 Pro 的可复现 benchmark harness。
 
 ## 它解决什么问题
@@ -44,8 +44,12 @@ flowchart LR
     A --> B
     B -. ephemeral model context .-> R
 
+    C[Session-frozen context<br/>system · tools · memory index] --> R
+    O[Consolidator<br/>archived user-role meta] --> R
+
     G --> H[SSRF-guarded GitHub REST]
     S --> D[(workspace/.repoops)]
+    T --> F[(.nanobot/tool-results<br/>hash · preview · artifact URI)]
 
     K[RepoOps Skills] -. workflow policy .-> R
     E[Benchmark runner] --> L
@@ -53,16 +57,18 @@ flowchart LR
 ```
 
 RepoOps 没有在 nanobot 的 Agent loop 中硬编码 Issue/PR/CI 分支。模型—工具循环、
-Provider、Session、Gateway 和 WebUI 继续由 nanobot 提供；Runner 只增加了一个通用的
-`model_messages` 临时上下文扩展点，RepoOps 状态栏作为 Hook 实现。它每轮进入模型
-副本，但不写入 session 或 trajectory。详细设计见 [架构文档](docs/architecture.md)。
+Provider、Session、Gateway 和 WebUI 继续由 nanobot 提供；通用运行时增加了会话冻结
+上下文、归档元消息、冻结工具 schema 和 `model_messages` 临时扩展点。RepoOps 状态栏
+作为 Hook 实现，每轮进入模型副本，但不写入 session 或 trajectory。详细设计见
+[架构文档](docs/architecture.md)和
+[KV 缓存友好上下文架构设计与验证报告](RepoOps项目文档/KV缓存友好上下文架构设计与验证报告.md)。
 
 ## 这和“写一个 Skill”有什么区别
 
 | 维度 | Skill | RepoOps 项目 |
 |---|---|---|
 | 本质 | 注入上下文的工作流说明 | 可运行的 Agent 系统 |
-| 新增能力 | 不新增底层能力 | 15 个带 schema 的 GitHub/RAG/状态工具 |
+| 新增能力 | 不新增底层能力 | 16 个带 schema 的 GitHub/RAG/状态/Artifact 工具 |
 | 安全 | 依赖模型遵守说明 | allowlist、SSRF、参数校验、审批状态机 |
 | 状态 | 通常只影响当前上下文 | 原子持久化任务状态 + 代码维护的逐轮 Status Bar |
 | 评测 | 没有统一要求 | 真实历史数据、固定快照、完整轨迹、10 项指标 |
@@ -76,7 +82,7 @@ Provider、Session、Gateway 和 WebUI 继续由 nanobot 提供；Runner 只增�
 
 简历中可以直接写成：
 
-> 基于 nanobot 二次开发 RepoOps Agent，实现 15 个 GitHub/RAG/状态工具、逐轮
+> 基于 nanobot 二次开发 RepoOps Agent，实现 16 个 GitHub/RAG/状态/Artifact 工具、逐轮
 > Agent Status Bar、SSRF 防护与跨轮人工审批状态机；构建 Python、Go、TypeScript、Rust 四仓库真实历史
 > Issue 评测集并用 DeepSeek V4 Pro 实跑；在 15 条逐任务 pre-fix 跨语言对照中达到
 > 单次 100.0% 分类、93.1% File Recall@5 和 15/15 结构化成功，同主模型 Claude Code 为
@@ -165,6 +171,29 @@ $repoops-ci-diagnosis 诊断 PR #5160 的 Actions run 30435121783
 达到 3 次、连续 3 次无新证据、剩余预算不超过 2 次或存在待审批草稿时，状态栏给出
 明确决策约束。它不是第二个 LLM 摘要，也不会追加进持久历史。设计、威胁边界与测试见
 [Agent 状态栏设计与验证报告](RepoOps项目文档/Agent状态栏设计与验证报告.md)。
+
+## KV Cache 友好的上下文
+
+会话第一次构建时，代码冻结 System Prompt、工具 definitions、有界 `MEMORY.md`
+快照和尚未进入 Dream 的 Recent History；同一会话后续轮次复用相同字节和工具 schema。
+动态内容不再重建 system：
+
+- `MEMORY.md` 最多 2K token、Recent History 最多 8K token，作为会话内冻结的
+  `user-role` 元消息；会话中 Dream 的新记忆从下一个会话生效，完整记忆可通过
+  `read_file(memory/MEMORY.md)` 按需读取；
+- Consolidator 只在阈值触发时批量压缩，把旧轨迹替换为持久但 UI 隐藏的
+  `<archived_context>` user-role 元消息，保留原始 `history.jsonl` 可回溯记录；
+- always-on 或显式调用的 Skill 以 `<system-reminder>` user-role 元消息在轨迹末尾
+  追加一次，不塞回 system，也不会每轮重复；
+- `<agent_status>` 每次调用由代码重新计算，只进入当轮模型副本；
+- 大工具输出落到 `.nanobot/tool-results/`，返回 `artifact://` URI、绝对路径、
+  SHA-256、大小和头尾预览；RepoOps profile 用 `repoops_read_artifact` 分段回读；
+- 上下文裁剪识别框架元消息，预算紧张时始终先保留真实用户问题和当前工具链，
+  不会让末尾 Skill/Archive 元消息挤掉用户输入。
+
+`/new` 或 fork 会创建新的冻结快照；因此会话中途修改 `AGENTS.md`、Memory 或工具
+拓扑不会悄悄改写当前前缀。该设计会在压缩边界牺牲边界之后的局部缓存，但不会因
+每轮更新动态摘要而让 system/tools 后的整段历史重新 prefill。
 
 ## 真实 Benchmark
 
@@ -360,7 +389,9 @@ npm run lint
 ## 目录
 
 ```text
-nanobot/agent/tools/repoops.py     15 个 RepoOps tools
+nanobot/agent/tools/repoops.py     16 个 RepoOps tools
+nanobot/agent/context_meta.py      会话快照、归档与元消息协议
+nanobot/agent/context_governance.py 真实用户优先裁剪与 Artifact offload
 nanobot/agent/hooks/repoops_status.py  逐轮临时状态与操作规则
 nanobot/repoops/                  client / state / safety / RAG / eval
 nanobot/skills/repoops*/          总策略、Issue、PR、CI workflows
@@ -375,6 +406,7 @@ docs/                             架构与配置
 - [开发实现报告](RepoOps项目文档/开发实现报告.md)
 - [项目评估报告](RepoOps项目文档/项目评估报告.md)
 - [Agent 状态栏设计与验证报告](RepoOps项目文档/Agent状态栏设计与验证报告.md)
+- [KV 缓存友好上下文架构设计与验证报告](RepoOps项目文档/KV缓存友好上下文架构设计与验证报告.md)
 - [RepoOps 与 Claude Code 对照评测](RepoOps项目文档/RepoOps与Claude-Code对照评测报告.md)
 - [跨语言多仓库对照评测](RepoOps项目文档/跨语言多仓库对照评测报告.md)
 - [失败案例与风险清单](RepoOps项目文档/失败案例与风险清单.md)

@@ -1,6 +1,7 @@
 """Utility functions for nanobot."""
 
 import base64
+import hashlib
 import json
 import os
 import re
@@ -513,13 +514,22 @@ def _render_tool_result_reference(
     filepath: Path,
     *,
     original_size: int,
+    original_bytes: int,
+    sha256: str,
     preview: str,
     truncated_preview: bool,
 ) -> str:
+    try:
+        relative = filepath.relative_to(filepath.parents[2])
+        artifact_uri = f"artifact://{relative.as_posix()}"
+    except (IndexError, ValueError):
+        artifact_uri = f"artifact://tool-results/{filepath.name}"
     result = (
         f"[tool output persisted]\n"
+        f"Artifact URI: {artifact_uri}\n"
         f"Full output saved to: {filepath}\n"
-        f"Original size: {original_size} chars\n"
+        f"Original size: {original_size} chars / {original_bytes} bytes\n"
+        f"SHA-256: {sha256}\n"
         f"Preview:\n{preview}"
     )
     if truncated_preview:
@@ -590,9 +600,9 @@ def maybe_persist_tool_result(
     if isinstance(content, str):
         text_payload = content
     elif isinstance(content, list):
-        text_payload = stringify_text_blocks(cast(list[object], content))
-        if text_payload is None:
+        if stringify_text_blocks(cast(list[object], content)) is None:
             return cast(Any, content)
+        text_payload = json.dumps(content, ensure_ascii=False, indent=2)
         suffix = "json"
     else:
         return content
@@ -607,18 +617,25 @@ def maybe_persist_tool_result(
     except Exception:
         logger.exception("Failed to clean stale tool result buckets in {}", root)
     path = bucket / f"{safe_filename(tool_call_id)}.{suffix}"
-    if not path.exists():
-        if suffix == "json" and isinstance(content, list):
-            _write_text_atomic(path, json.dumps(content, ensure_ascii=False, indent=2))
-        else:
-            _write_text_atomic(path, text_payload)
+    _write_text_atomic(path, text_payload)
 
-    preview = text_payload[:_TOOL_RESULT_PREVIEW_CHARS]
+    payload_bytes = text_payload.encode("utf-8")
+    digest = hashlib.sha256(payload_bytes).hexdigest()
+    truncated_preview = len(text_payload) > _TOOL_RESULT_PREVIEW_CHARS
+    if truncated_preview:
+        marker = "\n... [middle omitted] ...\n"
+        head_size = (_TOOL_RESULT_PREVIEW_CHARS - len(marker)) * 2 // 3
+        tail_size = _TOOL_RESULT_PREVIEW_CHARS - len(marker) - head_size
+        preview = text_payload[:head_size] + marker + text_payload[-tail_size:]
+    else:
+        preview = text_payload
     return _render_tool_result_reference(
         path,
         original_size=len(text_payload),
+        original_bytes=len(payload_bytes),
+        sha256=digest,
         preview=preview,
-        truncated_preview=len(text_payload) > _TOOL_RESULT_PREVIEW_CHARS,
+        truncated_preview=truncated_preview,
     )
 
 

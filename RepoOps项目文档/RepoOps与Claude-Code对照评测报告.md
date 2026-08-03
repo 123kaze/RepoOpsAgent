@@ -88,7 +88,8 @@ Python v5 验证了紧凑收尾可将结构化成功提高到 20/20，但同时�
   `deepseek-v4-pro`。
 - 两边任务、SHA、超时、最终字段和评分器相同，但系统提示、工具协议和结构化输出
   实现不同；这正是要比较的工程差异。
-- Claude Code 使用通用 Bash/Read，RepoOps 使用 15 个领域工具。Tool
+- Claude Code 使用通用 Bash/Read，锁定 run 时 RepoOps 使用 15 个领域工具。当前代码
+  另增 `repoops_read_artifact`，共 16 个；新增工具没有进入该历史 run。Tool
   Precision/Recall 因工具词表不同，不作为跨系统 headline。
 - Claude init/result 记录主模型为 `deepseek-v4-pro`；独立诊断 smoke 曾在
   `modelUsage` 观察到 `deepseek-v4-flash` 辅助用量，因此不声称其内部绝对只发生

@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from loguru import logger
 
+from nanobot.agent.context_meta import is_context_meta_message
 from nanobot.utils.helpers import (
     estimate_message_tokens,
     estimate_prompt_tokens_chain,
@@ -32,9 +33,11 @@ INFLIGHT_COMPACT_TARGET_RATIO = 0.85
 COMPACTABLE_TOOLS = frozenset({
     "read_file", "exec", "grep", "find_files",
     "web_search", "web_fetch", "list_dir", "list_exec_sessions",
+    "repoops_read_artifact",
 })
 # read_file is the recovery path for persisted results; exempting it prevents persist->read->persist loops.
-TOOL_RESULT_OFFLOAD_EXEMPT_TOOLS = frozenset({"read_file"})
+TOOL_RESULT_OFFLOAD_EXEMPT_TOOLS = frozenset({"read_file", "repoops_read_artifact"})
+TOOL_RESULT_ARTIFACT_READERS = frozenset({"read_file", "repoops_read_artifact"})
 BACKFILL_CONTENT = "[Tool result unavailable — call was interrupted or lost]"
 PLACEHOLDER_TEXTS = frozenset({
     "[Previous assistant message omitted.]",
@@ -64,6 +67,7 @@ class ContextGovernanceConfig:
     workspace: Path | None
     session_key: str | None
     max_tool_result_chars: int
+    tool_definitions: list[dict[str, Any]] | None = None
     context_window_tokens: int | None = None
     context_block_limit: int | None = None
     max_tokens: int | None = None
@@ -108,6 +112,13 @@ class ContextGovernor:
         return budget if budget > 0 else 0
 
     @staticmethod
+    def tool_definitions(config: ContextGovernanceConfig) -> list[dict[str, Any]]:
+        """Return the session-frozen schemas used for requests and token accounting."""
+        if config.tool_definitions is not None:
+            return config.tool_definitions
+        return config.tools.get_definitions()
+
+    @staticmethod
     def normalize_tool_result(
         config: ContextGovernanceConfig,
         tool_call_id: str,
@@ -126,7 +137,7 @@ class ContextGovernor:
             isinstance(result, str)
             and len(result) > config.max_tool_result_chars
             and isinstance(cast(object, config.tools.tool_names), list)
-            and "read_file" not in config.tools.tool_names
+            and not TOOL_RESULT_ARTIFACT_READERS.intersection(config.tools.tool_names)
         ):
             return truncate_text(result, config.max_tool_result_chars)
         try:
@@ -349,7 +360,7 @@ class ContextGovernor:
         if budget <= 0:
             return messages
 
-        tools = config.tools.get_definitions()
+        tools = self.tool_definitions(config)
         updated = self._apply_recorded_compactions(messages, compacted_tool_call_ids)
         estimate, source = estimate_prompt_tokens_chain(
             config.provider,
@@ -411,7 +422,7 @@ class ContextGovernor:
         if budget <= 0:
             return messages
 
-        tools = config.tools.get_definitions()
+        tools = self.tool_definitions(config)
         estimate, _ = estimate_prompt_tokens_chain(
             config.provider,
             config.model,
@@ -434,17 +445,70 @@ class ContextGovernor:
             tools,
         )
         remaining_budget = max(0, budget - max(system_tokens, fixed_tokens))
+        latest_user_index = self._latest_conversation_user_index(non_system)
+        if latest_user_index is None:
+            kept = self._bounded_tail(non_system, remaining_budget)
+            return system_messages + self._legal_history_tail(kept, non_system)
+
+        # A user-role meta message (skill, archive, memory snapshot) must not
+        # displace the actual user request that precedes it. Protect all
+        # non-meta messages in the live turn first, add its meta messages only
+        # when they fit, then spend any remaining budget on older history.
+        live_tail = non_system[latest_user_index:]
+        selected_live_indexes = {
+            index
+            for index, message in enumerate(live_tail)
+            if not is_context_meta_message(message)
+        }
+        kept_tokens = sum(
+            estimate_message_tokens(live_tail[index])
+            for index in selected_live_indexes
+        )
+        for index, message in enumerate(live_tail):
+            if index in selected_live_indexes:
+                continue
+            message_tokens = estimate_message_tokens(message)
+            if kept_tokens + message_tokens <= remaining_budget:
+                selected_live_indexes.add(index)
+                kept_tokens += message_tokens
+
+        kept_live = [
+            message
+            for index, message in enumerate(live_tail)
+            if index in selected_live_indexes
+        ]
+        older_budget = max(0, remaining_budget - kept_tokens)
+        kept_older = self._bounded_tail(non_system[:latest_user_index], older_budget)
+        combined = [*kept_older, *kept_live]
+        return system_messages + self._legal_history_tail(combined, non_system)
+
+    @staticmethod
+    def _bounded_tail(
+        messages: list[dict[str, Any]],
+        budget: int,
+    ) -> list[dict[str, Any]]:
         kept: list[dict[str, Any]] = []
         kept_tokens = 0
-        for message in reversed(non_system):
-            msg_tokens = estimate_message_tokens(message)
-            if kept and kept_tokens + msg_tokens > remaining_budget:
+        for message in reversed(messages):
+            message_tokens = estimate_message_tokens(message)
+            if kept and kept_tokens + message_tokens > budget:
                 break
+            if not kept and message_tokens > budget:
+                continue
             kept.append(message)
-            kept_tokens += msg_tokens
+            kept_tokens += message_tokens
         kept.reverse()
+        return kept
 
-        return system_messages + self._legal_history_tail(kept, non_system)
+    @staticmethod
+    def _latest_conversation_user_index(
+        messages: list[dict[str, Any]],
+    ) -> int | None:
+        for index in range(len(messages) - 1, -1, -1):
+            message = messages[index]
+            if message.get("role") == "user" and not is_context_meta_message(message):
+                return index
+        return None
 
     @staticmethod
     def _tool_result_compaction_message(message: dict[str, Any]) -> str:
@@ -471,7 +535,10 @@ class ContextGovernor:
     def _user_tail(messages: list[dict[str, Any]], *, last: bool = False) -> list[dict[str, Any]]:
         indexes = range(len(messages) - 1, -1, -1) if last else range(len(messages))
         for idx in indexes:
-            if messages[idx].get("role") == "user":
+            if (
+                messages[idx].get("role") == "user"
+                and not is_context_meta_message(messages[idx])
+            ):
                 return messages[idx:]
         return []
 

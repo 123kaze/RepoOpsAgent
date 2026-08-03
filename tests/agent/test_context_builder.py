@@ -328,11 +328,12 @@ class TestBuildSystemPrompt:
         result = builder.build_system_prompt()
         assert "Be helpful and concise." in result
 
-    def test_includes_session_summary(self, tmp_path):
+    def test_session_summary_never_changes_system_prefix(self, tmp_path):
         builder = _builder(tmp_path)
+        baseline = builder.build_system_prompt()
         result = builder.build_system_prompt(session_summary="Previous chat about Python.")
-        assert "Previous chat about Python." in result
-        assert "[Archived Context Summary]" in result
+        assert result == baseline
+        assert "Previous chat about Python." not in result
 
     def test_sections_separated_by_separator(self, tmp_path):
         (tmp_path / "AGENTS.md").write_text("Rules.", encoding="utf-8")
@@ -363,7 +364,7 @@ class TestBuildMessages:
 
     def test_basic_empty_history(self, tmp_path):
         builder = _builder(tmp_path)
-        messages = builder.build_messages([], "hello")
+        messages = builder.build_messages([], "hello", include_active_skill_meta=False)
         assert len(messages) == 2
         assert messages[0]["role"] == "system"
         assert messages[1]["role"] == "user"
@@ -380,6 +381,7 @@ class TestBuildMessages:
             runtime_context_blocks=[
                 RuntimeContextBlock(source="test", content="user-only runtime context"),
             ],
+            include_active_skill_meta=False,
         )
 
         assert len(messages) == 2
@@ -404,12 +406,21 @@ class TestBuildMessages:
         messages = builder.build_messages([], "Please $review this patch and use $review carefully.")
 
         system_prompt = messages[0]["content"]
-        assert "# Active Skills" in system_prompt
-        assert "### Skill: review" in system_prompt
-        assert "Follow the unique review checklist." in system_prompt
-        assert system_prompt.count("### Skill: review") == 1
-        assert messages[-1]["content"] == (
-            "Please $review this patch and use $review carefully."
+        skill_meta = next(
+            message
+            for message in messages
+            if "### Skill: review" in str(message.get("content") or "")
+        )
+        assert "# Active Skills" not in system_prompt
+        assert "**review**" in system_prompt
+        assert "### Skill: review" in skill_meta["content"]
+        assert "Follow the unique review checklist." in skill_meta["content"]
+        assert skill_meta["content"].count("### Skill: review") == 1
+        assert skill_meta["role"] == "user"
+        assert skill_meta["_meta"]["context_meta"]["kind"] == "active_skills"
+        assert any(
+            message.get("content") == "Please $review this patch and use $review carefully."
+            for message in messages
         )
 
     def test_unknown_skill_reference_does_not_change_active_skills(self, tmp_path):
@@ -418,11 +429,14 @@ class TestBuildMessages:
         messages = builder.build_messages([], "Keep the shell literal $HOME.")
 
         assert messages[0]["content"] == baseline[0]["content"]
-        assert "### Skill: repoops" in messages[0]["content"]
+        assert "### Skill: repoops" not in messages[0]["content"]
+        assert "### Skill: repoops" in messages[-1]["content"]
 
     def test_runtime_context_is_not_injected_by_default(self, tmp_path):
         builder = _builder(tmp_path)
-        messages = builder.build_messages([], "hello", channel="cli")
+        messages = builder.build_messages(
+            [], "hello", channel="cli", include_active_skill_meta=False
+        )
         user_msg = str(messages[-1]["content"])
         assert user_msg == "hello"
 
@@ -437,6 +451,7 @@ class TestBuildMessages:
                     content="CLI App Attachment: @zoom (installed; tool=run_cli_app).",
                 ),
             ],
+            include_active_skill_meta=False,
         )
         user_msg = str(messages[-1]["content"])
 
@@ -450,7 +465,9 @@ class TestBuildMessages:
     def test_consecutive_same_role_merged(self, tmp_path):
         builder = _builder(tmp_path)
         history = [{"role": "user", "content": "previous user message"}]
-        messages = builder.build_messages(history, "new message")
+        messages = builder.build_messages(
+            history, "new message", include_active_skill_meta=False
+        )
         assert len(messages) == 2  # system + merged user
         assert "previous user message" in str(messages[1]["content"])
         assert "new message" in str(messages[1]["content"])
@@ -472,7 +489,9 @@ class TestBuildMessages:
     def test_different_role_appended(self, tmp_path):
         builder = _builder(tmp_path)
         history = [{"role": "assistant", "content": "previous response"}]
-        messages = builder.build_messages(history, "new message")
+        messages = builder.build_messages(
+            history, "new message", include_active_skill_meta=False
+        )
         assert len(messages) == 3  # system + assistant + user
 
     def test_media_with_history(self, tmp_path):
@@ -480,7 +499,12 @@ class TestBuildMessages:
         png.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 16)
         builder = _builder(tmp_path)
         history = [{"role": "assistant", "content": "see this"}]
-        messages = builder.build_messages(history, "check image", media=[str(png)])
+        messages = builder.build_messages(
+            history,
+            "check image",
+            media=[str(png)],
+            include_active_skill_meta=False,
+        )
         user_msg = messages[-1]["content"]
         assert isinstance(user_msg, list)
         assert any(b.get("type") == "image_url" for b in user_msg)

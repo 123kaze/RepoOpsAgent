@@ -16,6 +16,7 @@ from nanobot.runtime_context import (
     WEBUI_QUOTE_METADATA,
     RuntimeContextBlock,
     public_history_message,
+    public_history_messages,
     webui_quote_runtime_context,
 )
 from nanobot.session.goal_state import GOAL_STATE_KEY
@@ -184,14 +185,23 @@ async def test_runtime_context_is_persisted_as_next_turn_prompt_prefix(tmp_path)
     second_wire = LLMProvider._sanitize_empty_content(second_request)
     assert second_wire[: len(first_wire)] == first_wire
     assert first_wire[1] == second_wire[1]
-    assert second_wire[2]["role"] == "assistant"
-    assert second_wire[2]["content"] == "first answer"
-    assert second_wire[3]["content"].startswith("second turn")
+    assert second_wire[len(first_wire)]["role"] == "assistant"
+    assert second_wire[len(first_wire)]["content"] == "first answer"
+    assert second_wire[len(first_wire) + 1]["content"].startswith("second turn")
     assert len(provider_calls) == 2
 
     persisted_first_user = session.messages[0]
     assert persisted_first_user["content"] == first_wire[1]["content"]
     assert public_history_message(persisted_first_user)["content"] == "first turn"
+    skill_snapshots = [
+        message
+        for message in session.messages
+        if isinstance(message.get("_hidden_history"), dict)
+        and message["_hidden_history"].get("kind") == "active_skills"
+    ]
+    assert len(skill_snapshots) == 1
+    assert skill_snapshots[0]["role"] == "user"
+    assert skill_snapshots[0]["content"].startswith("<system-reminder>")
 
 
 @pytest.mark.asyncio
@@ -576,7 +586,7 @@ async def test_next_turn_after_llm_error_keeps_turn_boundary(tmp_path):
     session = loop.sessions.get_or_create("cli:test")
     assert [
         {key: value for key, value in message.items() if key in {"role", "content"}}
-        for message in session.messages
+        for message in public_history_messages(session.messages)
     ] == [
         {"role": "user", "content": "first question"},
         {"role": "assistant", "content": _PERSISTED_MODEL_ERROR_PLACEHOLDER},
@@ -589,7 +599,14 @@ async def test_next_turn_after_llm_error_keeps_turn_boundary(tmp_path):
     assert second.content == "Recovered answer"
 
     request_messages = provider.chat_with_retry.await_args_list[1].kwargs["messages"]
-    non_system = [message for message in request_messages if message.get("role") != "system"]
+    non_system = [
+        public_history_message(message)
+        for message in request_messages
+        if message.get("role") != "system"
+        and "_hidden_history" not in message
+        and "context_meta" not in (message.get("_meta") or {})
+        and not str(message.get("content") or "").startswith("<system-reminder>")
+    ]
     assert non_system[0]["role"] == "user"
     assert "first question" in non_system[0]["content"]
     assert non_system[1]["role"] == "assistant"
